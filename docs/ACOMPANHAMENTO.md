@@ -21,12 +21,12 @@ O diário, no fim do arquivo, conta o que foi feito em cada dia.
 
 | | Concluído | Total | % |
 |---|---|---|---|
-| **Tarefas** | 7 | 51 | 13,7 % |
-| **Horas estimadas** | 58 h | 378 h | 15,3 % |
+| **Tarefas** | 8 | 51 | 15,7 % |
+| **Horas estimadas** | 61 h | 378 h | 16,1 % |
 
 | Etapa | Blocos | Horas concluídas | Total | % |
 |---|---|---|---|---|
-| 1 · Aviso de validade | A, B, C, D, F, J | 58 h | 212 h | 27,4 % |
+| 1 · Aviso de validade | A, B, C, D, F, J | 61 h | 212 h | 28,8 % |
 | 2 · Aviso de ruptura | E, G, H | 0 h | 136 h | 0,0 % |
 | 3 · Gestão | I | 0 h | 30 h | 0,0 % |
 
@@ -46,14 +46,14 @@ Prazo de entrega: **27/11/2026**.
 | ~~A4~~ | ~~Autenticação e os três perfis de acesso~~ | A3, B1 | 12 | ✅ Concluída | 06/10/2026 | `ec49325` |
 | A5 | Esteira de publicação em ambiente de teste | A1 | 6 | ⛔ Aguarda D05 | — | — |
 
-## Bloco B — Cadastros · 46 h  ·  24 de 46 h concluídas
+## Bloco B — Cadastros · 46 h  ·  27 de 46 h concluídas
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
 | ~~B1~~ | ~~Criar as tabelas de usuário, categoria, produto e fornecedor~~ | A2 | 6 | ✅ Concluída | 06/10/2026 | `a3923e2` |
 | ~~B2~~ | ~~API de categoria e fornecedor~~ | B1, A3 | 8 | ✅ Concluída | 06/10/2026 | `3f93ef1` |
 | ~~B3~~ | ~~API de produto, com validações~~ | B1, A3 | 10 | ✅ Concluída | 06/10/2026 | `0172832` |
-| B4 | Regra: perecível exige prazo de durabilidade | B3 | 3 | ⬜ A fazer | — | — |
+| ~~B4~~ | ~~Regra: perecível exige prazo de durabilidade~~ | B3 | 3 | ✅ Concluída | 06/10/2026 | `a7d6512` |
 | B5 | Tela de produtos | A3 | 8 | ⬜ A fazer | — | — |
 | B6 | Tela de fornecedores | A3 | 6 | ⬜ A fazer | — | — |
 | B7 | Ligar as telas à API e tratar os erros na tela | B2, B3, B5, B6 | 5 | ⬜ A fazer | — | — |
@@ -146,7 +146,7 @@ cronograma, a regra de negócio (quando houver) e o commit.
 
 ### 06/10/2026
 
-**Tarefas concluídas: A1, A2, A3, B1, A4, B2 e B3** (58 h estimadas).
+**Tarefas concluídas: A1, A2, A3, B1, A4, B2, B3 e B4** (61 h estimadas).
 
 - **A1 — Repositório, ambiente e padrão de código.** Repositório git criado, com a especificação
   (Apostilas I a IV) no primeiro commit. Projeto Django com os sete módulos do sistema
@@ -224,5 +224,17 @@ rodar.
   cadastrado sem dizer se é perecível herda o padrão da categoria (ex.: tudo do Açougue já nasce
   perecível). 33 testes automáticos — total do projeto: 174, todos passando.
 
-**Próxima tarefa:** B4 — regra: perecível exige prazo de durabilidade (RN03). Hoje o banco já
-recusa o perecível sem durabilidade, mas a API ainda não devolve a mensagem para a tela.
+- **B4 — Regra: perecível exige prazo de durabilidade (RN03).** Produto perecível sem a
+  durabilidade em dias — ou com zero — é recusado antes de gravar, com a mensagem "Produto
+  perecível precisa do prazo de durabilidade em dias. Sem ele o sistema não consegue avisar quando
+  o produto vai vencer." A resposta aponta só esse campo, para a tela manter o resto do que foi
+  digitado (fluxograma 01). A regra vale também ao editar (marcar como perecível, apagar a
+  durabilidade) e para o produto que herdou o "perecível" da categoria. Testado com o exemplo da
+  própria Apostila I: "Frango resfriado 1 kg" sem durabilidade é recusado; com 4 dias, é salvo.
+  A regra fica num módulo próprio, não na tela, como manda a Apostila IV. 22 testes automáticos —
+  total do projeto: 196, todos passando.
+
+**Bloco B:** a parte de banco e API está completa (B1 a B4). Faltam as telas — B5, B6 e B7.
+
+**Próxima tarefa:** C1 — tabelas de lote e movimentação, o caminho crítico do projeto (a pessoa de
+dados é o gargalo, Apostila IV, seção 10). As telas B5 e B6 podem andar em paralelo.
