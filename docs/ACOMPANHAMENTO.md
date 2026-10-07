@@ -21,12 +21,12 @@ O diário, no fim do arquivo, conta o que foi feito em cada dia.
 
 | | Concluído | Total | % |
 |---|---|---|---|
-| **Tarefas** | 13 | 51 | 25,5 % |
-| **Horas estimadas** | 91 h | 378 h | 24,1 % |
+| **Tarefas** | 14 | 51 | 27,5 % |
+| **Horas estimadas** | 94 h | 378 h | 24,9 % |
 
 | Etapa | Blocos | Horas concluídas | Total | % |
 |---|---|---|---|---|
-| 1 · Aviso de validade | A, B, C, D, F, J | 91 h | 212 h | 42,9 % |
+| 1 · Aviso de validade | A, B, C, D, F, J | 94 h | 212 h | 44,3 % |
 | 2 · Aviso de ruptura | E, G, H | 0 h | 136 h | 0,0 % |
 | 3 · Gestão | I | 0 h | 30 h | 0,0 % |
 
@@ -69,12 +69,12 @@ Prazo de entrega: **27/11/2026**.
 | C5 | Tela de entrada de mercadoria | A3 | 10 | ⬜ A fazer | — | — |
 | C6 | Integração e teste do fluxo completo | C2, C5 | 6 | ⬜ A fazer | — | — |
 
-## Bloco D — Perdas e avarias · 18 h  ·  6 de 18 h concluídas
+## Bloco D — Perdas e avarias · 18 h  ·  9 de 18 h concluídas
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
 | ~~D1~~ | ~~API de registro de perda, com motivo obrigatório~~ | C1 | 6 | ✅ Concluída | 07/10/2026 | `18285b3` |
-| D2 | Regra: perda não entra na base de consumo | D1 | 3 | ⬜ A fazer | — | — |
+| ~~D2~~ | ~~Regra: perda não entra na base de consumo~~ | D1 | 3 | ✅ Concluída | 07/10/2026 | `83dbc5f` |
 | D3 | Tela de avarias e quebras | A3 | 7 | ⬜ A fazer | — | — |
 | D4 | Integração e teste | D1, D3 | 2 | ⬜ A fazer | — | — |
 
@@ -146,7 +146,7 @@ cronograma, a regra de negócio (quando houver) e o commit.
 
 ### 07/10/2026
 
-**Tarefas concluídas: C2, C3 e D1** (18 h estimadas).
+**Tarefas concluídas: C2, C3, D1 e D2** (21 h estimadas).
 
 - **C2 — API de entrada de mercadoria (RF03, operação 02).** O sobrinho já registra, pela API,
   cada carga que chega: produto, quantidade, custo, fornecedor e validade. Como manda a operação 02
@@ -186,7 +186,19 @@ cronograma, a regra de negócio (quando houver) e o commit.
   ordem já fica pronta para a baixa por venda (E3), que deixa os vencidos de fora. 31 testes
   automáticos — total do projeto: 312, todos passando.
 
-**Próxima tarefa:** D2 — regra: perda não entra na base de consumo (RN11).
+- **D2 — Regra: perda não entra na base de consumo (RN11).** A regra que o roteiro chama de "uma
+  das mais críticas do sistema": se a perda contasse como consumo, quanto mais produto estragasse,
+  mais o sistema mandaria comprar. Agora existe **um único lugar** no sistema que responde "quanto
+  se vendeu", e ele conta só vendas — perdas, entradas e ajustes ficam de fora. É dele que a
+  previsão (bloco G) vai ler, e um teste automático impede que alguém do grupo calcule consumo por
+  fora. Testado com o exemplo da Apostila I: 10 kg de frango vão fora, o saldo cai 10 kg, o consumo
+  do dia continua sendo só o vendido. A conta é feita pelo dia da loja — a venda das 22h30 não vira
+  "dia seguinte". Foi provado que os testes pegam o erro: colocando a perda na conta, 5 testes
+  falham. 15 testes automáticos — total do projeto: 327, todos passando.
+
+**Bloco D:** banco, API e regra completos (D1 e D2). Faltam a tela (D3) e a integração (D4).
+
+**Próxima tarefa:** F1 — visão de estoque por produto e por lote.
 
 ### 06/10/2026
 
