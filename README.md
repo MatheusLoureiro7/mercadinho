@@ -10,6 +10,7 @@ exporta.
 |---|---|
 | `CLAUDE.md` | Regras do repositório, stack e convenções |
 | `docs/ROTEIRO.md` | As tarefas A1–J6, na ordem — marque `[x]` ao terminar |
+| `docs/ACOMPANHAMENTO.md` | **Andamento do cronograma**: o que já foi feito, quando, e o diário |
 | `docs/REGRAS-NEGOCIO.md` | RN01–RN16 em forma testável |
 | `docs/ESPECIFICACAO.md` | RF, RNF, restrições e fora de escopo |
 | `docs/ARQUITETURA.md` | Camadas, operações, as 10 telas |

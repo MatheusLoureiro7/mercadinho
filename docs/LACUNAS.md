@@ -102,6 +102,22 @@ Nas duas opções as tabelas internas do Django existem. Vale declarar que elas 
 framework, não parte do modelo de dados do negócio.
 **Quem decide:** o grupo.
 
+> **✅ DECIDIDA em 06/10/2026 — opção (c), surgida na análise:** usar a autenticação do Django
+> apontada para a tabela `usuario` **exatamente como está na Apostila IV**, sem coluna a mais:
+>
+> - modelo próprio sobre `AbstractBaseUser`, com `db_table = 'usuario'`;
+> - o hash da senha vai na coluna `senha_hash` (`db_column`), com o hash padrão do Django (RNF12);
+> - a coluna `last_login` é removida do modelo (`last_login = None`);
+> - `login` é o identificador (`USERNAME_FIELD`) e `ativo` faz o papel de "usuário ativo";
+> - sem `PermissionsMixin` e sem `django.contrib.admin`: o controle de acesso é o `papel` da
+>   RN14, verificado na camada de autenticação da API (tarefa A4);
+> - token de acesso **assinado** (`django.core.signing`), que não precisa de tabela.
+>
+> **Por quê:** o modelo de dados entregue ao professor fica intacto, e o grupo continua
+> aproveitando o hash de senha e o login prontos do Django — o motivo de ter escolhido Django.
+> **Custo:** recriar o banco local uma vez, na B1 (`docker compose down -v`). Ainda não há dado real.
+> **Onde entra no código:** B1 (model `usuario`) e A4 (token e verificação de papel).
+
 ---
 
 ### L10 — Não há como registrar ajuste para menos

@@ -201,6 +201,11 @@ interface e deixe o parser real para quando a resposta chegar.
 4. Implemente.
 5. Escreva o teste.
 6. Marque a tarefa no roteiro.
+7. Atualize `docs/ACOMPANHAMENTO.md` — é o andamento do cronograma que foi entregue ao professor:
+   risque a tarefa (`~~A3~~`), preencha situação, data de conclusão e commit, recalcule o resumo
+   (tarefas, horas e % por etapa) e escreva no **Diário** o que foi feito no dia, em linguagem
+   que o professor entenda. Decisões tomadas e lacunas novas também entram no diário.
+8. Ao responder, diga sempre o que foi feito, em que data, e qual é a próxima tarefa.
 
 Não pule para uma tarefa adiante porque parece mais fácil. A ordem existe por dependência real:
 o modelo de dados sustenta quase tudo e por isso vem primeiro.
