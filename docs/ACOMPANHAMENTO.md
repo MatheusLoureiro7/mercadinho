@@ -21,12 +21,12 @@ O diário, no fim do arquivo, conta o que foi feito em cada dia.
 
 | | Concluído | Total | % |
 |---|---|---|---|
-| **Tarefas** | 15 | 51 | 29,4 % |
-| **Horas estimadas** | 100 h | 378 h | 26,5 % |
+| **Tarefas** | 16 | 51 | 31,4 % |
+| **Horas estimadas** | 106 h | 378 h | 28,0 % |
 
 | Etapa | Blocos | Horas concluídas | Total | % |
 |---|---|---|---|---|
-| 1 · Aviso de validade | A, B, C, D, F, J | 100 h | 212 h | 47,2 % |
+| 1 · Aviso de validade | A, B, C, D, F, J | 106 h | 212 h | 50,0 % |
 | 2 · Aviso de ruptura | E, G, H | 0 h | 136 h | 0,0 % |
 | 3 · Gestão | I | 0 h | 30 h | 0,0 % |
 
@@ -88,12 +88,12 @@ Prazo de entrega: **27/11/2026**.
 | E4 | Casar o produto do caixa com o produto cadastrado | E3 | 10 | ⛔ Aguarda D01 | — | — |
 | E5 | Tela de acompanhamento da importação | E3 | 6 | ⛔ Aguarda D01 | — | — |
 
-## Bloco F — Consulta de estoque · 22 h  ·  6 de 22 h concluídas
+## Bloco F — Consulta de estoque · 22 h  ·  12 de 22 h concluídas
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
 | ~~F1~~ | ~~Visão de estoque por produto e por lote~~ | C4 | 6 | ✅ Concluída | 07/10/2026 | `01b84a8` |
-| F2 | API de consulta com filtros | F1 | 6 | ⬜ A fazer | — | — |
+| ~~F2~~ | ~~API de consulta com filtros~~ | F1 | 6 | ✅ Concluída | 07/10/2026 | `2365139` |
 | F3 | Tela de estoque, com destaque para mínimo e vencidos | A3 | 10 | ⬜ A fazer | — | — |
 
 ## Bloco G — Previsão · 40 h ⚠️ depende da decisão D01  ·  0 de 40 h concluídas
@@ -146,7 +146,7 @@ cronograma, a regra de negócio (quando houver) e o commit.
 
 ### 07/10/2026
 
-**Tarefas concluídas: C2, C3, D1, D2 e F1** (27 h estimadas).
+**Tarefas concluídas: C2, C3, D1, D2, F1 e F2** (33 h estimadas).
 
 - **C2 — API de entrada de mercadoria (RF03, operação 02).** O sobrinho já registra, pela API,
   cada carga que chega: produto, quantidade, custo, fornecedor e validade. Como manda a operação 02
@@ -212,7 +212,19 @@ cronograma, a regra de negócio (quando houver) e o commit.
   apostila, com os 7 valores iniciais. 25 testes automáticos — total do projeto: 352, todos
   passando.
 
-**Próxima tarefa:** F2 — API de consulta com filtros.
+- **F2 — API de consulta de estoque com filtros (RF07).** A consulta de estoque — a única tela que
+  os três (dono, esposa e sobrinho) usam — já tem a sua API: saldo por produto e por lote, agrupado
+  por categoria, com filtros "só o que está abaixo do mínimo", "só o que está vencendo ou vencido",
+  por categoria, por produto e por nome. O lote vencido aparece destacado (RN16) e ninguém consegue
+  gravar nada por ela (RN01). Pensando no computador antigo da loja (RNF06), um teste garante que a
+  consulta faz no máximo 4 idas ao banco, tenha a loja 50 ou 2.000 produtos. 33 testes automáticos —
+  total do projeto: 385, todos passando.
+
+**Marco: metade da etapa 1.** Toda a parte de banco, API e regras da etapa 1 que não depende de
+decisão do cliente está pronta. Faltam as telas (B5–B7, C5–C6, D3–D4, F3), a publicação (A5,
+aguarda D05) e o bloco J.
+
+**Próxima tarefa:** a definir — telas (B5 em diante) ou aviso de validade (H1/H2).
 
 ### 06/10/2026
 
