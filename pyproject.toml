@@ -1,0 +1,24 @@
+# Padrão de código do grupo MDGS (tarefa A1).
+# Verificar:  ruff check .   e   ruff format --check .
+# Testes:     pytest
+
+[tool.ruff]
+line-length = 110
+target-version = "py311"
+extend-exclude = ["**/migrations/**"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "DJ", "S"]
+ignore = []
+
+[tool.ruff.lint.per-file-ignores]
+"backend/tests/**" = ["S101"]   # assert é o normal em teste
+
+[tool.ruff.lint.isort]
+known-first-party = ["core", "comum", "cadastro", "estoque", "vendas", "previsao", "alertas", "caixa"]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "core.settings"
+pythonpath = ["backend"]
+testpaths = ["backend"]
+python_files = ["test_*.py"]

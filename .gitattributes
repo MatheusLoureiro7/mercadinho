@@ -1,0 +1,4 @@
+# Mantém LF no repositório mesmo quando alguém do grupo trabalha no Windows.
+* text=auto eol=lf
+*.bat text eol=crlf
+*.ps1 text eol=crlf

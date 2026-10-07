@@ -1,1 +1,23 @@
+# Sistema operacional
 .DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Segredos — nunca versionar (RNF12)
+.env
+
+# Editores
+.vscode/
+.idea/
+
+# Arquivos do caixa usados em teste local (decisão D01 em aberto)
+arquivos_caixa/

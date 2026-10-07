@@ -1,0 +1,5 @@
+# Dependências de desenvolvimento e teste (tarefa J1 usa pytest + pytest-django).
+-r requirements.txt
+pytest>=8,<9
+pytest-django>=4.9,<5
+ruff>=0.6
