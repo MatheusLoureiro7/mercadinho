@@ -21,12 +21,12 @@ O diário, no fim do arquivo, conta o que foi feito em cada dia.
 
 | | Concluído | Total | % |
 |---|---|---|---|
-| **Tarefas** | 16 | 51 | 31,4 % |
-| **Horas estimadas** | 106 h | 378 h | 28,0 % |
+| **Tarefas** | 17 | 51 | 33,3 % |
+| **Horas estimadas** | 114 h | 378 h | 30,2 % |
 
 | Etapa | Blocos | Horas concluídas | Total | % |
 |---|---|---|---|---|
-| 1 · Aviso de validade | A, B, C, D, F, J | 106 h | 212 h | 50,0 % |
+| 1 · Aviso de validade | A, B, C, D, F, J | 114 h | 212 h | 53,8 % |
 | 2 · Aviso de ruptura | E, G, H | 0 h | 136 h | 0,0 % |
 | 3 · Gestão | I | 0 h | 30 h | 0,0 % |
 
@@ -46,7 +46,7 @@ Prazo de entrega: **27/11/2026**.
 | ~~A4~~ | ~~Autenticação e os três perfis de acesso~~ | A3, B1 | 12 | ✅ Concluída | 06/10/2026 | `ec49325` |
 | A5 | Esteira de publicação em ambiente de teste | A1 | 6 | ⛔ Aguarda D05 | — | — |
 
-## Bloco B — Cadastros · 46 h  ·  27 de 46 h concluídas
+## Bloco B — Cadastros · 46 h  ·  35 de 46 h concluídas
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
@@ -54,7 +54,7 @@ Prazo de entrega: **27/11/2026**.
 | ~~B2~~ | ~~API de categoria e fornecedor~~ | B1, A3 | 8 | ✅ Concluída | 06/10/2026 | `3f93ef1` |
 | ~~B3~~ | ~~API de produto, com validações~~ | B1, A3 | 10 | ✅ Concluída | 06/10/2026 | `0172832` |
 | ~~B4~~ | ~~Regra: perecível exige prazo de durabilidade~~ | B3 | 3 | ✅ Concluída | 06/10/2026 | `a7d6512` |
-| B5 | Tela de produtos | A3 | 8 | ⬜ A fazer | — | — |
+| ~~B5~~ | ~~Tela de produtos~~ | A3 | 8 | ✅ Concluída | 07/10/2026 | `7f32893` |
 | B6 | Tela de fornecedores | A3 | 6 | ⬜ A fazer | — | — |
 | B7 | Ligar as telas à API e tratar os erros na tela | B2, B3, B5, B6 | 5 | ⬜ A fazer | — | — |
 
@@ -146,7 +146,7 @@ cronograma, a regra de negócio (quando houver) e o commit.
 
 ### 07/10/2026
 
-**Tarefas concluídas: C2, C3, D1, D2, F1 e F2** (33 h estimadas).
+**Tarefas concluídas: C2, C3, D1, D2, F1, F2 e B5** (41 h estimadas).
 
 - **C2 — API de entrada de mercadoria (RF03, operação 02).** O sobrinho já registra, pela API,
   cada carga que chega: produto, quantidade, custo, fornecedor e validade. Como manda a operação 02
@@ -224,7 +224,25 @@ cronograma, a regra de negócio (quando houver) e o commit.
 decisão do cliente está pronta. Faltam as telas (B5–B7, C5–C6, D3–D4, F3), a publicação (A5,
 aguarda D05) e o bloco J.
 
-**Próxima tarefa:** a definir — telas (B5 em diante) ou aviso de validade (H1/H2).
+- **B5 — Tela de produtos (primeira tela do painel).** Feita com a skill de design **UI UX Pro
+  Max**, que gerou o sistema visual do painel inteiro (estilo limpo e funcional, cinza-ardósia com
+  verde de estoque). Cada sugestão da ferramenta foi conferida contra a especificação e adaptada
+  quando necessário: fonte do próprio computador, para não baixar nada da internet (computador
+  antigo, RNF06), e um verde mais escuro, porque o sugerido não tinha contraste suficiente com texto
+  branco — conferido por cálculo, pela norma de acessibilidade WCAG. A tela lista os produtos com
+  busca (acha "feijão" digitando "feijao") e filtro por categoria, e cadastra e edita com tudo o que
+  o RF01 pede, em português da loja ("Não pode faltar no fim de semana"). Quando algo é recusado,
+  **nada do que foi digitado se perde** e só o campo com problema é apontado (fluxograma 01). Como
+  manda o roteiro, nesta tarefa a tela usa dados de exemplo; a ligação com a API é a B7. A tela foi
+  testada num navegador de verdade, no tamanho do computador da loja e no de um celular: 38
+  verificações automáticas (teclado, foco, tamanho dos botões, contraste, nada cortado). As capturas
+  de tela pegaram um problema que o teste não pegou — no computador da loja o botão "Editar" ficava
+  fora da tela — e ele foi corrigido.
+  **Lacunas novas:** L22 — a tela de Login não tem tarefa no cronograma; será feita na B7. L23 — a
+  Apostila IV promete o aviso de vencimento no celular já na etapa 1, mas as horas dele estão no
+  bloco H (etapa 2); o grupo precisa corrigir uma das duas coisas.
+
+**Próxima tarefa:** B6 — tela de fornecedores.
 
 ### 06/10/2026
 
