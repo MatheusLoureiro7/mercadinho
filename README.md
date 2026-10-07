@@ -149,6 +149,18 @@ class ProdutoViewSet(ModelViewSet):
 
 Endpoint sem `tela` é recusado para todos.
 
+### Endereços da API
+
+| Endereço | Métodos | Quem (RN14) | Tarefa |
+|---|---|---|---|
+| `/api/sessoes/` | POST | qualquer um (é o login) | A4 |
+| `/api/sessoes/atual/` | GET | os três perfis | A4 |
+| `/api/categorias/` · `/api/categorias/{id}/` | GET | os três perfis (Consulta de estoque) | B2 |
+| | POST, PUT, PATCH | OPERACAO (tela de Produtos) | B2 |
+| `/api/fornecedores/` · `/api/fornecedores/{id}/` | GET, POST, PUT, PATCH | OPERACAO | B2 |
+
+Nada de origem é apagado (Apostila IV, seção 5): `DELETE` responde 405.
+
 **Formato de erro** — igual em toda a API, para o painel só precisar mostrar `mensagem`:
 
 ```json

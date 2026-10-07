@@ -228,6 +228,23 @@ sobrinho na carga inicial (J2).
 
 ---
 
+### L18 — A categoria não tem tela própria: quem lê e quem cadastra?
+
+As 10 telas da Apostila II não incluem uma tela de categorias, mas a tarefa **B2** cria a "API de
+categoria". A categoria aparece em duas telas com perfis diferentes na RN14: **Produtos** (onde se
+escolhe a categoria — só OPERACAO) e **Consulta de estoque** (o RF07 pede o saldo "por
+categoria" — os três perfis).
+
+**Impacto:** tarefa B2 (8 h).
+
+> **✅ DECIDIDA em 06/10/2026 (tarefa B2):** **ler** as categorias pertence à Consulta de estoque
+> (DONO, GESTAO e OPERACAO); **criar e editar** pertence à tela de Produtos (só OPERACAO). Nenhuma
+> tela nova: o cadastro de categoria é feito de dentro da tela de Produtos (B5).
+> Como categoria e fornecedor são tabelas de origem ("nunca podem ser apagadas", Apostila IV,
+> seção 5), a API **não tem exclusão** para nenhum dos dois.
+
+---
+
 ## 2. Divergências internas da documentação entregue
 
 São erros pequenos nas apostilas, de contagem. Não impedem programar, mas é melhor corrigir numa

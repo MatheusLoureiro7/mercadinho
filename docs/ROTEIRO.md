@@ -30,7 +30,7 @@ autenticação — não dentro de cada regra de negócio.
 | | ID | Tarefa | Tipo | Depende de | H |
 |---|---|---|---|---|---|
 | [x] | **B1** | Criar as tabelas de usuário, categoria, produto e fornecedor | BD | A2 | 6 |
-| [ ] | **B2** | API de categoria e fornecedor | API | B1, A3 | 8 |
+| [x] | **B2** | API de categoria e fornecedor | API | B1, A3 | 8 |
 | [ ] | **B3** | API de produto, com validações | API | B1, A3 | 10 |
 | [ ] | **B4** | Regra: perecível exige prazo de durabilidade | Regra | B3 | 3 |
 | [ ] | **B5** | Tela de produtos | Tela | A3 | 8 |
