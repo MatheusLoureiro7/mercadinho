@@ -100,7 +100,7 @@ quando o formato for conhecido. **Não chute o formato e saia implementando.**
 | | ID | Tarefa | Tipo | Depende de | H |
 |---|---|---|---|---|---|
 | [x] | **F1** | Visão de estoque por produto e por lote | BD | C4 | 6 |
-| [ ] | **F2** | API de consulta com filtros | API | F1 | 6 |
+| [x] | **F2** | API de consulta com filtros | API | F1 | 6 |
 | [ ] | **F3** | Tela de estoque, com destaque para mínimo e vencidos | Tela | A3 | 10 |
 
 **F3 implementa a parte visual da RN16**: lote vencido aparece destacado.

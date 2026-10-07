@@ -157,3 +157,37 @@ class PerdaSerializer(serializers.ModelSerializer):
             "usuario_nome",
         ]
         read_only_fields = fields
+
+
+class PosicaoPorProdutoSerializer(serializers.Serializer):
+    """Consulta de estoque por produto (F2). Os campos vêm de estoque.consulta.posicao_por_produto."""
+
+    produto_id = serializers.IntegerField(source="pk")
+    nome = serializers.CharField()
+    categoria_id = serializers.IntegerField()
+    categoria_nome = serializers.CharField(source="categoria.nome")
+    unidade_medida = serializers.CharField()
+    perecivel = serializers.BooleanField()
+    critico_fim_semana = serializers.BooleanField()
+    estoque_minimo = serializers.DecimalField(max_digits=12, decimal_places=3, allow_null=True)
+    saldo = serializers.DecimalField(max_digits=14, decimal_places=3)
+    abaixo_do_minimo = serializers.BooleanField()
+    lotes_vencidos = serializers.IntegerField()
+    lotes_vencendo = serializers.IntegerField()
+    proxima_validade = serializers.DateField(allow_null=True)
+
+
+class PosicaoPorLoteSerializer(serializers.Serializer):
+    """Consulta de estoque por lote (F2). Os campos vêm de estoque.consulta.posicao_por_lote."""
+
+    id = serializers.IntegerField()
+    produto_id = serializers.IntegerField()
+    produto_nome = serializers.CharField(source="produto.nome")
+    categoria_nome = serializers.CharField(source="produto.categoria.nome")
+    unidade_medida = serializers.CharField(source="produto.unidade_medida")
+    fornecedor_nome = serializers.CharField(source="fornecedor.nome", default=None)
+    quantidade_atual = serializers.DecimalField(max_digits=12, decimal_places=3)
+    data_entrada = serializers.DateField()
+    data_validade = serializers.DateField(allow_null=True)
+    dias_para_vencer = serializers.IntegerField(allow_null=True)
+    situacao = serializers.CharField()

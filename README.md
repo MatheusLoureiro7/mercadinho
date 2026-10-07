@@ -161,6 +161,8 @@ Endpoint sem `tela` é recusado para todos.
 | `/api/produtos/` · `/api/produtos/{id}/` | GET, POST, PUT, PATCH | OPERACAO | B3 |
 | `/api/lotes/` · `/api/lotes/{id}/` | GET, POST (sem editar) | OPERACAO (Entrada de mercadoria) | C2 |
 | `/api/perdas/` · `/api/perdas/{id}/` | GET, POST (sem editar) | OPERACAO (Avarias e quebras) | D1 |
+| `/api/estoque/` | GET | os três perfis (Consulta de estoque) | F2 |
+| `/api/estoque/lotes/` | GET | os três perfis (Consulta de estoque) | F2 |
 
 `POST /api/lotes/` registra a carga que chegou: grava o lote e a movimentação de ENTRADA numa
 transação só (operação 02) e devolve o `saldo_produto` novo. A data de entrada é sempre hoje, no
@@ -169,6 +171,11 @@ horário da loja. Lista do dia: `GET /api/lotes/?data_entrada=AAAA-MM-DD` (tamb�
 `POST /api/perdas/` registra o que venceu, quebrou ou estragou: `{"produto", "quantidade",
 "motivo", "lote"?}`. Motivo obrigatório. Sem lote, sai pela ordem de validade (L20). Caderno de
 avarias: `GET /api/perdas/?data=AAAA-MM-DD` (também `?produto=<id>`).
+
+Consulta de estoque (só leitura): `GET /api/estoque/` por produto — `?categoria=<id>`,
+`?busca=`, `?abaixo_do_minimo=1`, `?validade_proxima=1`; `GET /api/estoque/lotes/` por lote —
+`?categoria=`, `?produto=`, `?busca=`, `?situacao=VENCIDO,VENCENDO` (também `OK`, `SEM_VALIDADE`).
+"Vencendo" usa o parâmetro `dias_aviso_validade` (3 dias).
 
 Filtros de `/api/produtos/`: `?busca=<parte do nome>` e `?categoria=<id>`. Unidades aceitas:
 `KG`, `UN`, `L`, `PCT` (L17).

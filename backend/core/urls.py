@@ -12,7 +12,7 @@ from rest_framework.routers import APIRootView, DefaultRouter
 
 from cadastro.views import CategoriaViewSet, FornecedorViewSet, ProdutoViewSet
 from comum.views import SessaoAtualView, SessaoView
-from estoque.views import LoteViewSet, PerdaViewSet
+from estoque.views import EstoquePorLoteView, EstoquePorProdutoView, LoteViewSet, PerdaViewSet
 
 
 class RaizDaApi(APIRootView):
@@ -33,6 +33,8 @@ roteador.register("perdas", PerdaViewSet, basename="perda")  # D1
 urlpatterns = [
     path("api/sessoes/", SessaoView.as_view(), name="sessao"),
     path("api/sessoes/atual/", SessaoAtualView.as_view(), name="sessao-atual"),
+    path("api/estoque/", EstoquePorProdutoView.as_view(), name="estoque-produtos"),  # F2
+    path("api/estoque/lotes/", EstoquePorLoteView.as_view(), name="estoque-lotes"),  # F2
     path("api/", include(roteador.urls)),
 ]
 
