@@ -134,7 +134,10 @@ disse na reunião: *"eu não sei o que é histórico de volante, o que você est
 vendida em quilos fracionados.
 
 **Datas e horas:** `TIMESTAMP WITH TIME ZONE`, fuso `America/Sao_Paulo`. As janelas de silêncio da
-RN12 são em horário local da loja.
+RN12 são em horário local da loja. **"Hoje" é sempre `timezone.localdate()`**, nunca `date.today()`
+nem o `CURRENT_DATE` do banco: o Django conversa com o PostgreSQL em UTC, e depois das 21h de São
+Paulo o `CURRENT_DATE` já é amanhã. Vale para `lote.data_entrada` (C2), validade no passado (RN04),
+lote vencido (RN16) e aviso de validade (RN05).
 
 **Commits:** uma tarefa do cronograma por commit, começando pelo código da tarefa.
 Exemplo: `C3: regra de validade obrigatória e cálculo automático (RN04)`.

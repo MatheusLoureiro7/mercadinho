@@ -13,57 +13,9 @@ from django.contrib.auth import authenticate
 from django.db import IntegrityError, connection, transaction
 
 from cadastro.models import Categoria, Fornecedor, Produto, Usuario
-from tests.conftest import colunas_do_schema
+from tests.conftest import TIPOS_POSTGRES, colunas_do_schema, colunas_no_banco, restricoes
 
 TABELAS_B1 = ["categoria", "fornecedor", "produto", "usuario"]
-
-# Tipo no schema.sql → como o PostgreSQL descreve em information_schema.columns
-TIPOS_POSTGRES = {
-    "SERIAL": "integer",
-    "INTEGER": "integer",
-    "SMALLINT": "smallint",
-    "VARCHAR": "character varying",
-    "NUMERIC": "numeric",
-    "BOOLEAN": "boolean",
-    "DATE": "date",
-    "TIMESTAMPTZ": "timestamp with time zone",
-    "TEXT": "text",
-    "JSONB": "jsonb",
-}
-
-
-def _colunas_no_banco(tabela: str) -> dict[str, dict]:
-    with connection.cursor() as cursor:
-        cursor.execute(
-            """
-            SELECT column_name, data_type, character_maximum_length, numeric_precision,
-                   numeric_scale, is_nullable, column_default, is_identity
-              FROM information_schema.columns
-             WHERE table_schema = 'public' AND table_name = %s
-            """,
-            [tabela],
-        )
-        return {
-            nome: {
-                "tipo": tipo,
-                "tamanho": tamanho or precisao,
-                "escala": escala,
-                "nulo": nulo == "YES",
-                "padrao": padrao,
-                "identidade": identidade == "YES",
-            }
-            for nome, tipo, tamanho, precisao, escala, nulo, padrao, identidade in cursor.fetchall()
-        }
-
-
-def _restricoes(tabela: str) -> set[str]:
-    with connection.cursor() as cursor:
-        cursor.execute(
-            "SELECT conname FROM pg_constraint WHERE conrelid = %s::regclass",
-            [tabela],
-        )
-        return {linha[0] for linha in cursor.fetchall()}
-
 
 # --- O banco confere com a Apostila IV ------------------------------------------------------------
 
@@ -72,7 +24,7 @@ def _restricoes(tabela: str) -> set[str]:
 @pytest.mark.parametrize("tabela", TABELAS_B1)
 def test_b1_tabela_tem_exatamente_as_colunas_do_schema(tabela):
     esperado = colunas_do_schema(tabela)
-    no_banco = _colunas_no_banco(tabela)
+    no_banco = colunas_no_banco(tabela)
     assert set(no_banco) == set(esperado), "colunas diferentes da Apostila IV"
 
 
@@ -80,7 +32,7 @@ def test_b1_tabela_tem_exatamente_as_colunas_do_schema(tabela):
 @pytest.mark.parametrize("tabela", TABELAS_B1)
 def test_b1_colunas_tem_tipo_tamanho_e_obrigatoriedade_do_schema(tabela):
     esperado = colunas_do_schema(tabela)
-    no_banco = _colunas_no_banco(tabela)
+    no_banco = colunas_no_banco(tabela)
     for nome, coluna in esperado.items():
         real = no_banco[nome]
         assert real["tipo"] == TIPOS_POSTGRES[coluna["tipo"]], f"{tabela}.{nome}: tipo"
@@ -95,7 +47,7 @@ def test_b1_colunas_tem_tipo_tamanho_e_obrigatoriedade_do_schema(tabela):
 @pytest.mark.parametrize("tabela", TABELAS_B1)
 def test_b1_valores_padrao_sao_os_do_schema(tabela):
     esperado = colunas_do_schema(tabela)
-    no_banco = _colunas_no_banco(tabela)
+    no_banco = colunas_no_banco(tabela)
     for nome, coluna in esperado.items():
         padrao_real = no_banco[nome]["padrao"]
         if coluna["tipo"] == "SERIAL":
@@ -109,15 +61,15 @@ def test_b1_valores_padrao_sao_os_do_schema(tabela):
 
 @pytest.mark.django_db
 def test_b1_restricoes_nomeadas_do_schema_existem():
-    assert "ck_fornecedor_prazo" in _restricoes("fornecedor")
-    assert {"ck_produto_rn03", "uq_produto_nome_categoria"} <= _restricoes("produto")
-    assert "ck_usuario_papel" in _restricoes("usuario")
+    assert "ck_fornecedor_prazo" in restricoes("fornecedor")
+    assert {"ck_produto_rn03", "uq_produto_nome_categoria"} <= restricoes("produto")
+    assert "ck_usuario_papel" in restricoes("usuario")
 
 
 @pytest.mark.django_db
 def test_rn01_produto_nao_tem_coluna_de_saldo():
     # RN01: o saldo é sempre derivado das movimentações. Nunca uma coluna.
-    assert not any("saldo" in coluna for coluna in _colunas_no_banco("produto"))
+    assert not any("saldo" in coluna for coluna in colunas_no_banco("produto"))
 
 
 # --- Fixtures ------------------------------------------------------------------------------------
