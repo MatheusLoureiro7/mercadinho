@@ -21,12 +21,12 @@ O diário, no fim do arquivo, conta o que foi feito em cada dia.
 
 | | Concluído | Total | % |
 |---|---|---|---|
-| **Tarefas** | 12 | 51 | 23,5 % |
-| **Horas estimadas** | 85 h | 378 h | 22,5 % |
+| **Tarefas** | 13 | 51 | 25,5 % |
+| **Horas estimadas** | 91 h | 378 h | 24,1 % |
 
 | Etapa | Blocos | Horas concluídas | Total | % |
 |---|---|---|---|---|
-| 1 · Aviso de validade | A, B, C, D, F, J | 85 h | 212 h | 40,1 % |
+| 1 · Aviso de validade | A, B, C, D, F, J | 91 h | 212 h | 42,9 % |
 | 2 · Aviso de ruptura | E, G, H | 0 h | 136 h | 0,0 % |
 | 3 · Gestão | I | 0 h | 30 h | 0,0 % |
 
@@ -69,11 +69,11 @@ Prazo de entrega: **27/11/2026**.
 | C5 | Tela de entrada de mercadoria | A3 | 10 | ⬜ A fazer | — | — |
 | C6 | Integração e teste do fluxo completo | C2, C5 | 6 | ⬜ A fazer | — | — |
 
-## Bloco D — Perdas e avarias · 18 h  ·  0 de 18 h concluídas
+## Bloco D — Perdas e avarias · 18 h  ·  6 de 18 h concluídas
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
-| D1 | API de registro de perda, com motivo obrigatório | C1 | 6 | ⬜ A fazer | — | — |
+| ~~D1~~ | ~~API de registro de perda, com motivo obrigatório~~ | C1 | 6 | ✅ Concluída | 07/10/2026 | `18285b3` |
 | D2 | Regra: perda não entra na base de consumo | D1 | 3 | ⬜ A fazer | — | — |
 | D3 | Tela de avarias e quebras | A3 | 7 | ⬜ A fazer | — | — |
 | D4 | Integração e teste | D1, D3 | 2 | ⬜ A fazer | — | — |
@@ -146,7 +146,7 @@ cronograma, a regra de negócio (quando houver) e o commit.
 
 ### 07/10/2026
 
-**Tarefas concluídas: C2 e C3** (12 h estimadas).
+**Tarefas concluídas: C2, C3 e D1** (18 h estimadas).
 
 - **C2 — API de entrada de mercadoria (RF03, operação 02).** O sobrinho já registra, pela API,
   cada carga que chega: produto, quantidade, custo, fornecedor e validade. Como manda a operação 02
@@ -174,7 +174,19 @@ cronograma, a regra de negócio (quando houver) e o commit.
 
 **Bloco C:** banco, API e regras completos (C1 a C4). Faltam a tela (C5) e a integração (C6).
 
-**Próxima tarefa:** D1 — API de registro de perda, com motivo obrigatório.
+- **D1 — API de registro de perda, com motivo obrigatório (RF04).** O caderno de avarias do
+  sobrinho já tem a sua API: o que venceu, quebrou ou estragou sai do estoque **sempre com o
+  motivo anotado** — sem motivo, é recusado. Cada perda baixa o saldo e a quantidade do lote,
+  numa transação só (RN01), e fica registrada como PERDA, separada das vendas (RN11). Não dá para
+  registrar perda maior do que o que existe. O lote vencido sai por aqui, como manda a RN16 — o
+  exemplo da Apostila I, iogurte vencido em 20/09 e retirado em 21/09 com motivo, está testado.
+  **Decisão L20:** se o sobrinho informa o lote que estragou, a perda sai dele; se não informa,
+  sai pela ordem de validade (RN02), começando pelos vencidos. **Decisão L13:** desempate da ordem
+  de validade — mesma validade, sai antes o que entrou antes; sem validade, sai por último. Essa
+  ordem já fica pronta para a baixa por venda (E3), que deixa os vencidos de fora. 31 testes
+  automáticos — total do projeto: 312, todos passando.
+
+**Próxima tarefa:** D2 — regra: perda não entra na base de consumo (RN11).
 
 ### 06/10/2026
 
