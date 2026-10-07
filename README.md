@@ -115,6 +115,43 @@ O `.env` nunca vai para o git (RNF12).
 
 ---
 
+## A API
+
+Tudo fica sob `/api/`, sempre em JSON. Rodar localmente:
+
+```bash
+python backend/manage.py runserver      # http://127.0.0.1:8000/api/
+```
+
+**Formato de erro** — igual em toda a API, para o painel só precisar mostrar `mensagem`:
+
+```json
+{"erro": {"codigo": "validacao",
+          "mensagem": "Confira os campos destacados.",
+          "campos": {"durabilidade_dias": ["Este campo é obrigatório."]}}}
+```
+
+| `codigo` | HTTP | Quando |
+|---|---|---|
+| `validacao` | 400 | Campo faltando ou inválido — `campos` diz quais (fluxograma 01: a tela mantém o resto) |
+| `regra_de_negocio` | 400 | Uma regra recusou — vem também `regra` (ex.: `"RN03"`) |
+| `requisicao_invalida` | 400 | O corpo não é um JSON válido |
+| `nao_autenticado` | 401 | Precisa entrar no sistema (tarefa A4) |
+| `sem_permissao` | 403 | O papel não permite (RN14, tarefa A4) |
+| `nao_encontrado` | 404 | Endereço ou registro inexistente |
+| `metodo_nao_permitido` | 405 | Operação que não existe naquele endereço |
+| `erro_interno` | 500 | Falha inesperada — vem `id`, o mesmo código gravado no log |
+
+Nos serviços, regra de negócio recusa a operação com
+`raise ErroDeRegraDeNegocio("RN03", "mensagem para a tela", campo="durabilidade_dias")`
+(`backend/comum/erros.py`). A view não testa regra.
+
+**Log:** uma linha por requisição (método, endereço, situação, tempo, usuário) no console e em
+`logs/mercadinho.log`. Erro inesperado grava o detalhe técnico com o mesmo `id` mostrado na tela.
+O corpo da requisição nunca vai para o log (RNF12).
+
+---
+
 ## Padrão de código
 
 - **Idioma:** português — tabelas, colunas, models e endpoints com os nomes exatos do `schema.sql`.

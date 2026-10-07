@@ -21,3 +21,6 @@ htmlcov/
 
 # Arquivos do caixa usados em teste local (decisão D01 em aberto)
 arquivos_caixa/
+
+# Log da aplicação
+logs/
