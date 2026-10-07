@@ -21,12 +21,12 @@ O diário, no fim do arquivo, conta o que foi feito em cada dia.
 
 | | Concluído | Total | % |
 |---|---|---|---|
-| **Tarefas** | 9 | 51 | 17,6 % |
-| **Horas estimadas** | 67 h | 378 h | 17,7 % |
+| **Tarefas** | 10 | 51 | 19,6 % |
+| **Horas estimadas** | 73 h | 378 h | 19,3 % |
 
 | Etapa | Blocos | Horas concluídas | Total | % |
 |---|---|---|---|---|
-| 1 · Aviso de validade | A, B, C, D, F, J | 67 h | 212 h | 31,6 % |
+| 1 · Aviso de validade | A, B, C, D, F, J | 73 h | 212 h | 34,4 % |
 | 2 · Aviso de ruptura | E, G, H | 0 h | 136 h | 0,0 % |
 | 3 · Gestão | I | 0 h | 30 h | 0,0 % |
 
@@ -58,14 +58,14 @@ Prazo de entrega: **27/11/2026**.
 | B6 | Tela de fornecedores | A3 | 6 | ⬜ A fazer | — | — |
 | B7 | Ligar as telas à API e tratar os erros na tela | B2, B3, B5, B6 | 5 | ⬜ A fazer | — | — |
 
-## Bloco C — Entrada de mercadoria · 40 h  ·  6 de 40 h concluídas
+## Bloco C — Entrada de mercadoria · 40 h  ·  12 de 40 h concluídas
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
 | ~~C1~~ | ~~Criar as tabelas de lote e movimentação~~ | A2 | 6 | ✅ Concluída | 06/10/2026 | `251d78d` |
 | C2 | API de entrada de lote | C1, B3 | 8 | ⬜ A fazer | — | — |
 | C3 | Regra: validade obrigatória e cálculo automático | C2 | 4 | ⬜ A fazer | — | — |
-| C4 | Saldo derivado das movimentações | C1 | 6 | ⬜ A fazer | — | — |
+| ~~C4~~ | ~~Saldo derivado das movimentações~~ | C1 | 6 | ✅ Concluída | 06/10/2026 | `48451c5` |
 | C5 | Tela de entrada de mercadoria | A3 | 10 | ⬜ A fazer | — | — |
 | C6 | Integração e teste do fluxo completo | C2, C5 | 6 | ⬜ A fazer | — | — |
 
@@ -146,7 +146,7 @@ cronograma, a regra de negócio (quando houver) e o commit.
 
 ### 06/10/2026
 
-**Tarefas concluídas: A1, A2, A3, B1, A4, B2, B3, B4 e C1** (67 h estimadas).
+**Tarefas concluídas: A1, A2, A3, B1, A4, B2, B3, B4, C1 e C4** (73 h estimadas).
 
 - **A1 — Repositório, ambiente e padrão de código.** Repositório git criado, com a especificação
   (Apostilas I a IV) no primeiro commit. Projeto Django com os sete módulos do sistema
@@ -248,5 +248,15 @@ rodar.
   São Paulo, nunca o do banco (que trabalha em UTC). 28 testes automáticos — total do projeto: 224,
   todos passando.
 
-**Próxima tarefa:** C4 — saldo derivado das movimentações (RN01), "a tarefa mais importante do
-projeto inteiro" segundo o roteiro: tudo que vem depois consulta esse saldo. Depende só da C1.
+- **C4 — Saldo derivado das movimentações (RN01).** "A tarefa mais importante do projeto inteiro",
+  segundo o roteiro. O saldo de cada produto nunca é um número guardado: é sempre a soma das
+  movimentações — entradas e ajustes somam, vendas e perdas subtraem —, calculada pela visão
+  `vw_estoque_atual` **copiada literalmente** do modelo de dados da Apostila IV. Um teste prova que
+  a visão do sistema é idêntica à da apostila (e que uma alteração, como trocar o sinal do ajuste,
+  seria pega). Testado com o exemplo da própria Apostila I: entram 40 kg, vendem-se 12 kg, perdem-se
+  3 kg → saldo de 25 kg, com as três linhas no histórico. Ninguém consegue gravar um saldo — nem o
+  sistema, nem direto no banco. Quilo fracionado sem erro de arredondamento. 16 testes automáticos —
+  total do projeto: 240, todos passando.
+
+**Próxima tarefa:** C2 — API de entrada de lote: grava o lote e a movimentação de ENTRADA juntos,
+numa transação só (operação 02). Depende de C1 e B3, as duas prontas.
