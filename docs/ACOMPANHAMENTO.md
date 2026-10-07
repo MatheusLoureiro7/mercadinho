@@ -21,12 +21,12 @@ O diário, no fim do arquivo, conta o que foi feito em cada dia.
 
 | | Concluído | Total | % |
 |---|---|---|---|
-| **Tarefas** | 17 | 51 | 33,3 % |
-| **Horas estimadas** | 114 h | 378 h | 30,2 % |
+| **Tarefas** | 18 | 51 | 35,3 % |
+| **Horas estimadas** | 120 h | 378 h | 31,7 % |
 
 | Etapa | Blocos | Horas concluídas | Total | % |
 |---|---|---|---|---|
-| 1 · Aviso de validade | A, B, C, D, F, J | 114 h | 212 h | 53,8 % |
+| 1 · Aviso de validade | A, B, C, D, F, J | 120 h | 212 h | 56,6 % |
 | 2 · Aviso de ruptura | E, G, H | 0 h | 136 h | 0,0 % |
 | 3 · Gestão | I | 0 h | 30 h | 0,0 % |
 
@@ -46,7 +46,7 @@ Prazo de entrega: **27/11/2026**.
 | ~~A4~~ | ~~Autenticação e os três perfis de acesso~~ | A3, B1 | 12 | ✅ Concluída | 06/10/2026 | `ec49325` |
 | A5 | Esteira de publicação em ambiente de teste | A1 | 6 | ⛔ Aguarda D05 | — | — |
 
-## Bloco B — Cadastros · 46 h  ·  35 de 46 h concluídas
+## Bloco B — Cadastros · 46 h  ·  41 de 46 h concluídas
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
@@ -55,7 +55,7 @@ Prazo de entrega: **27/11/2026**.
 | ~~B3~~ | ~~API de produto, com validações~~ | B1, A3 | 10 | ✅ Concluída | 06/10/2026 | `0172832` |
 | ~~B4~~ | ~~Regra: perecível exige prazo de durabilidade~~ | B3 | 3 | ✅ Concluída | 06/10/2026 | `a7d6512` |
 | ~~B5~~ | ~~Tela de produtos~~ | A3 | 8 | ✅ Concluída | 07/10/2026 | `7f32893` |
-| B6 | Tela de fornecedores | A3 | 6 | ⬜ A fazer | — | — |
+| ~~B6~~ | ~~Tela de fornecedores~~ | A3 | 6 | ✅ Concluída | 07/10/2026 | `e6c031e` |
 | B7 | Ligar as telas à API e tratar os erros na tela | B2, B3, B5, B6 | 5 | ⬜ A fazer | — | — |
 
 ## Bloco C — Entrada de mercadoria · 40 h  ·  24 de 40 h concluídas
@@ -146,7 +146,7 @@ cronograma, a regra de negócio (quando houver) e o commit.
 
 ### 07/10/2026
 
-**Tarefas concluídas: C2, C3, D1, D2, F1, F2 e B5** (41 h estimadas).
+**Tarefas concluídas: C2, C3, D1, D2, F1, F2, B5 e B6** (47 h estimadas).
 
 - **C2 — API de entrada de mercadoria (RF03, operação 02).** O sobrinho já registra, pela API,
   cada carga que chega: produto, quantidade, custo, fornecedor e validade. Como manda a operação 02
@@ -242,7 +242,27 @@ aguarda D05) e o bloco J.
   Apostila IV promete o aviso de vencimento no celular já na etapa 1, mas as horas dele estão no
   bloco H (etapa 2); o grupo precisa corrigir uma das duas coisas.
 
-**Próxima tarefa:** B6 — tela de fornecedores.
+- **B6 — Tela de fornecedores (RF02).** Segunda tela do painel, no mesmo visual da tela de produtos
+  e sem nenhum estilo novo. O sobrinho cadastra e edita quem entrega a mercadoria: nome, contato,
+  pedido mínimo e — o que mais importa — **em quantos dias o fornecedor entrega depois do pedido**.
+  A tela explica por que esse número importa, em palavras da loja: é com ele que o sistema avisa a
+  tempo de o fornecedor entregar antes de o produto acabar (RN08). Na lista o prazo aparece como
+  "1 dia", "3 dias" ou "No mesmo dia". Fornecedor não tem botão de excluir, porque é cadastro de
+  origem e nunca é apagado (L18). Quando algo é recusado, nada do que foi digitado se perde. As
+  mensagens de recusa da tela são as mesmas da API, conferidas rodando a própria API. Ainda usa
+  dados de exemplo, e a ligação com a API é a B7. Testada num navegador de verdade, no tamanho do
+  computador da loja e no de um celular: 47 verificações automáticas, mais a auditoria de
+  acessibilidade (norma WCAG 2.2, nível AA) sem nenhuma falha. A tela de produtos continua passando
+  nas 38 dela.
+  **Lacuna nova:** L24 — a apostila não diz se o pedido mínimo é em reais ou em quantidade. Adotamos
+  reais, pela convenção do próprio modelo de dados, e o grupo precisa confirmar.
+  **Anotado para a B7:** quando o nome fica em branco, a mensagem padrão da API é "Este campo pode
+  não estar em branco.", uma tradução ruim do Django REST Framework. Ela deve ser trocada por uma
+  frase clara ao ligar as telas à API.
+
+**Bloco B:** banco, API e as duas telas prontos (B1 a B6). Falta ligar as telas à API (B7).
+
+**Próxima tarefa:** B7 — ligar as telas à API e tratar os erros na tela (inclui a tela de Login, L22).
 
 ### 06/10/2026
 
