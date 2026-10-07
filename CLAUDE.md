@@ -179,6 +179,56 @@ Nomeie o teste pelo código da regra: `test_rn03_perecivel_sem_durabilidade_e_re
 
 ---
 
+## Skills do projeto — quando usar
+
+As skills ficam em `.claude/skills/` (origem e versão em `skills-lock.json`). Carregue a skill
+indicada **antes** de começar a tarefa correspondente, sem esperar pedido.
+
+**A especificação tem prioridade sobre qualquer skill.** Skill é fonte de boas práticas, não de
+decisão: os exemplos delas foram escritos para outros projetos. Quando um exemplo contrariar este
+arquivo, os `docs/` ou o `schema.sql`, adapte o exemplo — nunca o projeto. Nenhuma skill autoriza
+trocar banco de testes, ferramenta, dependência, arquitetura, modelo de usuário, `Decimal` ou
+`schema.sql`. Dependência nova só com decisão do grupo.
+
+### Por tipo de tarefa
+
+| Tarefa | Skills | Para quê |
+|---|---|---|
+| **Toda tarefa com código** | `superpowers:test-driven-development` + `django-tdd` + `python-testing-patterns` | Teste antes do código; testes de API do DRF, mocks de serviço externo, padrão AAA |
+| **Tabelas e migrações** — B1, C1, C4, E2, F1, G1, G3, H1, I1 | `django-expert` (`references/models-and-orm.md`) · `postgresql-table-design` · `postgres-patterns` · `supabase-postgres-best-practices` | Model fiel ao `schema.sql`; conferir constraints, índices e tipos. As três de PostgreSQL servem para **revisar**, não para redesenhar |
+| **API** — B2, B3, C2, D1, E3, E4, F2, H7, I1, I3 | `django-expert` (`references/drf-guidelines.md`) · `django-patterns` (Service Layer, ViewSet, N+1) | Serializer, viewset, regra no módulo de serviço com `transaction.atomic` |
+| **Autenticação e perfis** — A4, H6 | `django-security` (Authorization, Password Hashing, API Security) · `django-expert` (`references/security-checklist.md`) | Verificação do papel (RN14) antes de qualquer operação, hash de senha, segurança da API |
+| **Consultas pesadas** — F2, G1, G2, H2, H3 | `django-expert` (`references/performance-optimization.md`) · `postgres-patterns` | `select_related`, agregação no banco, índice certo, `EXPLAIN` |
+| **Telegram** — H5, H6, H7 | `telegram-bot-builder` · `telegram-bot` | Conceitos de bot, webhook, botões de resposta ("Sim, pedir"), notificação agrupada |
+| **Telas** — B5, B6, B7, C5, D3, E5, F3, I2 e login | **`ui-ux-pro-max` sempre** · `accessibility` | Desenho de toda tela passa pela UI UX Pro Max; depois, auditoria WCAG 2.2 |
+| **Revisão ao fim de cada tarefa** | `django-reviewer` (só relata) · `/code-review` | Revisar o diff antes do commit |
+| **Antes de publicar** — A5, J4, J6 | `django-verification` · `django-security` (Production Settings, checklist) · `django-expert` (`references/production-deployment.md`) | Verificação completa antes de subir um ambiente |
+
+### Adaptações obrigatórias
+
+| A skill sugere | Neste projeto |
+|---|---|
+| SQLite nos testes (`django-tdd`, `python-testing-patterns`, `django-verification`) | **PostgreSQL sempre**, inclusive nos testes |
+| `factory_boy` | Fixtures do pytest e funções auxiliares em `conftest.py`, com nomes em português |
+| Celery, Redis, cache | Comando `manage.py` disparado às 03h00 (Apostila IV). Sem cache: o sistema é pequeno |
+| `AbstractUser`, login por e-mail, JWT/simplejwt, sessão | Decisão da **L09**: `AbstractBaseUser` sobre a tabela `usuario`, `login` como identificador, `senha_hash`, sem `last_login`, token assinado sem tabela |
+| RBAC com `is_admin()`/grupos/`is_superuser` | O `papel` (`DONO`, `GESTAO`, `OPERACAO`) checado numa permission do DRF, conforme a tabela da RN14 |
+| Templates, `render()`, `TemplateView`, fragment caching | Painel estático em HTML/CSS/JS puro chamando a API com `fetch` |
+| `FloatField`, `DOUBLE PRECISION` | `DecimalField` / `NUMERIC`, como no `schema.sql` |
+| `BIGINT IDENTITY`, `TEXT`, `UUID` como chave | `SERIAL` e `VARCHAR(n)` **exatamente** como no `schema.sql` |
+| RLS, Supabase | Não se aplica. Acesso controlado pela API (RN14); banco sem acesso externo |
+| `config/settings/` dividido, `django-environ` | `backend/core/settings.py` lendo o `.env` com `python-dotenv` |
+| `black`, `isort`, `mypy` | `ruff check` e `ruff format` |
+| `django-filter`, `corsheaders`, `whitenoise`, `sentry`, `gunicorn`, `pip-audit`, `bandit` | Só com decisão do grupo. Até lá, filtros escritos à mão na view |
+| `signals` para efeitos colaterais | Chamada explícita no serviço (ex.: operação 02, passo 10, cancela o aviso de ruptura) |
+| Soft delete, `DELETE` de registros | `movimentacao` e `fechamento_caixa` nunca são apagadas (RN01, RN15) |
+| n8n, Telegraf, grammY, aiogram | Python, atrás da interface `CanalDeAviso.enviar(destinatario, mensagem)` (D04) |
+| `freezegun` para fixar o relógio | `unittest.mock.patch` em `django.utils.timezone.now`, sem dependência nova |
+| Tailwind, shadcn, React nas sugestões da UI UX Pro Max | HTML, CSS e JS puros e leves — computador antigo (RNF06, R04) |
+| Nomes em inglês nos exemplos (`Order`, `User`, `price`) | Nomes em português, exatamente os da Apostila IV |
+
+---
+
 ## O que ainda não foi decidido
 
 Oito decisões dependem do cliente e estão em `docs/DECISOES-PENDENTES.md`. Duas são **bloqueantes**:
