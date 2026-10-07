@@ -8,6 +8,7 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
 from cadastro.models import Categoria, Fornecedor, Produto
+from cadastro.regras import verificar_rn03
 
 # L17 (decidida na B3): lista fechada, a que o schema.sql cita. Validada só na API — o banco não tem
 # essa restrição. Para acrescentar uma unidade, basta incluí-la aqui.
@@ -75,8 +76,8 @@ def _dinheiro(rotulo: str) -> serializers.DecimalField:
 
 class ProdutoSerializer(serializers.ModelSerializer):
     """
-    RF01 e RF15. Operação 01: tipo e obrigatoriedade (passo 5) e nome único na categoria (passo 6).
-    A RN03 — perecível exige durabilidade — é a tarefa B4.
+    RF01 e RF15. Operação 01: tipo e obrigatoriedade e RN03 (passo 5), nome único na categoria
+    (passo 6). Tudo antes de gravar: se algo for recusado, nada é gravado.
     """
 
     categoria = serializers.PrimaryKeyRelatedField(
@@ -162,9 +163,17 @@ class ProdutoSerializer(serializers.ModelSerializer):
             repetidos = repetidos.exclude(pk=self.instance.pk)
         if repetidos.exists():
             raise serializers.ValidationError({"nome": "Já existe um produto com esse nome nesta categoria."})
-        return dados
 
-    def create(self, dados):
-        # L19: quem não diz se o produto é perecível herda o padrão da categoria.
-        dados.setdefault("perecivel", dados["categoria"].perecivel_padrao)
-        return super().create(dados)
+        if self.instance is None:
+            # L19: quem não diz se o produto é perecível herda o padrão da categoria.
+            dados.setdefault("perecivel", categoria.perecivel_padrao)
+
+        # RN03 (tarefa B4), sobre o produto como ele vai ficar depois de salvo — vale também para
+        # quem herdou o perecível da categoria e para a edição de um campo só.
+        verificar_rn03(
+            perecivel=dados.get("perecivel", getattr(self.instance, "perecivel", False)),
+            durabilidade_dias=dados.get(
+                "durabilidade_dias", getattr(self.instance, "durabilidade_dias", None)
+            ),
+        )
+        return dados
