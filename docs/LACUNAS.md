@@ -168,6 +168,10 @@ A **RN02** ordena por `data_validade ASC`. Não diz:
 sai por último.
 **Quem decide:** o grupo. É escolha técnica.
 
+> **✅ DECIDIDA em 07/10/2026 (tarefa D1):** como proposto. Ordem: `data_validade` (critério da
+> RN02), depois `data_entrada`, depois `id`; lote sem validade sai por último. Implementado uma
+> vez só em `backend/estoque/fifo.py`, usado pela perda (D1) e pela venda (E3).
+
 ---
 
 ### L14 — Nenhuma tela cuida de usuários e parâmetros
@@ -263,6 +267,21 @@ nenhum documento diz como ela é usada.
 > perecível, ele herda o `perecivel_padrao` da categoria. Quem diz explicitamente prevalece (o
 > carvão pode ficar no Açougue sem ser perecível). **Por quê:** é a única função que justifica a
 > coluna, e poupa o sobrinho de marcar um por um os produtos do açougue e dos frios (RNF05).
+
+---
+
+### L20 — De qual lote sai a perda?
+
+O fluxograma 03 (registro de perda) usa a **RN02** (ordem de validade) e a tabela `lote`, e a
+**RN16** diz que o lote vencido "só sai registrando perda". Não está escrito se a tela de avarias
+pede o lote ou se a perda sai sozinha pela ordem de validade.
+
+**Impacto:** tarefas D1 (API) e D3 (tela).
+
+> **✅ DECIDIDA em 07/10/2026 (tarefa D1):** os dois. **Com lote informado** (o sobrinho sabe qual
+> estragou), a perda sai dele. **Sem lote**, sai pela ordem de validade da RN02, **vencidos
+> incluídos** (RN16), uma linha de movimentação por lote afetado (RN01). Perda maior do que o que
+> existe é recusada, e nada é gravado.
 
 ---
 

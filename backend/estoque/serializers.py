@@ -5,7 +5,7 @@ Estoque — validação de entrada e formato de saída da API. Tarefa C2.
 from rest_framework import serializers
 
 from cadastro.models import Fornecedor, Produto
-from estoque.models import Lote
+from estoque.models import Lote, Movimentacao
 from estoque.saldo import saldo_do_produto
 
 
@@ -88,3 +88,72 @@ class LoteRegistradoSerializer(LoteSerializer):
 
     def get_saldo_produto(self, lote) -> str:
         return f"{saldo_do_produto(lote.produto_id):.3f}"
+
+
+MENSAGEM_SEM_MOTIVO = "Anote o motivo da perda: venceu, quebrou, estragou…"
+
+
+class RegistroDePerdaSerializer(serializers.Serializer):
+    """O que a tela de Avarias e quebras envia (RF04). Tarefa D1."""
+
+    produto = serializers.PrimaryKeyRelatedField(
+        queryset=Produto.objects.all(),
+        error_messages={
+            "required": "Escolha o produto que se perdeu.",
+            "null": "Escolha o produto que se perdeu.",
+            "does_not_exist": "Esse produto não existe.",
+            "incorrect_type": "Esse produto não existe.",
+        },
+    )
+    lote = serializers.PrimaryKeyRelatedField(
+        queryset=Lote.objects.all(),
+        required=False,
+        allow_null=True,
+        error_messages={"does_not_exist": "Esse lote não existe.", "incorrect_type": "Esse lote não existe."},
+    )
+    quantidade = serializers.DecimalField(
+        max_digits=12,
+        decimal_places=3,
+        error_messages={
+            "required": "Informe quanto se perdeu.",
+            "invalid": "Informe a quantidade só com números, por exemplo 1.5.",
+        },
+    )
+    motivo = serializers.CharField(
+        max_length=200,
+        error_messages={
+            "required": MENSAGEM_SEM_MOTIVO,
+            "blank": MENSAGEM_SEM_MOTIVO,
+            "null": MENSAGEM_SEM_MOTIVO,
+        },
+    )
+
+    def validate_quantidade(self, valor):
+        if valor <= 0:
+            raise serializers.ValidationError("A quantidade perdida tem de ser maior que zero.")
+        return valor
+
+
+class PerdaSerializer(serializers.ModelSerializer):
+    """Uma linha do caderno de avarias: uma movimentação PERDA."""
+
+    produto_nome = serializers.CharField(source="produto.nome", read_only=True)
+    unidade_medida = serializers.CharField(source="produto.unidade_medida", read_only=True)
+    lote_validade = serializers.DateField(source="lote.data_validade", read_only=True, default=None)
+    usuario_nome = serializers.CharField(source="usuario.nome", read_only=True, default=None)
+
+    class Meta:
+        model = Movimentacao
+        fields = [
+            "id",
+            "produto",
+            "produto_nome",
+            "unidade_medida",
+            "lote",
+            "lote_validade",
+            "quantidade",
+            "motivo",
+            "data_hora",
+            "usuario_nome",
+        ]
+        read_only_fields = fields

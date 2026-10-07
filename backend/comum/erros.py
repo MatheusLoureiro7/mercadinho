@@ -63,7 +63,9 @@ class ErroDeRegraDeNegocio(Exception):
         )
     """
 
-    def __init__(self, regra: str, mensagem: str, campo: str | None = None):
+    def __init__(self, regra: str | None, mensagem: str, campo: str | None = None):
+        # `regra` é o código da RN que recusou; None quando a recusa protege o dado sem ser uma RN
+        # numerada (ex.: registrar perda maior do que o que existe no lote).
         super().__init__(mensagem)
         self.regra = regra
         self.mensagem = mensagem
