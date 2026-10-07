@@ -206,6 +206,21 @@ vendida entra na conta.
 
 ---
 
+### L17 — `unidade_medida` aceita só KG, UN, L e PCT?
+
+O `schema.sql` cita `'KG', 'UN', 'L', 'PCT'` apenas num comentário da coluna
+`produto.unidade_medida`. Não há restrição no banco, e o **RF01** só diz "unidade de medida".
+Não está definido se a lista é fechada nem se existem outras unidades na loja (dúzia, bandeja,
+caixa, fardo).
+
+**Impacto:** tarefa B3 (validações do produto) e B5 (campo da tela: lista ou texto livre).
+**Situação na B1:** a coluna foi criada como no `schema.sql`, sem restrição — nada foi inventado.
+**Proposta para o grupo decidir:** lista fechada validada na API (não no banco), conferida com o
+sobrinho na carga inicial (J2).
+**Quem decide:** o grupo, confirmando com o sobrinho.
+
+---
+
 ## 2. Divergências internas da documentação entregue
 
 São erros pequenos nas apostilas, de contagem. Não impedem programar, mas é melhor corrigir numa

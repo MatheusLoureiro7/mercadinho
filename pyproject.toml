@@ -5,14 +5,14 @@
 [tool.ruff]
 line-length = 110
 target-version = "py311"
-extend-exclude = ["**/migrations/**"]
+extend-exclude = ["**/migrations/**", ".claude/**", "openspec/**"]  # skills e specs de terceiros
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "B", "UP", "DJ", "S"]
 ignore = []
 
 [tool.ruff.lint.per-file-ignores]
-"backend/tests/**" = ["S101"]   # assert é o normal em teste
+"backend/tests/**" = ["S101", "S105", "S106"]   # assert e senhas de mentira são o normal em teste
 
 [tool.ruff.lint.isort]
 known-first-party = ["core", "comum", "cadastro", "estoque", "vendas", "previsao", "alertas", "caixa"]

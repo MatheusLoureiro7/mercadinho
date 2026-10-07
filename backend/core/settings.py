@@ -82,6 +82,10 @@ REST_FRAMEWORK = {
 }
 
 
+# Usuário do sistema: a tabela `usuario` da Apostila IV (decisão da L09, tarefa B1).
+AUTH_USER_MODEL = "cadastro.Usuario"
+
+
 # Banco de dados — PostgreSQL, fixado pela Apostila IV. Nunca SQLite, nem "só para testar".
 DATABASES = {
     "default": {
