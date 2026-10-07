@@ -21,12 +21,12 @@ O diário, no fim do arquivo, conta o que foi feito em cada dia.
 
 | | Concluído | Total | % |
 |---|---|---|---|
-| **Tarefas** | 8 | 51 | 15,7 % |
-| **Horas estimadas** | 61 h | 378 h | 16,1 % |
+| **Tarefas** | 9 | 51 | 17,6 % |
+| **Horas estimadas** | 67 h | 378 h | 17,7 % |
 
 | Etapa | Blocos | Horas concluídas | Total | % |
 |---|---|---|---|---|
-| 1 · Aviso de validade | A, B, C, D, F, J | 61 h | 212 h | 28,8 % |
+| 1 · Aviso de validade | A, B, C, D, F, J | 67 h | 212 h | 31,6 % |
 | 2 · Aviso de ruptura | E, G, H | 0 h | 136 h | 0,0 % |
 | 3 · Gestão | I | 0 h | 30 h | 0,0 % |
 
@@ -58,11 +58,11 @@ Prazo de entrega: **27/11/2026**.
 | B6 | Tela de fornecedores | A3 | 6 | ⬜ A fazer | — | — |
 | B7 | Ligar as telas à API e tratar os erros na tela | B2, B3, B5, B6 | 5 | ⬜ A fazer | — | — |
 
-## Bloco C — Entrada de mercadoria · 40 h  ·  0 de 40 h concluídas
+## Bloco C — Entrada de mercadoria · 40 h  ·  6 de 40 h concluídas
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
-| C1 | Criar as tabelas de lote e movimentação | A2 | 6 | ⬜ A fazer | — | — |
+| ~~C1~~ | ~~Criar as tabelas de lote e movimentação~~ | A2 | 6 | ✅ Concluída | 06/10/2026 | `251d78d` |
 | C2 | API de entrada de lote | C1, B3 | 8 | ⬜ A fazer | — | — |
 | C3 | Regra: validade obrigatória e cálculo automático | C2 | 4 | ⬜ A fazer | — | — |
 | C4 | Saldo derivado das movimentações | C1 | 6 | ⬜ A fazer | — | — |
@@ -146,7 +146,7 @@ cronograma, a regra de negócio (quando houver) e o commit.
 
 ### 06/10/2026
 
-**Tarefas concluídas: A1, A2, A3, B1, A4, B2, B3 e B4** (61 h estimadas).
+**Tarefas concluídas: A1, A2, A3, B1, A4, B2, B3, B4 e C1** (67 h estimadas).
 
 - **A1 — Repositório, ambiente e padrão de código.** Repositório git criado, com a especificação
   (Apostilas I a IV) no primeiro commit. Projeto Django com os sete módulos do sistema
@@ -236,5 +236,17 @@ rodar.
 
 **Bloco B:** a parte de banco e API está completa (B1 a B4). Faltam as telas — B5, B6 e B7.
 
-**Próxima tarefa:** C1 — tabelas de lote e movimentação, o caminho crítico do projeto (a pessoa de
-dados é o gargalo, Apostila IV, seção 10). As telas B5 e B6 podem andar em paralelo.
+- **C1 — Tabelas de lote e movimentação.** As duas tabelas que sustentam o estoque existem no banco,
+  iguais à Apostila IV — conferidas automaticamente, coluna por coluna, contra o modelo de dados
+  entregue. O teste pegou uma diferença sutil e ela foi corrigida: o horário padrão da
+  movimentação agora é o `NOW()` da apostila (o horário da transação), para que um lote e a
+  movimentação que o explica fiquem com a mesma hora. O banco já recusa sozinho: lote com
+  quantidade negativa, movimentação de tipo desconhecido, quantidade zero ou negativa, e perda sem
+  motivo. O índice que acelera a saída pela validade mais próxima (RN02) está criado. Produto ou
+  lote que já tem movimentação não pode ser apagado — o histórico do estoque fica intacto (RN01).
+  Ficou registrado um cuidado para as próximas tarefas: o "hoje" do sistema é sempre o horário de
+  São Paulo, nunca o do banco (que trabalha em UTC). 28 testes automáticos — total do projeto: 224,
+  todos passando.
+
+**Próxima tarefa:** C4 — saldo derivado das movimentações (RN01), "a tarefa mais importante do
+projeto inteiro" segundo o roteiro: tudo que vem depois consulta esse saldo. Depende só da C1.
