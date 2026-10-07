@@ -21,12 +21,12 @@ O diário, no fim do arquivo, conta o que foi feito em cada dia.
 
 | | Concluído | Total | % |
 |---|---|---|---|
-| **Tarefas** | 4 | 51 | 7,8 % |
-| **Horas estimadas** | 28 h | 378 h | 7,4 % |
+| **Tarefas** | 5 | 51 | 9,8 % |
+| **Horas estimadas** | 40 h | 378 h | 10,6 % |
 
 | Etapa | Blocos | Horas concluídas | Total | % |
 |---|---|---|---|---|
-| 1 · Aviso de validade | A, B, C, D, F, J | 28 h | 212 h | 13,2 % |
+| 1 · Aviso de validade | A, B, C, D, F, J | 40 h | 212 h | 18,9 % |
 | 2 · Aviso de ruptura | E, G, H | 0 h | 136 h | 0,0 % |
 | 3 · Gestão | I | 0 h | 30 h | 0,0 % |
 
@@ -36,14 +36,14 @@ Prazo de entrega: **27/11/2026**.
 
 ---
 
-## Bloco A — Fundação · 40 h  ·  22 de 40 h concluídas
+## Bloco A — Fundação · 40 h  ·  34 de 40 h concluídas
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
 | ~~A1~~ | ~~Configurar repositório, ambiente e padrão de código~~ | — | 6 | ✅ Concluída | 06/10/2026 | `ca4ac9b` |
 | ~~A2~~ | ~~Subir o banco de dados e a ferramenta de migração~~ | A1 | 6 | ✅ Concluída | 06/10/2026 | `02c5ae1` |
 | ~~A3~~ | ~~Esqueleto da API: rotas, tratamento de erro e registro de log~~ | A1 | 10 | ✅ Concluída | 06/10/2026 | `ebea081` |
-| A4 | Autenticação e os três perfis de acesso | A3, B1 | 12 | ⬜ A fazer | — | — |
+| ~~A4~~ | ~~Autenticação e os três perfis de acesso~~ | A3, B1 | 12 | ✅ Concluída | 06/10/2026 | `ec49325` |
 | A5 | Esteira de publicação em ambiente de teste | A1 | 6 | ⛔ Aguarda D05 | — | — |
 
 ## Bloco B — Cadastros · 46 h  ·  6 de 46 h concluídas
@@ -146,7 +146,7 @@ cronograma, a regra de negócio (quando houver) e o commit.
 
 ### 06/10/2026
 
-**Tarefas concluídas: A1, A2, A3 e B1** (28 h estimadas).
+**Tarefas concluídas: A1, A2, A3, B1 e A4** (40 h estimadas).
 
 - **A1 — Repositório, ambiente e padrão de código.** Repositório git criado, com a especificação
   (Apostilas I a IV) no primeiro commit. Projeto Django com os sete módulos do sistema
@@ -189,5 +189,19 @@ cronograma, a regra de negócio (quando houver) e o commit.
 - **Lacuna nova: L17** — a apostila não diz se a unidade de medida é uma lista fechada
   (KG, UN, L, PCT). Fica para o grupo decidir antes da B3.
 
-**Próxima tarefa:** A4 — autenticação e os três perfis de acesso (RN14). Com A3 e B1 prontas, ela
-pode começar.
+- **A4 — Autenticação e os três perfis de acesso (RN14).** A tela de Login já tem a sua API: a
+  pessoa entra com login e senha e recebe uma chave de acesso que vale por um dia de loja (12 h) —
+  e deixa de valer na hora se a senha for trocada ou o usuário desativado. Junto, recebe o menu do
+  seu perfil, como pede a Apostila II. A tabela de acesso da RN14 está no código exatamente como na
+  especificação, e um teste confere todas as 24 combinações (8 telas × 3 perfis). A recusa
+  acontece antes de qualquer gravação no banco (Apostila IV, operação 01, passo 3), e uma parte do
+  sistema que esqueça de dizer a que tela pertence fica fechada para todos. Contra adivinhação de
+  senha, no máximo 10 tentativas por minuto (RNF12) — e um teste prova que não dá para burlar o
+  limite fingindo outro endereço. Os três usuários são criados pela equipe com um comando no
+  terminal (decisão parcial da L14). 50 testes automáticos — total do projeto: 109, todos
+  passando.
+
+**Bloco A:** só falta a A5 (esteira de publicação), que aguarda a decisão D05 — onde o sistema vai
+rodar.
+
+**Próxima tarefa:** B2 — API de categoria e fornecedor.
