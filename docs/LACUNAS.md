@@ -301,6 +301,33 @@ configurável (RN05, RN08, RN09, RN10, RN12).
 
 ---
 
+### L22 — A tela de Login não tem tarefa no cronograma
+
+A Apostila II lista o **Login** entre as 10 telas ("Identifica a pessoa e monta o menu conforme o
+papel"), e a A4 entregou a API dela. Mas nenhuma tarefa de tela da seção 9 da Apostila IV a
+constrói (B5 Produtos, B6 Fornecedores, C5 Entrada, D3 Avarias, E5 Importação, F3 Consulta, I2
+Fechamento).
+
+**Impacto:** sem ela, as telas não conseguem falar com a API (que exige login desde a A4).
+
+> **✅ DECIDIDA em 07/10/2026 (tarefa B5):** a tela de Login é feita na **B7** ("Ligar as telas à
+> API"), que é quando as telas passam a precisar do token. Vale registrar numa versão 1.1 da
+> Apostila IV.
+
+---
+
+### L23 — Divergência: a etapa 1 promete o aviso de vencimento no celular, mas não tem as horas dele
+
+A Apostila IV, "Totais e o que cada etapa entrega", diz que a etapa 1 (blocos A, B, C, D, F, J —
+212 h) entrega "o aviso de vencimento chegando ao celular". Mas o aviso de validade (H2) e o
+envio pelo Telegram (H5) estão no bloco H, contado na etapa 2.
+
+**Impacto:** o que se promete ao cliente ao fim da etapa 1.
+**O que fazer:** corrigir numa versão 1.1 — ou tirar o aviso da descrição da etapa 1, ou mover H1,
+H2, H4 e H5 (34 h) para ela. **Quem decide:** o grupo.
+
+---
+
 ## 2. Divergências internas da documentação entregue
 
 São erros pequenos nas apostilas, de contagem. Não impedem programar, mas é melhor corrigir numa

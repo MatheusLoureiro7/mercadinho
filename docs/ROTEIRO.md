@@ -33,7 +33,7 @@ autenticação — não dentro de cada regra de negócio.
 | [x] | **B2** | API de categoria e fornecedor | API | B1, A3 | 8 |
 | [x] | **B3** | API de produto, com validações | API | B1, A3 | 10 |
 | [x] | **B4** | Regra: perecível exige prazo de durabilidade | Regra | B3 | 3 |
-| [ ] | **B5** | Tela de produtos | Tela | A3 | 8 |
+| [x] | **B5** | Tela de produtos | Tela | A3 | 8 |
 | [ ] | **B6** | Tela de fornecedores | Tela | A3 | 6 |
 | [ ] | **B7** | Ligar as telas à API e tratar os erros na tela | Tela | B2, B3, B5, B6 | 5 |
 

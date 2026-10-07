@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Produtos · Mercado do Sr. João</title>
+    <link rel="icon" href="img/icone.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="css/base.css" />
+    <script type="module" src="js/produtos.js"></script>
+  </head>
+  <body>
+    <a class="pular-para-conteudo" href="#conteudo">Pular para o conteúdo</a>
+
+    <header class="cabecalho">
+      <div class="cabecalho__interno">
+        <span class="cabecalho__marca">
+          <svg class="icone" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 9l1.5-5h15L21 9" /><path d="M4 9v11h16V9" /><path d="M9 20v-6h6v6" />
+          </svg>
+          Mercado do Sr. João
+        </span>
+        <nav aria-label="Menu principal">
+          <!-- Menu do perfil OPERACAO (RN14). Na B7 ele passa a vir de /api/sessoes/atual/. -->
+          <ul class="menu">
+            <li><a href="produtos.html" aria-current="page">Produtos</a></li>
+            <li><a href="#">Fornecedores</a></li>
+            <li><a href="#">Entrada de mercadoria</a></li>
+            <li><a href="#">Avarias e quebras</a></li>
+            <li><a href="#">Importação de vendas</a></li>
+            <li><a href="#">Consulta de estoque</a></li>
+          </ul>
+        </nav>
+        <span class="cabecalho__usuario">Sobrinho</span>
+      </div>
+    </header>
+
+    <main id="conteudo" class="pagina" tabindex="-1">
+      <div class="pagina__titulo">
+        <div>
+          <h1>Produtos</h1>
+          <p class="pagina__descricao">O que a loja vende: categoria, unidade, preços e estoque mínimo.</p>
+        </div>
+        <button type="button" class="botao botao--acao" id="botao-novo">
+          <svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+          Novo produto
+        </button>
+      </div>
+
+      <!-- Formulário: cadastro e edição (RF01, RF15). Fica escondido até "Novo produto" ou "Editar". -->
+      <section class="cartao" id="painel-formulario" aria-labelledby="titulo-formulario" hidden>
+        <h2 class="cartao__titulo" id="titulo-formulario">Novo produto</h2>
+
+        <div class="resumo-de-erros" id="resumo-de-erros" role="alert" tabindex="-1" aria-labelledby="titulo-erros" hidden>
+          <h3 id="titulo-erros">Confira os campos destacados</h3>
+          <ul id="lista-de-erros"></ul>
+        </div>
+
+        <form id="formulario" novalidate>
+          <div class="formulario__grade">
+            <div class="campo campo--largo">
+              <label for="campo-nome">Nome do produto<span class="obrigatorio" aria-hidden="true">*</span></label>
+              <input id="campo-nome" name="nome" maxlength="160" autocomplete="off" required aria-describedby="erro-nome" />
+              <p class="campo__erro" id="erro-nome" hidden></p>
+            </div>
+
+            <div class="campo">
+              <label for="campo-categoria">Categoria<span class="obrigatorio" aria-hidden="true">*</span></label>
+              <select id="campo-categoria" name="categoria" required aria-describedby="erro-categoria"></select>
+              <p class="campo__erro" id="erro-categoria" hidden></p>
+              <button type="button" class="botao botao--discreto" id="botao-nova-categoria" aria-expanded="false" aria-controls="nova-categoria">
+                Cadastrar nova categoria
+              </button>
+              <div id="nova-categoria" hidden>
+                <div class="campo">
+                  <label for="campo-nova-categoria">Nome da nova categoria</label>
+                  <div class="campo__sufixo">
+                    <input id="campo-nova-categoria" maxlength="80" aria-describedby="erro-nova-categoria" />
+                    <button type="button" class="botao botao--secundario" id="botao-salvar-categoria">Criar</button>
+                  </div>
+                  <label class="opcao">
+                    <input type="checkbox" id="campo-nova-categoria-perecivel" />
+                    <span>Os produtos dela costumam ser perecíveis</span>
+                  </label>
+                  <p class="campo__erro" id="erro-nova-categoria" hidden></p>
+                </div>
+              </div>
+            </div>
+
+            <div class="campo">
+              <label for="campo-unidade">Unidade<span class="obrigatorio" aria-hidden="true">*</span></label>
+              <select id="campo-unidade" name="unidade_medida" required aria-describedby="erro-unidade_medida">
+                <option value="">Escolha…</option>
+                <option value="KG">KG — quilo</option>
+                <option value="UN">UN — unidade</option>
+                <option value="L">L — litro</option>
+                <option value="PCT">PCT — pacote</option>
+              </select>
+              <p class="campo__erro" id="erro-unidade_medida" hidden></p>
+            </div>
+
+            <div class="campo">
+              <label for="campo-fornecedor">Fornecedor de costume</label>
+              <select id="campo-fornecedor" name="fornecedor_padrao" aria-describedby="erro-fornecedor_padrao"></select>
+              <p class="campo__erro" id="erro-fornecedor_padrao" hidden></p>
+            </div>
+
+            <div class="campo campo--largo">
+              <label class="opcao">
+                <input type="checkbox" id="campo-perecivel" name="perecivel" aria-controls="grupo-durabilidade" />
+                <span>
+                  <strong>É perecível</strong>
+                  <span class="campo__ajuda">Carne, frios, laticínios, pão… tudo que vence rápido.</span>
+                </span>
+              </label>
+            </div>
+
+            <div class="campo" id="grupo-durabilidade" hidden>
+              <label for="campo-durabilidade">Dura quantos dias?<span class="obrigatorio" aria-hidden="true">*</span></label>
+              <div class="campo__sufixo">
+                <input id="campo-durabilidade" name="durabilidade_dias" inputmode="numeric" maxlength="4" aria-describedby="ajuda-durabilidade erro-durabilidade_dias" />
+                <span>dias</span>
+              </div>
+              <p class="campo__ajuda" id="ajuda-durabilidade">Quando a embalagem não trouxer a validade, o sistema calcula por aqui.</p>
+              <p class="campo__erro" id="erro-durabilidade_dias" hidden></p>
+            </div>
+
+            <div class="campo">
+              <label for="campo-custo">Preço de custo</label>
+              <div class="campo__sufixo">
+                <span>R$</span>
+                <input id="campo-custo" name="preco_custo" inputmode="decimal" placeholder="0,00" aria-describedby="erro-preco_custo" />
+              </div>
+              <p class="campo__erro" id="erro-preco_custo" hidden></p>
+            </div>
+
+            <div class="campo">
+              <label for="campo-venda">Preço de venda</label>
+              <div class="campo__sufixo">
+                <span>R$</span>
+                <input id="campo-venda" name="preco_venda" inputmode="decimal" placeholder="0,00" aria-describedby="erro-preco_venda" />
+              </div>
+              <p class="campo__erro" id="erro-preco_venda" hidden></p>
+            </div>
+
+            <div class="campo">
+              <label for="campo-minimo">Estoque mínimo</label>
+              <div class="campo__sufixo">
+                <input id="campo-minimo" name="estoque_minimo" inputmode="decimal" aria-describedby="ajuda-minimo erro-estoque_minimo" />
+                <span id="sufixo-minimo"></span>
+              </div>
+              <p class="campo__ajuda" id="ajuda-minimo">Abaixo disso, o produto aparece em destaque na consulta.</p>
+              <p class="campo__erro" id="erro-estoque_minimo" hidden></p>
+            </div>
+
+            <div class="campo campo--largo">
+              <label class="opcao">
+                <input type="checkbox" id="campo-critico" name="critico_fim_semana" />
+                <span>
+                  <strong>Não pode faltar no fim de semana</strong>
+                  <span class="campo__ajuda">Como carne, carvão, cerveja e linguiça: o sistema confere já na quinta-feira.</span>
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <div class="formulario__acoes">
+            <button type="submit" class="botao botao--acao" id="botao-salvar">Salvar produto</button>
+            <button type="button" class="botao botao--secundario" id="botao-cancelar">Cancelar</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Lista e busca -->
+      <section class="cartao" aria-labelledby="titulo-lista">
+        <h2 class="visualmente-oculto" id="titulo-lista">Produtos cadastrados</h2>
+        <div class="barra" role="search">
+          <div class="campo">
+            <label for="busca">Procurar pelo nome</label>
+            <input id="busca" type="search" placeholder="Ex.: arroz" autocomplete="off" />
+          </div>
+          <div class="campo">
+            <label for="filtro-categoria">Categoria</label>
+            <select id="filtro-categoria"></select>
+          </div>
+        </div>
+
+        <p class="visualmente-oculto" id="anuncio-lista" aria-live="polite"></p>
+        <div class="tabela-rolavel">
+          <table class="tabela">
+            <thead>
+              <tr>
+                <th scope="col">Produto</th>
+                <th scope="col">Categoria</th>
+                <th scope="col">Unidade</th>
+                <th scope="col">Validade</th>
+                <th scope="col" class="numero">Preço de venda</th>
+                <th scope="col" class="numero">Estoque mínimo</th>
+                <th scope="col"><span class="visualmente-oculto">Ações</span></th>
+              </tr>
+            </thead>
+            <tbody id="corpo-tabela"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <p class="aviso-rodape" id="aviso-fonte"></p>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+      <svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6L9 17l-5-5" /></svg>
+      <span id="toast-texto"></span>
+    </div>
+  </body>
+</html>
