@@ -78,6 +78,90 @@ formato do arquivo é que diz qual é o código.
 
 ---
 
+### L09 — A autenticação do Django não cabe na tabela `usuario`
+
+A Apostila IV define `usuario` com `senha_hash`, `papel`, `login`, `telegram_chat_id` e `ativo`.
+O modelo de usuário do Django (`AbstractBaseUser`) exige as colunas `password` e `last_login`, e a
+autenticação por token do DRF exige a tabela `authtoken_token`. O próprio Django também cria
+tabelas internas (`django_migrations`, `django_content_type`, `auth_permission`, `django_session`).
+Nenhuma delas está nas 14 tabelas.
+
+**Impacto:** tarefas B1 (6 h) e A4 (12 h). Precisa ser decidido **antes da B1**.
+**Opções:**
+- (a) autenticação própria sobre a tabela `usuario` exatamente como está, sem o modelo de usuário
+  do Django — por exemplo, token assinado (sem tabela) e hash de senha do próprio Django;
+- (b) usar o modelo de usuário do Django com `db_table = 'usuario'`, aceitando `last_login` e
+  registrando isso numa versão 1.1 da Apostila IV.
+
+Nas duas opções as tabelas internas do Django existem. Vale declarar que elas são infraestrutura do
+framework, não parte do modelo de dados do negócio.
+**Quem decide:** o grupo.
+
+---
+
+### L10 — Não há como registrar ajuste para menos
+
+A `movimentacao` aceita só `quantidade > 0` (restrição `[derivado]` do `schema.sql`), e a view
+`vw_estoque_atual` sempre **soma** o tipo `AJUSTE`. Se uma contagem física encontrar menos do que o
+sistema mostra, não existe forma de lançar a diferença — só como `PERDA`, o que tem outro sentido.
+
+**Impacto:** tarefa C4 (6 h).
+**Opções:** permitir quantidade negativa só no `AJUSTE`; ou declarar que diferença para menos é
+sempre registrada como `PERDA` com motivo. A primeira muda uma restrição `[derivado]`, não uma
+coluna — mas ainda assim é decisão do grupo.
+**Quem decide:** o grupo.
+
+---
+
+### L11 — Os valores de `alerta.severidade` não estão definidos
+
+A coluna existe e a **RN13** manda ordenar os avisos "por urgência" (severidade, depois
+`gerado_em`). Nenhum documento lista os valores possíveis nem a ordem entre eles.
+
+**Impacto:** tarefas H1 (8 h) e H4 (8 h).
+**Proposta para o grupo decidir:** `ALTA`, `MEDIA`, `BAIXA`, com uma restrição CHECK.
+**Quem decide:** o grupo.
+
+---
+
+### L12 — De onde vem `fechamento_caixa.valor_sistema`?
+
+A **RN15** fala em "valor apurado pelo sistema", e o fluxograma 06 liga o fechamento à tabela
+`venda`. Presume-se que seja `SUM(venda.valor_total)` do dia — mas isso não está escrito, e não
+se sabe se considera a forma de pagamento (só dinheiro é contado na gaveta?).
+
+**Impacto:** tarefa I1 (8 h). Depende também da D01.
+**Quem decide:** o grupo, confirmando com a esposa do Sr. João.
+
+---
+
+### L13 — Desempate do FIFO e lotes sem validade
+
+A **RN02** ordena por `data_validade ASC`. Não diz:
+- o que fazer quando dois lotes vencem no mesmo dia;
+- onde ficam os lotes sem validade (produto não perecível). No PostgreSQL, `NULL` vai para o fim
+  da ordenação crescente.
+
+**Impacto:** tarefas C4 e E3.
+**Proposta para o grupo decidir:** desempatar por `data_entrada` e depois `id`; lote sem validade
+sai por último.
+**Quem decide:** o grupo. É escolha técnica.
+
+---
+
+### L14 — Nenhuma tela cuida de usuários e parâmetros
+
+As 10 telas da Apostila II não incluem cadastro de usuário, troca de senha, nem edição da tabela
+`parametro`. Os parâmetros, porém, "nunca ficam fixos no código" e ainda serão ajustados com o
+cliente.
+
+**Impacto:** operação e implantação (J2, J6). Não trava nenhuma tarefa de código.
+**Proposta para o grupo decidir:** administrar usuários e parâmetros por comando `manage.py` (ou
+pelo admin do Django), operado pela equipe — sem criar uma 11ª tela.
+**Quem decide:** o grupo.
+
+---
+
 ## 2. Divergências internas da documentação entregue
 
 São erros pequenos nas apostilas, de contagem. Não impedem programar, mas é melhor corrigir numa
