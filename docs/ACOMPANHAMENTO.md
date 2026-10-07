@@ -17,16 +17,16 @@ O diário, no fim do arquivo, conta o que foi feito em cada dia.
 
 ## Resumo
 
-*Atualizado em 06/10/2026.*
+*Atualizado em 07/10/2026.*
 
 | | Concluído | Total | % |
 |---|---|---|---|
-| **Tarefas** | 10 | 51 | 19,6 % |
-| **Horas estimadas** | 73 h | 378 h | 19,3 % |
+| **Tarefas** | 11 | 51 | 21,6 % |
+| **Horas estimadas** | 81 h | 378 h | 21,4 % |
 
 | Etapa | Blocos | Horas concluídas | Total | % |
 |---|---|---|---|---|
-| 1 · Aviso de validade | A, B, C, D, F, J | 73 h | 212 h | 34,4 % |
+| 1 · Aviso de validade | A, B, C, D, F, J | 81 h | 212 h | 38,2 % |
 | 2 · Aviso de ruptura | E, G, H | 0 h | 136 h | 0,0 % |
 | 3 · Gestão | I | 0 h | 30 h | 0,0 % |
 
@@ -58,12 +58,12 @@ Prazo de entrega: **27/11/2026**.
 | B6 | Tela de fornecedores | A3 | 6 | ⬜ A fazer | — | — |
 | B7 | Ligar as telas à API e tratar os erros na tela | B2, B3, B5, B6 | 5 | ⬜ A fazer | — | — |
 
-## Bloco C — Entrada de mercadoria · 40 h  ·  12 de 40 h concluídas
+## Bloco C — Entrada de mercadoria · 40 h  ·  20 de 40 h concluídas
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
 | ~~C1~~ | ~~Criar as tabelas de lote e movimentação~~ | A2 | 6 | ✅ Concluída | 06/10/2026 | `251d78d` |
-| C2 | API de entrada de lote | C1, B3 | 8 | ⬜ A fazer | — | — |
+| ~~C2~~ | ~~API de entrada de lote~~ | C1, B3 | 8 | ✅ Concluída | 07/10/2026 | `92bf7de` |
 | C3 | Regra: validade obrigatória e cálculo automático | C2 | 4 | ⬜ A fazer | — | — |
 | ~~C4~~ | ~~Saldo derivado das movimentações~~ | C1 | 6 | ✅ Concluída | 06/10/2026 | `48451c5` |
 | C5 | Tela de entrada de mercadoria | A3 | 10 | ⬜ A fazer | — | — |
@@ -143,6 +143,24 @@ Prazo de entrega: **27/11/2026**.
 
 O que foi feito em cada dia, do mais recente para o mais antigo. Cada linha aponta a tarefa do
 cronograma, a regra de negócio (quando houver) e o commit.
+
+### 07/10/2026
+
+**Tarefa concluída: C2** (8 h estimadas).
+
+- **C2 — API de entrada de mercadoria (RF03, operação 02).** O sobrinho já registra, pela API,
+  cada carga que chega: produto, quantidade, custo, fornecedor e validade. Como manda a operação 02
+  da Apostila IV, o lote e a movimentação de entrada são gravados **juntos, numa transação só** — se
+  qualquer parte falhar, nada fica gravado, e nunca existe lote sem a movimentação que explica o
+  saldo (RN01); um teste simula a falha e prova isso. A resposta já traz o saldo novo do produto
+  (passo 9), e a "lista do dia" mostra o que entrou hoje (passo 11). A data de entrada é sempre o
+  dia da loja — inclusive à noite, quando o banco (que trabalha em UTC) já está "amanhã". Lote não
+  pode ser editado nem apagado; correção de estoque é por perda ou ajuste, que deixam rastro.
+  O passo 10 (cancelar o aviso de "vai acabar" quando a mercadoria chega) já é chamado, e passa a
+  agir quando a tabela de avisos existir (tarefa H1). As regras de validade (RN04) são a próxima
+  tarefa, C3. 27 testes automáticos — total do projeto: 267, todos passando.
+
+**Próxima tarefa:** C3 — regra: validade obrigatória e cálculo automático (RN04).
 
 ### 06/10/2026
 
@@ -258,5 +276,4 @@ rodar.
   sistema, nem direto no banco. Quilo fracionado sem erro de arredondamento. 16 testes automáticos —
   total do projeto: 240, todos passando.
 
-**Próxima tarefa:** C2 — API de entrada de lote: grava o lote e a movimentação de ENTRADA juntos,
-numa transação só (operação 02). Depende de C1 e B3, as duas prontas.
+**Próxima tarefa:** C2 — API de entrada de lote.
