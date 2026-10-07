@@ -127,3 +127,37 @@ class Movimentacao(models.Model):
 
     def __str__(self):
         return f"{self.tipo} {self.quantidade} de {self.produto}"
+
+
+class EstoqueAtual(models.Model):
+    """
+    RN01 — o saldo de cada produto, lido da view vw_estoque_atual (tarefa C4).
+
+    Só leitura: a view soma as movimentações (ENTRADA e AJUSTE somam, VENDA e PERDA subtraem). Não
+    existe saldo gravado em lugar nenhum, e nada no sistema pode escrevê-lo.
+    """
+
+    produto = models.OneToOneField(
+        Produto,
+        on_delete=models.DO_NOTHING,
+        primary_key=True,
+        db_column="produto_id",
+        related_name="estoque_atual",
+    )
+    produto_nome = models.CharField(max_length=160)
+    unidade_medida = models.CharField(max_length=10)
+    estoque_minimo = models.DecimalField(max_digits=12, decimal_places=3, null=True)
+    saldo = models.DecimalField(max_digits=14, decimal_places=3)
+
+    class Meta:
+        managed = False  # a view é criada pela migração 0002, com o SQL do schema.sql
+        db_table = "vw_estoque_atual"
+
+    def __str__(self):
+        return f"{self.produto_nome}: {self.saldo} {self.unidade_medida}"
+
+    def save(self, *args, **kwargs):
+        raise TypeError("RN01: o saldo é derivado das movimentações e nunca é gravado diretamente.")
+
+    def delete(self, *args, **kwargs):
+        raise TypeError("RN01: o saldo é derivado das movimentações e nunca é apagado.")
