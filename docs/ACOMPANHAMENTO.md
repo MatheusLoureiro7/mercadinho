@@ -21,12 +21,12 @@ O diário, no fim do arquivo, conta o que foi feito em cada dia.
 
 | | Concluído | Total | % |
 |---|---|---|---|
-| **Tarefas** | 2 | 51 | 3,9 % |
-| **Horas estimadas** | 12 h | 378 h | 3,2 % |
+| **Tarefas** | 3 | 51 | 5,9 % |
+| **Horas estimadas** | 22 h | 378 h | 5,8 % |
 
 | Etapa | Blocos | Horas concluídas | Total | % |
 |---|---|---|---|---|
-| 1 · Aviso de validade | A, B, C, D, F, J | 12 h | 212 h | 5,7 % |
+| 1 · Aviso de validade | A, B, C, D, F, J | 22 h | 212 h | 10,4 % |
 | 2 · Aviso de ruptura | E, G, H | 0 h | 136 h | 0,0 % |
 | 3 · Gestão | I | 0 h | 30 h | 0,0 % |
 
@@ -36,13 +36,13 @@ Prazo de entrega: **27/11/2026**.
 
 ---
 
-## Bloco A — Fundação · 40 h  ·  12 de 40 h concluídas
+## Bloco A — Fundação · 40 h  ·  22 de 40 h concluídas
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
 | ~~A1~~ | ~~Configurar repositório, ambiente e padrão de código~~ | — | 6 | ✅ Concluída | 06/10/2026 | `ca4ac9b` |
 | ~~A2~~ | ~~Subir o banco de dados e a ferramenta de migração~~ | A1 | 6 | ✅ Concluída | 06/10/2026 | `02c5ae1` |
-| A3 | Esqueleto da API: rotas, tratamento de erro e registro de log | A1 | 10 | ⬜ A fazer | — | — |
+| ~~A3~~ | ~~Esqueleto da API: rotas, tratamento de erro e registro de log~~ | A1 | 10 | ✅ Concluída | 06/10/2026 | `ebea081` |
 | A4 | Autenticação e os três perfis de acesso | A3, B1 | 12 | ⬜ A fazer | — | — |
 | A5 | Esteira de publicação em ambiente de teste | A1 | 6 | ⛔ Aguarda D05 | — | — |
 
@@ -146,7 +146,7 @@ cronograma, a regra de negócio (quando houver) e o commit.
 
 ### 06/10/2026
 
-**Tarefas concluídas: A1 e A2** (12 h estimadas).
+**Tarefas concluídas: A1, A2 e A3** (22 h estimadas).
 
 - **A1 — Repositório, ambiente e padrão de código.** Repositório git criado, com a especificação
   (Apostilas I a IV) no primeiro commit. Projeto Django com os sete módulos do sistema
@@ -164,4 +164,13 @@ cronograma, a regra de negócio (quando houver) e o commit.
 - **OpenSpec.** A especificação foi passada também para o formato OpenSpec (`openspec/specs/`):
   10 capacidades, cada requisito apontando a regra de origem e usando os exemplos das apostilas.
 
-**Próxima tarefa:** A3 — esqueleto da API (rotas, tratamento de erro e registro de log).
+- **A3 — Esqueleto da API.** A API REST — a "porta única de entrada" da Apostila IV — está de
+  pé em `/api/`, respondendo sempre em JSON. Toda recusa volta no mesmo formato, com a mensagem
+  em português no vocabulário da loja (RNF10) e apontando só o campo com problema, como pede o
+  fluxograma 01. As regras de negócio têm um jeito padrão de recusar uma operação, informando
+  qual regra recusou (ex.: RN03). Erro inesperado não mostra detalhe técnico na tela: mostra um
+  código, e o detalhe vai para o log com o mesmo código. Toda requisição é registrada em log,
+  sem nunca gravar senha (RNF12). 15 testes automáticos — total do projeto: 23, todos passando.
+
+**Próxima tarefa:** B1 — tabelas de usuário, categoria, produto e fornecedor. A A4
+(autenticação) depende dela.
