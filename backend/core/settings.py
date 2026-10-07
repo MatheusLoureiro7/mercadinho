@@ -72,10 +72,16 @@ REST_FRAMEWORK = {
     "DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRenderer"],
     "DEFAULT_PARSER_CLASSES": ["rest_framework.parsers.JSONParser"],
     "DEFAULT_CONTENT_NEGOTIATION_CLASS": "comum.negociacao.SempreJson",
-    # A tarefa A4 troca estas duas linhas: token assinado e verificação do papel (RN14) antes de
-    # qualquer operação. Até lá não existe nenhum endpoint com dado da loja.
-    "DEFAULT_AUTHENTICATION_CLASSES": [],
-    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.AllowAny"],
+    # Tarefa A4: token assinado (L09) e verificação do papel (RN14) antes de qualquer operação.
+    # Todo endpoint exige login e declara a sua tela; quem não declara é recusado.
+    "DEFAULT_AUTHENTICATION_CLASSES": ["comum.autenticacao.AutenticacaoPorToken"],
+    "DEFAULT_PERMISSION_CLASSES": ["comum.permissoes.PermissaoPorTela"],
+    # RNF12: limite de tentativas de login por endereço.
+    "DEFAULT_THROTTLE_RATES": {"login": "10/min"},
+    # Quantos servidores intermediários (proxy) há na frente da API. Com 0, o endereço usado no
+    # limite de tentativas é o da conexão — o cabeçalho X-Forwarded-For, que qualquer um inventa,
+    # é ignorado. Na publicação atrás de um proxy (A5/J6), API_NUM_PROXIES=1.
+    "NUM_PROXIES": int(os.environ.get("API_NUM_PROXIES", "0")),
     "EXCEPTION_HANDLER": "comum.erros.tratar_excecao",
     # Dinheiro e quantidade saem como texto ("12.500"), nunca como float (CLAUDE.md).
     "COERCE_DECIMAL_TO_STRING": True,
@@ -84,6 +90,20 @@ REST_FRAMEWORK = {
 
 # Usuário do sistema: a tabela `usuario` da Apostila IV (decisão da L09, tarefa B1).
 AUTH_USER_MODEL = "cadastro.Usuario"
+
+# Quantas horas o login vale antes de pedir a senha de novo (tarefa A4). Um dia de loja.
+SESSAO_VALIDADE_HORAS = int(os.environ.get("SESSAO_VALIDADE_HORAS", "12"))
+
+# Regras de senha usadas ao criar ou trocar a senha (RNF12).
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+        "OPTIONS": {"user_attributes": ("login", "nome")},
+    },
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator", "OPTIONS": {"min_length": 8}},
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
+]
 
 
 # Banco de dados — PostgreSQL, fixado pela Apostila IV. Nunca SQLite, nem "só para testar".

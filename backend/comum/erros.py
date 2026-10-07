@@ -29,6 +29,7 @@ logger = logging.getLogger("mercadinho.erros")
 MENSAGEM_ERRO_INTERNO = "Algo deu errado do nosso lado. Avise a equipe e informe o código {id}."
 
 # Exceção do DRF → (codigo, mensagem). A ordem importa: subclasses antes das classes-mãe.
+# Mensagem None: usa o texto que veio na própria exceção.
 _MENSAGENS = [
     (exceptions.ValidationError, "validacao", "Confira os campos destacados."),
     (
@@ -37,10 +38,15 @@ _MENSAGENS = [
         "Os dados enviados estão num formato que o sistema não entende.",
     ),
     (exceptions.NotAuthenticated, "nao_autenticado", "Entre no sistema para continuar."),
-    (exceptions.AuthenticationFailed, "nao_autenticado", "Entre no sistema para continuar."),
+    (exceptions.AuthenticationFailed, "nao_autenticado", None),  # a mensagem vem de quem recusou
     (exceptions.PermissionDenied, "sem_permissao", "O seu perfil não tem acesso a esta parte do sistema."),
     (exceptions.NotFound, "nao_encontrado", "Não encontramos o que você procurou."),
     (exceptions.MethodNotAllowed, "metodo_nao_permitido", "Esta operação não existe neste endereço."),
+    (
+        exceptions.Throttled,
+        "muitas_tentativas",
+        "Muitas tentativas seguidas. Espere um minuto e tente de novo.",
+    ),
 ]
 
 
@@ -82,7 +88,7 @@ def _em_texto(detalhe):
 def _codigo_e_mensagem(exc: exceptions.APIException) -> tuple[str, str]:
     for classe, codigo, mensagem in _MENSAGENS:
         if isinstance(exc, classe):
-            return codigo, mensagem
+            return codigo, mensagem if mensagem is not None else str(exc.detail)
     return exc.default_code, str(exc.detail)  # qualquer outra exceção do DRF: usa o texto dela
 
 

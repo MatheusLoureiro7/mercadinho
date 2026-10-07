@@ -160,7 +160,9 @@ Se isso falhar, quanto mais produto estraga, mais o sistema manda comprar.
 
 **RN14 — três perfis.** `DONO`, `GESTAO`, `OPERACAO`. A verificação acontece **antes** de qualquer
 operação, na camada de autenticação da API, não dentro da regra de negócio. Os dois funcionários da
-loja não têm acesso.
+loja não têm acesso. **No código:** toda view declara `tela = "..."` (uma das chaves de
+`ACESSO_POR_TELA` em `backend/comum/permissoes.py`); view sem `tela` é recusada para todos. Nunca
+use `AllowAny` fora do login.
 
 As 16 regras completas, com condição testável e mensagem de erro, estão em
 `docs/REGRAS-NEGOCIO.md`. Leia a regra antes de implementar o trecho que ela governa.

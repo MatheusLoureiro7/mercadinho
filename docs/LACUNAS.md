@@ -181,6 +181,13 @@ cliente.
 pelo admin do Django), operado pela equipe — sem criar uma 11ª tela.
 **Quem decide:** o grupo.
 
+> **◐ DECIDIDA EM PARTE em 06/10/2026 (tarefa A4) — usuários:** criados pela equipe com
+> `manage.py criar_usuario --login --nome --papel` (senha pedida no terminal, validada pelas
+> regras de senha do Django) e trocados com `manage.py changepassword`. Sem tela nova e sem o
+> admin do Django.
+> **Parâmetros: ainda em aberto.** Precisa ser decidido antes da primeira tarefa que lê a tabela
+> `parametro` (H2, aviso de validade).
+
 ---
 
 ### L15 — Qual é a fórmula da sugestão de compra?

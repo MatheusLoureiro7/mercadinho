@@ -8,11 +8,24 @@ tarefas que os criam. Exemplo, quando a B3 chegar:
 """
 
 from django.urls import include, path
-from rest_framework.routers import DefaultRouter
+from rest_framework.routers import APIRootView, DefaultRouter
 
-roteador = DefaultRouter()
+from comum.views import SessaoAtualView, SessaoView
+
+
+class RaizDaApi(APIRootView):
+    qualquer_perfil = True  # lista os endpoints para quem já entrou no sistema
+
+
+class Roteador(DefaultRouter):
+    APIRootView = RaizDaApi
+
+
+roteador = Roteador()
 
 urlpatterns = [
+    path("api/sessoes/", SessaoView.as_view(), name="sessao"),
+    path("api/sessoes/atual/", SessaoAtualView.as_view(), name="sessao-atual"),
     path("api/", include(roteador.urls)),
 ]
 

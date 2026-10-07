@@ -15,10 +15,12 @@ pytestmark = pytest.mark.urls("tests.urls_a3")
 # --- Rotas ---------------------------------------------------------------------------------------
 
 
-def test_a3_raiz_da_api_responde_json(client):
+def test_a3_raiz_da_api_responde_json(client, db):
+    # Desde a A4 toda a API exige login: sem token, a raiz responde 401 — em JSON.
     resposta = client.get("/api/")
-    assert resposta.status_code == 200
+    assert resposta.status_code == 401
     assert resposta["Content-Type"].startswith("application/json")
+    assert resposta.json()["erro"]["codigo"] == "nao_autenticado"
 
 
 def test_a3_api_so_fala_json_mesmo_quando_o_navegador_pede_html(client):

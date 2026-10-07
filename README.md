@@ -123,6 +123,32 @@ Tudo fica sob `/api/`, sempre em JSON. Rodar localmente:
 python backend/manage.py runserver      # http://127.0.0.1:8000/api/
 ```
 
+### Usuários e login
+
+Só três pessoas usam o sistema (RN14). Os usuários são criados pela equipe, no terminal — a senha
+é pedida duas vezes e nunca aparece na tela:
+
+```bash
+python backend/manage.py criar_usuario --login joao     --nome "Sr. João" --papel DONO
+python backend/manage.py criar_usuario --login esposa   --nome "Esposa"   --papel GESTAO
+python backend/manage.py criar_usuario --login sobrinho --nome "Sobrinho" --papel OPERACAO
+python backend/manage.py changepassword sobrinho      # trocar a senha depois
+```
+
+O painel entra com `POST /api/sessoes/` (`{"login", "senha"}`) e recebe um `token`, que manda em
+toda requisição no cabeçalho `Authorization: Bearer <token>`. O token vale `SESSAO_VALIDADE_HORAS`
+(12 h) e cai antes disso se a senha for trocada ou o usuário desativado. `GET /api/sessoes/atual/`
+devolve quem está usando e as `telas` do menu daquele papel.
+
+**Todo endpoint declara a sua tela** — é assim que a RN14 é verificada antes de qualquer operação:
+
+```python
+class ProdutoViewSet(ModelViewSet):
+    tela = "produtos"  # só OPERACAO entra (comum/permissoes.py, ACESSO_POR_TELA)
+```
+
+Endpoint sem `tela` é recusado para todos.
+
 **Formato de erro** — igual em toda a API, para o painel só precisar mostrar `mensagem`:
 
 ```json
@@ -138,6 +164,7 @@ python backend/manage.py runserver      # http://127.0.0.1:8000/api/
 | `requisicao_invalida` | 400 | O corpo não é um JSON válido |
 | `nao_autenticado` | 401 | Precisa entrar no sistema (tarefa A4) |
 | `sem_permissao` | 403 | O papel não permite (RN14, tarefa A4) |
+| `muitas_tentativas` | 429 | Mais de 10 tentativas de login por minuto do mesmo endereço |
 | `nao_encontrado` | 404 | Endereço ou registro inexistente |
 | `metodo_nao_permitido` | 405 | Operação que não existe naquele endereço |
 | `erro_interno` | 500 | Falha inesperada — vem `id`, o mesmo código gravado no log |
