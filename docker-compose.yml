@@ -1,0 +1,32 @@
+# Banco de dados de desenvolvimento — tarefa A2.
+#
+# PostgreSQL é fixado pela Apostila IV (figura 2 e seção 3).
+# A porta fica presa ao 127.0.0.1: o banco não tem acesso externo (RNF12).
+#
+# Subir:    docker compose up -d
+# Parar:    docker compose down
+# Apagar os dados e começar do zero:  docker compose down -v
+
+services:
+  banco:
+    image: postgres:17
+    container_name: mercadinho-banco
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-mercadinho}
+      POSTGRES_USER: ${POSTGRES_USER:-mercadinho}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?defina POSTGRES_PASSWORD no arquivo .env}
+      TZ: America/Sao_Paulo
+      PGTZ: America/Sao_Paulo
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - dados_banco:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  dados_banco:

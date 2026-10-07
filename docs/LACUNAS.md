@@ -93,6 +93,11 @@ Nenhuma delas está nas 14 tabelas.
 - (b) usar o modelo de usuário do Django com `db_table = 'usuario'`, aceitando `last_login` e
   registrando isso numa versão 1.1 da Apostila IV.
 
+**Atenção (desde a A2):** a primeira migração já criou as tabelas `auth_*` do Django no banco de
+desenvolvimento. O Django só permite trocar o modelo de usuário antes da primeira migração; se o
+grupo escolher (b), cada pessoa precisa recriar o banco local (`docker compose down -v`). Enquanto
+não há dado real isso não custa nada — mas a decisão tem de sair antes da B1.
+
 Nas duas opções as tabelas internas do Django existem. Vale declarar que elas são infraestrutura do
 framework, não parte do modelo de dados do negócio.
 **Quem decide:** o grupo.

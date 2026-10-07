@@ -42,8 +42,8 @@ schema.sql     modelo de dados de referência
 
 ## Subir o ambiente
 
-Pré-requisitos: **Python 3.11 ou mais novo** e **Git**. O PostgreSQL entra na tarefa A2 — até lá,
-os comandos abaixo funcionam sem banco.
+Pré-requisitos: **Python 3.11 ou mais novo**, **Git** e **Docker** (Docker Desktop no Windows e no
+macOS). O Docker só serve para rodar o PostgreSQL na máquina de desenvolvimento.
 
 ### Linux e macOS
 
@@ -55,8 +55,9 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements-dev.txt
 
-cp .env.example .env          # depois edite o .env
-python backend/manage.py check
+cp .env.example .env          # edite: DJANGO_SECRET_KEY e POSTGRES_PASSWORD
+docker compose up -d --wait   # sobe o PostgreSQL
+python backend/manage.py migrate
 pytest
 ```
 
@@ -70,8 +71,9 @@ py -3.11 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -r requirements-dev.txt
 
-Copy-Item .env.example .env   # depois edite o .env
-python backend\manage.py check
+Copy-Item .env.example .env   # edite: DJANGO_SECRET_KEY e POSTGRES_PASSWORD
+docker compose up -d --wait   # sobe o PostgreSQL
+python backend\manage.py migrate
 pytest
 ```
 
@@ -81,13 +83,31 @@ Se o PowerShell recusar o `Activate.ps1`, rode uma vez:
 No **Prompt de Comando (cmd)**, a ativação é `.venv\Scripts\activate.bat` e a cópia é
 `copy .env.example .env`.
 
+### O banco de dados
+
+PostgreSQL 17 em contêiner, definido em `docker-compose.yml`. A porta só aceita conexão da própria
+máquina (`127.0.0.1`) — o banco não tem acesso externo (RNF12).
+
+| Comando | O que faz |
+|---|---|
+| `docker compose up -d --wait` | Sobe o banco e espera ele ficar pronto |
+| `docker compose down` | Para o banco (os dados ficam guardados) |
+| `docker compose down -v` | Para o banco **e apaga todos os dados** |
+| `docker compose exec banco psql -U mercadinho` | Abre o terminal SQL do banco |
+| `python backend/manage.py migrate` | Aplica as migrações pendentes |
+| `python backend/manage.py makemigrations` | Gera a migração depois de mudar um model |
+
+Os testes criam e apagam um banco próprio (`test_mercadinho`); o banco de desenvolvimento não é
+tocado. Se preferir PostgreSQL instalado direto na máquina, sem Docker, basta apontar as
+variáveis `POSTGRES_*` do `.env` para ele.
+
 ### O arquivo `.env`
 
 | Variável | Para quê |
 |---|---|
 | `DJANGO_SECRET_KEY` | Obrigatória quando `DJANGO_DEBUG=false` |
 | `DJANGO_DEBUG` | `true` só na máquina de desenvolvimento |
-| `POSTGRES_*` | Conexão com o banco (tarefa A2) |
+| `POSTGRES_*` | Conexão com o banco — o `docker compose` usa as mesmas variáveis para criar o banco |
 | `TELEGRAM_BOT_TOKEN` | Bot de avisos (tarefa H5) — pode ficar vazio até lá |
 
 O `.env` nunca vai para o git (RNF12).

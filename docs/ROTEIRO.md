@@ -15,7 +15,7 @@ Marque `[x]` quando a tarefa estiver pronta **e testada**.
 | | ID | Tarefa | Tipo | Depende de | H |
 |---|---|---|---|---|---|
 | [x] | **A1** | Configurar repositório, ambiente e padrão de código | Infra | — | 6 |
-| [ ] | **A2** | Subir o banco de dados e a ferramenta de migração | Infra/BD | A1 | 6 |
+| [x] | **A2** | Subir o banco de dados e a ferramenta de migração | Infra/BD | A1 | 6 |
 | [ ] | **A3** | Esqueleto da API: rotas, tratamento de erro e registro de log | API | A1 | 10 |
 | [ ] | **A4** | Autenticação e os três perfis de acesso | API/Regra | A3, B1 | 12 |
 | [ ] | **A5** | Esteira de publicação em ambiente de teste | Infra | A1 | 6 |
