@@ -3,7 +3,7 @@ Entrada de mercadoria — operação 02 da Apostila IV, tarefa C2 (RF03, RN01).
 
 Cada carga que chega vira um lote e uma movimentação ENTRADA, gravados numa transação só:
 "Nunca existe lote sem a movimentação que explica o saldo."
-As regras de validade (RN04, passos 3 a 5) entram na tarefa C3.
+Antes de gravar, as regras de validade (RN04, passos 3 a 5 — tarefa C3).
 """
 
 from datetime import date
@@ -15,6 +15,7 @@ from django.utils import timezone
 from alertas.servicos import cancelar_aviso_de_ruptura_pendente
 from cadastro.models import Fornecedor, Produto, Usuario
 from estoque.models import Lote, Movimentacao
+from estoque.regras import validade_do_lote
 
 
 def registrar_entrada(
@@ -28,6 +29,11 @@ def registrar_entrada(
     origem: str = "TELA",
 ) -> Lote:
     data_entrada = timezone.localdate()  # dia da loja, nunca o CURRENT_DATE (UTC) do banco
+
+    # Passos 2 a 5: lê o produto e aplica a RN04. Se recusar, nada é gravado.
+    data_validade = validade_do_lote(
+        produto, data_entrada=data_entrada, data_validade=data_validade, hoje=data_entrada
+    )
 
     # Passos 6 a 8: lote e movimentação juntos. Se a movimentação falhar, o lote é desfeito.
     with transaction.atomic():
