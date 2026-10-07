@@ -21,12 +21,12 @@ O diário, no fim do arquivo, conta o que foi feito em cada dia.
 
 | | Concluído | Total | % |
 |---|---|---|---|
-| **Tarefas** | 11 | 51 | 21,6 % |
-| **Horas estimadas** | 81 h | 378 h | 21,4 % |
+| **Tarefas** | 12 | 51 | 23,5 % |
+| **Horas estimadas** | 85 h | 378 h | 22,5 % |
 
 | Etapa | Blocos | Horas concluídas | Total | % |
 |---|---|---|---|---|
-| 1 · Aviso de validade | A, B, C, D, F, J | 81 h | 212 h | 38,2 % |
+| 1 · Aviso de validade | A, B, C, D, F, J | 85 h | 212 h | 40,1 % |
 | 2 · Aviso de ruptura | E, G, H | 0 h | 136 h | 0,0 % |
 | 3 · Gestão | I | 0 h | 30 h | 0,0 % |
 
@@ -58,13 +58,13 @@ Prazo de entrega: **27/11/2026**.
 | B6 | Tela de fornecedores | A3 | 6 | ⬜ A fazer | — | — |
 | B7 | Ligar as telas à API e tratar os erros na tela | B2, B3, B5, B6 | 5 | ⬜ A fazer | — | — |
 
-## Bloco C — Entrada de mercadoria · 40 h  ·  20 de 40 h concluídas
+## Bloco C — Entrada de mercadoria · 40 h  ·  24 de 40 h concluídas
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
 | ~~C1~~ | ~~Criar as tabelas de lote e movimentação~~ | A2 | 6 | ✅ Concluída | 06/10/2026 | `251d78d` |
 | ~~C2~~ | ~~API de entrada de lote~~ | C1, B3 | 8 | ✅ Concluída | 07/10/2026 | `92bf7de` |
-| C3 | Regra: validade obrigatória e cálculo automático | C2 | 4 | ⬜ A fazer | — | — |
+| ~~C3~~ | ~~Regra: validade obrigatória e cálculo automático~~ | C2 | 4 | ✅ Concluída | 07/10/2026 | `43dc95d` |
 | ~~C4~~ | ~~Saldo derivado das movimentações~~ | C1 | 6 | ✅ Concluída | 06/10/2026 | `48451c5` |
 | C5 | Tela de entrada de mercadoria | A3 | 10 | ⬜ A fazer | — | — |
 | C6 | Integração e teste do fluxo completo | C2, C5 | 6 | ⬜ A fazer | — | — |
@@ -146,7 +146,7 @@ cronograma, a regra de negócio (quando houver) e o commit.
 
 ### 07/10/2026
 
-**Tarefa concluída: C2** (8 h estimadas).
+**Tarefas concluídas: C2 e C3** (12 h estimadas).
 
 - **C2 — API de entrada de mercadoria (RF03, operação 02).** O sobrinho já registra, pela API,
   cada carga que chega: produto, quantidade, custo, fornecedor e validade. Como manda a operação 02
@@ -160,7 +160,21 @@ cronograma, a regra de negócio (quando houver) e o commit.
   agir quando a tabela de avisos existir (tarefa H1). As regras de validade (RN04) são a próxima
   tarefa, C3. 27 testes automáticos — total do projeto: 267, todos passando.
 
-**Próxima tarefa:** C3 — regra: validade obrigatória e cálculo automático (RN04).
+- **C3 — Regra: validade obrigatória e cálculo automático (RN04).** Ao registrar a entrada de um
+  perecível, a validade agora é garantida: se o sobrinho não informar, o sistema calcula sozinho
+  somando a durabilidade do produto ao dia da entrada — o exemplo da própria Apostila I, frango que
+  entra em 21/09 com 4 dias de durabilidade, é gravado com validade 25/09. Validade já vencida é
+  recusada com "Essa validade já passou. Confira a data na embalagem.", e nesse caso nada é gravado.
+  A regra segue a ordem exata da especificação, fica num módulo próprio (vale para qualquer caminho
+  de entrada, não só a tela) e usa o "hoje" da loja, também à noite. **Leitura registrada:** o
+  passo 1 da RN04 diz que o não perecível "segue" — então validade informada e já vencida é recusada
+  também nele, como diz a frase da regra ("Validade anterior à data de hoje é recusada"). Com a C2,
+  estão testadas as seis situações do fluxograma 02. 14 testes automáticos — total do projeto: 281,
+  todos passando.
+
+**Bloco C:** banco, API e regras completos (C1 a C4). Faltam a tela (C5) e a integração (C6).
+
+**Próxima tarefa:** D1 — API de registro de perda, com motivo obrigatório.
 
 ### 06/10/2026
 
