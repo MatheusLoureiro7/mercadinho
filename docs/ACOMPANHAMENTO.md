@@ -21,12 +21,12 @@ O diário, no fim do arquivo, conta o que foi feito em cada dia.
 
 | | Concluído | Total | % |
 |---|---|---|---|
-| **Tarefas** | 3 | 51 | 5,9 % |
-| **Horas estimadas** | 22 h | 378 h | 5,8 % |
+| **Tarefas** | 4 | 51 | 7,8 % |
+| **Horas estimadas** | 28 h | 378 h | 7,4 % |
 
 | Etapa | Blocos | Horas concluídas | Total | % |
 |---|---|---|---|---|
-| 1 · Aviso de validade | A, B, C, D, F, J | 22 h | 212 h | 10,4 % |
+| 1 · Aviso de validade | A, B, C, D, F, J | 28 h | 212 h | 13,2 % |
 | 2 · Aviso de ruptura | E, G, H | 0 h | 136 h | 0,0 % |
 | 3 · Gestão | I | 0 h | 30 h | 0,0 % |
 
@@ -46,11 +46,11 @@ Prazo de entrega: **27/11/2026**.
 | A4 | Autenticação e os três perfis de acesso | A3, B1 | 12 | ⬜ A fazer | — | — |
 | A5 | Esteira de publicação em ambiente de teste | A1 | 6 | ⛔ Aguarda D05 | — | — |
 
-## Bloco B — Cadastros · 46 h  ·  0 de 46 h concluídas
+## Bloco B — Cadastros · 46 h  ·  6 de 46 h concluídas
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
-| B1 | Criar as tabelas de usuário, categoria, produto e fornecedor | A2 | 6 | ⬜ A fazer | — | — |
+| ~~B1~~ | ~~Criar as tabelas de usuário, categoria, produto e fornecedor~~ | A2 | 6 | ✅ Concluída | 06/10/2026 | `a3923e2` |
 | B2 | API de categoria e fornecedor | B1, A3 | 8 | ⬜ A fazer | — | — |
 | B3 | API de produto, com validações | B1, A3 | 10 | ⬜ A fazer | — | — |
 | B4 | Regra: perecível exige prazo de durabilidade | B3 | 3 | ⬜ A fazer | — | — |
@@ -146,7 +146,7 @@ cronograma, a regra de negócio (quando houver) e o commit.
 
 ### 06/10/2026
 
-**Tarefas concluídas: A1, A2 e A3** (22 h estimadas).
+**Tarefas concluídas: A1, A2, A3 e B1** (28 h estimadas).
 
 - **A1 — Repositório, ambiente e padrão de código.** Repositório git criado, com a especificação
   (Apostilas I a IV) no primeiro commit. Projeto Django com os sete módulos do sistema
@@ -172,5 +172,22 @@ cronograma, a regra de negócio (quando houver) e o commit.
   código, e o detalhe vai para o log com o mesmo código. Toda requisição é registrada em log,
   sem nunca gravar senha (RNF12). 15 testes automáticos — total do projeto: 23, todos passando.
 
-**Próxima tarefa:** B1 — tabelas de usuário, categoria, produto e fornecedor. A A4
-(autenticação) depende dela.
+- **Skills de apoio.** Instaladas no projeto 13 skills (guias de boas práticas para o assistente
+  de programação) de Django, PostgreSQL, testes, Telegram e acessibilidade. O `CLAUDE.md` registra
+  qual usar em cada tarefa e, principalmente, o que **não** seguir delas: onde um exemplo contraria
+  a especificação (banco de testes, modelo de usuário, tipos do `schema.sql`), vale a especificação.
+- **B1 — Tabelas de usuário, categoria, produto e fornecedor.** As quatro primeiras tabelas da
+  Apostila IV existem no banco, criadas por migração. Um teste automático compara o banco com o
+  modelo de dados entregue, coluna por coluna (nome, tipo, tamanho, obrigatoriedade, valor
+  padrão) — se alguém acrescentar uma coluna fora da apostila, o teste quebra (foi provado
+  criando de propósito uma coluna `saldo`, proibida pela RN01). O banco já recusa sozinho:
+  produto perecível sem prazo de durabilidade (RN03), produto com nome repetido na mesma
+  categoria (fluxograma 01), fornecedor sem prazo de entrega e usuário com perfil diferente de
+  DONO, GESTAO e OPERACAO (RN14). A senha é gravada só como hash (RNF12). O login usa a tabela
+  `usuario` exatamente como na apostila (decisão da L09). 36 testes automáticos — total do
+  projeto: 59, todos passando.
+- **Lacuna nova: L17** — a apostila não diz se a unidade de medida é uma lista fechada
+  (KG, UN, L, PCT). Fica para o grupo decidir antes da B3.
+
+**Próxima tarefa:** A4 — autenticação e os três perfis de acesso (RN14). Com A3 e B1 prontas, ela
+pode começar.
