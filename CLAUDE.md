@@ -159,7 +159,10 @@ devolver.
 
 **RN11 — perda não é consumo.** Movimentação `tipo = 'PERDA'` reduz o estoque mas é **excluída** da
 base de cálculo de consumo e previsão. Todo `WHERE` do motor de previsão filtra `tipo = 'VENDA'`.
-Se isso falhar, quanto mais produto estraga, mais o sistema manda comprar.
+Se isso falhar, quanto mais produto estraga, mais o sistema manda comprar. **No código:** consumo
+se lê **só** por `backend/previsao/consumo.py` (`vendido_no_periodo`, `vendido_por_dia`); os módulos
+`previsao/` e `alertas/` não podem tocar em `Movimentacao` direto — um teste de guarda falha se
+tocarem.
 
 **RN14 — três perfis.** `DONO`, `GESTAO`, `OPERACAO`. A verificação acontece **antes** de qualquer
 operação, na camada de autenticação da API, não dentro da regra de negócio. Os dois funcionários da
