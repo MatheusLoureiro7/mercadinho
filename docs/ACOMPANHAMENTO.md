@@ -21,12 +21,12 @@ O diário, no fim do arquivo, conta o que foi feito em cada dia.
 
 | | Concluído | Total | % |
 |---|---|---|---|
-| **Tarefas** | 6 | 51 | 11,8 % |
-| **Horas estimadas** | 48 h | 378 h | 12,7 % |
+| **Tarefas** | 7 | 51 | 13,7 % |
+| **Horas estimadas** | 58 h | 378 h | 15,3 % |
 
 | Etapa | Blocos | Horas concluídas | Total | % |
 |---|---|---|---|---|
-| 1 · Aviso de validade | A, B, C, D, F, J | 48 h | 212 h | 22,6 % |
+| 1 · Aviso de validade | A, B, C, D, F, J | 58 h | 212 h | 27,4 % |
 | 2 · Aviso de ruptura | E, G, H | 0 h | 136 h | 0,0 % |
 | 3 · Gestão | I | 0 h | 30 h | 0,0 % |
 
@@ -46,13 +46,13 @@ Prazo de entrega: **27/11/2026**.
 | ~~A4~~ | ~~Autenticação e os três perfis de acesso~~ | A3, B1 | 12 | ✅ Concluída | 06/10/2026 | `ec49325` |
 | A5 | Esteira de publicação em ambiente de teste | A1 | 6 | ⛔ Aguarda D05 | — | — |
 
-## Bloco B — Cadastros · 46 h  ·  14 de 46 h concluídas
+## Bloco B — Cadastros · 46 h  ·  24 de 46 h concluídas
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
 | ~~B1~~ | ~~Criar as tabelas de usuário, categoria, produto e fornecedor~~ | A2 | 6 | ✅ Concluída | 06/10/2026 | `a3923e2` |
 | ~~B2~~ | ~~API de categoria e fornecedor~~ | B1, A3 | 8 | ✅ Concluída | 06/10/2026 | `3f93ef1` |
-| B3 | API de produto, com validações | B1, A3 | 10 | ⬜ A fazer | — | — |
+| ~~B3~~ | ~~API de produto, com validações~~ | B1, A3 | 10 | ✅ Concluída | 06/10/2026 | `0172832` |
 | B4 | Regra: perecível exige prazo de durabilidade | B3 | 3 | ⬜ A fazer | — | — |
 | B5 | Tela de produtos | A3 | 8 | ⬜ A fazer | — | — |
 | B6 | Tela de fornecedores | A3 | 6 | ⬜ A fazer | — | — |
@@ -146,7 +146,7 @@ cronograma, a regra de negócio (quando houver) e o commit.
 
 ### 06/10/2026
 
-**Tarefas concluídas: A1, A2, A3, B1, A4 e B2** (48 h estimadas).
+**Tarefas concluídas: A1, A2, A3, B1, A4, B2 e B3** (58 h estimadas).
 
 - **A1 — Repositório, ambiente e padrão de código.** Repositório git criado, com a especificação
   (Apostilas I a IV) no primeiro commit. Projeto Django com os sete módulos do sistema
@@ -214,5 +214,15 @@ rodar.
   de Produtos (só o sobrinho). Nenhuma tela nova foi criada. 32 testes automáticos — total do
   projeto: 141, todos passando.
 
-**Próxima tarefa:** B3 — API de produto, com validações. Antes dela, a lacuna L17 (unidade de
-medida) precisa de decisão.
+- **B3 — API de produto, com validações.** O sobrinho já pode, pela API, cadastrar e corrigir os
+  produtos com tudo o que o RF01 pede — nome, categoria, unidade, se é perecível e quantos dias
+  dura, preços, estoque mínimo — e marcar os que não podem faltar no fim de semana (RF15). Segue a
+  operação 01 da Apostila IV: aponta só o campo que falta e recusa produto com nome repetido na
+  mesma categoria, inclusive ao editar. O produto não tem saldo (RN01) e não pode ser apagado.
+  Busca por nome e filtro por categoria, para a tela de Produtos dar conta de até 2.000 itens.
+  **Decisão L17:** unidade de medida em lista fechada — KG, UN, L ou PCT. **Decisão L19:** produto
+  cadastrado sem dizer se é perecível herda o padrão da categoria (ex.: tudo do Açougue já nasce
+  perecível). 33 testes automáticos — total do projeto: 174, todos passando.
+
+**Próxima tarefa:** B4 — regra: perecível exige prazo de durabilidade (RN03). Hoje o banco já
+recusa o perecível sem durabilidade, mas a API ainda não devolve a mensagem para a tela.
