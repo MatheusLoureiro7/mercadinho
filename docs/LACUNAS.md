@@ -328,6 +328,22 @@ H2, H4 e H5 (34 h) para ela. **Quem decide:** o grupo.
 
 ---
 
+### L24 — O pedido mínimo do fornecedor é em reais ou em quantidade?
+
+A Apostila IV tem a coluna `fornecedor.pedido_minimo NUMERIC(12,2)`, mas nenhum documento diz o que
+ela mede. O RF02 cita só "nome, contato e, principalmente, em quantos dias o fornecedor entrega".
+
+**Impacto:** tarefa B6 (rótulo do campo na tela) e G3 (L15, se a sugestão de compra respeitar o
+pedido mínimo).
+
+> **Adotado na B6 (07/10/2026), a confirmar pelo grupo:** **reais**. É a convenção do próprio
+> modelo — dinheiro em `NUMERIC(12,2)`, quantidade em `NUMERIC(12,3)` (carne em quilos
+> fracionados) —, e quantidade não teria unidade, porque o fornecedor entrega vários produtos. A
+> tela mostra "Pedido mínimo · R$". Nada muda no banco nem na API; se o grupo decidir diferente,
+> muda só o rótulo.
+
+---
+
 ## 2. Divergências internas da documentação entregue
 
 São erros pequenos nas apostilas, de contagem. Não impedem programar, mas é melhor corrigir numa

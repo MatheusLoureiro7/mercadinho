@@ -1,5 +1,5 @@
 /*
- * DADOS DE EXEMPLO — tarefa B5 (docs/ROTEIRO.md).
+ * DADOS DE EXEMPLO — tarefas B5 e B6 (docs/ROTEIRO.md).
  *
  * "As telas B5 e B6 começam com dados fixos no próprio código e só em B7 passam a falar com a API."
  * Este módulo faz o papel da API enquanto isso: mesmos nomes de campo e mesmo formato de resposta e
@@ -15,10 +15,10 @@ const categorias = [
   { id: 4, nome: "Secos e molhados", perecivel_padrao: false },
 ];
 
-const fornecedores = [
-  { id: 1, nome: "Atacadão Central", prazo_entrega_dias: 2 },
-  { id: 2, nome: "Distribuidora Sol", prazo_entrega_dias: 1 },
-  { id: 3, nome: "Frigorífico Boi Bom", prazo_entrega_dias: 3 },
+let fornecedores = [
+  { id: 1, nome: "Atacadão Central", prazo_entrega_dias: 2, pedido_minimo: "500.00", contato: "(11) 3333-4444 · Márcio" },
+  { id: 2, nome: "Distribuidora Sol", prazo_entrega_dias: 1, pedido_minimo: null, contato: "(11) 97777-1212" },
+  { id: 3, nome: "Frigorífico Boi Bom", prazo_entrega_dias: 3, pedido_minimo: "800.00", contato: null },
 ];
 
 let produtos = [
@@ -69,7 +69,36 @@ export const fonte = {
   },
 
   listarFornecedores() {
-    return resposta(fornecedores);
+    return resposta(fornecedores.slice().sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR")));
+  },
+
+  salvarFornecedor(dados, id) {
+    // Mesmas mensagens do FornecedorSerializer (backend/cadastro/serializers.py, tarefa B2).
+    const campos = {};
+    const prazo = dados.prazo_entrega_dias;
+    if (!dados.nome) campos.nome = ["Este campo pode não estar em branco."]; // texto do próprio DRF
+    if (prazo === null || prazo === undefined) {
+      campos.prazo_entrega_dias = ["Informe em quantos dias o fornecedor entrega depois do pedido."];
+    } else if (!/^-?\d+$/.test(String(prazo))) {
+      campos.prazo_entrega_dias = ["Informe o prazo de entrega em dias, só com números."];
+    } else if (Number(prazo) < 0) {
+      campos.prazo_entrega_dias = ["O prazo de entrega não pode ser negativo."];
+    }
+    if (dados.pedido_minimo !== null && dados.pedido_minimo !== undefined) {
+      if (!/^-?\d+(\.\d{1,2})?$/.test(dados.pedido_minimo)) campos.pedido_minimo = ["Um número válido é necessário."];
+      else if (Number(dados.pedido_minimo) < 0) campos.pedido_minimo = ["O pedido mínimo não pode ser negativo."];
+    }
+    if (Object.keys(campos).length) return resposta(erroDeCampos(campos));
+
+    const salvo = {
+      id: id || Math.max(0, ...fornecedores.map((f) => f.id)) + 1,
+      nome: dados.nome,
+      prazo_entrega_dias: Number(prazo),
+      pedido_minimo: dados.pedido_minimo === null ? null : Number(dados.pedido_minimo).toFixed(2),
+      contato: dados.contato || null,
+    };
+    fornecedores = fornecedores.filter((f) => f.id !== salvo.id).concat([salvo]);
+    return resposta({ ok: true, dados: salvo });
   },
 
   listarProdutos(filtros) {

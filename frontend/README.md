@@ -10,6 +10,7 @@ seção 3). Sem framework, sem biblioteca, sem fonte externa — o computador da
 | `js/formatos.js` | Dinheiro e quantidade no formato brasileiro; "12,90" digitado → "12.90" para a API |
 | `js/dados-de-exemplo.js` | Faz o papel da API até a B7 (mesmo formato de resposta e de erro). Sai na B7 |
 | `produtos.html` · `js/produtos.js` | Tela de Produtos (B5) |
+| `fornecedores.html` · `js/fornecedores.js` | Tela de Fornecedores (B6) |
 
 Telas por tarefa: B5 Produtos · B6 Fornecedores · C5 Entrada de mercadoria · D3 Avarias e
 quebras · E5 Importação de vendas · F3 Consulta de estoque · I2 Fechamento de caixa. Toda tela é
