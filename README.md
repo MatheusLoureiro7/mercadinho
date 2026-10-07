@@ -159,6 +159,11 @@ Endpoint sem `tela` é recusado para todos.
 | | POST, PUT, PATCH | OPERACAO (tela de Produtos) | B2 |
 | `/api/fornecedores/` · `/api/fornecedores/{id}/` | GET, POST, PUT, PATCH | OPERACAO | B2 |
 | `/api/produtos/` · `/api/produtos/{id}/` | GET, POST, PUT, PATCH | OPERACAO | B3 |
+| `/api/lotes/` · `/api/lotes/{id}/` | GET, POST (sem editar) | OPERACAO (Entrada de mercadoria) | C2 |
+
+`POST /api/lotes/` registra a carga que chegou: grava o lote e a movimentação de ENTRADA numa
+transação só (operação 02) e devolve o `saldo_produto` novo. A data de entrada é sempre hoje, no
+horário da loja. Lista do dia: `GET /api/lotes/?data_entrada=AAAA-MM-DD` (também `?produto=<id>`).
 
 Filtros de `/api/produtos/`: `?busca=<parte do nome>` e `?categoria=<id>`. Unidades aceitas:
 `KG`, `UN`, `L`, `PCT` (L17).

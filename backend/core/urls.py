@@ -12,6 +12,7 @@ from rest_framework.routers import APIRootView, DefaultRouter
 
 from cadastro.views import CategoriaViewSet, FornecedorViewSet, ProdutoViewSet
 from comum.views import SessaoAtualView, SessaoView
+from estoque.views import LoteViewSet
 
 
 class RaizDaApi(APIRootView):
@@ -26,6 +27,7 @@ roteador = Roteador()
 roteador.register("categorias", CategoriaViewSet, basename="categoria")  # B2
 roteador.register("fornecedores", FornecedorViewSet, basename="fornecedor")  # B2
 roteador.register("produtos", ProdutoViewSet, basename="produto")  # B3
+roteador.register("lotes", LoteViewSet, basename="lote")  # C2
 
 urlpatterns = [
     path("api/sessoes/", SessaoView.as_view(), name="sessao"),

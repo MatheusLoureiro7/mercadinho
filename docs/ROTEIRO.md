@@ -50,7 +50,7 @@ As telas B5 e B6 começam com dados fixos no próprio código e só em B7 passam
 | | ID | Tarefa | Tipo | Depende de | H |
 |---|---|---|---|---|---|
 | [x] | **C1** | Criar as tabelas de lote e movimentação | BD | A2 | 6 |
-| [ ] | **C2** | API de entrada de lote | API | C1, B3 | 8 |
+| [x] | **C2** | API de entrada de lote | API | C1, B3 | 8 |
 | [ ] | **C3** | Regra: validade obrigatória e cálculo automático | Regra | C2 | 4 |
 | [x] | **C4** | Saldo derivado das movimentações | BD/Regra | C1 | 6 |
 | [ ] | **C5** | Tela de entrada de mercadoria | Tela | A3 | 10 |
