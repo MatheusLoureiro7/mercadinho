@@ -21,12 +21,12 @@ O diário, no fim do arquivo, conta o que foi feito em cada dia.
 
 | | Concluído | Total | % |
 |---|---|---|---|
-| **Tarefas** | 14 | 51 | 27,5 % |
-| **Horas estimadas** | 94 h | 378 h | 24,9 % |
+| **Tarefas** | 15 | 51 | 29,4 % |
+| **Horas estimadas** | 100 h | 378 h | 26,5 % |
 
 | Etapa | Blocos | Horas concluídas | Total | % |
 |---|---|---|---|---|
-| 1 · Aviso de validade | A, B, C, D, F, J | 94 h | 212 h | 44,3 % |
+| 1 · Aviso de validade | A, B, C, D, F, J | 100 h | 212 h | 47,2 % |
 | 2 · Aviso de ruptura | E, G, H | 0 h | 136 h | 0,0 % |
 | 3 · Gestão | I | 0 h | 30 h | 0,0 % |
 
@@ -88,11 +88,11 @@ Prazo de entrega: **27/11/2026**.
 | E4 | Casar o produto do caixa com o produto cadastrado | E3 | 10 | ⛔ Aguarda D01 | — | — |
 | E5 | Tela de acompanhamento da importação | E3 | 6 | ⛔ Aguarda D01 | — | — |
 
-## Bloco F — Consulta de estoque · 22 h  ·  0 de 22 h concluídas
+## Bloco F — Consulta de estoque · 22 h  ·  6 de 22 h concluídas
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
-| F1 | Visão de estoque por produto e por lote | C4 | 6 | ⬜ A fazer | — | — |
+| ~~F1~~ | ~~Visão de estoque por produto e por lote~~ | C4 | 6 | ✅ Concluída | 07/10/2026 | `01b84a8` |
 | F2 | API de consulta com filtros | F1 | 6 | ⬜ A fazer | — | — |
 | F3 | Tela de estoque, com destaque para mínimo e vencidos | A3 | 10 | ⬜ A fazer | — | — |
 
@@ -146,7 +146,7 @@ cronograma, a regra de negócio (quando houver) e o commit.
 
 ### 07/10/2026
 
-**Tarefas concluídas: C2, C3, D1 e D2** (21 h estimadas).
+**Tarefas concluídas: C2, C3, D1, D2 e F1** (27 h estimadas).
 
 - **C2 — API de entrada de mercadoria (RF03, operação 02).** O sobrinho já registra, pela API,
   cada carga que chega: produto, quantidade, custo, fornecedor e validade. Como manda a operação 02
@@ -198,7 +198,21 @@ cronograma, a regra de negócio (quando houver) e o commit.
 
 **Bloco D:** banco, API e regra completos (D1 e D2). Faltam a tela (D3) e a integração (D4).
 
-**Próxima tarefa:** F1 — visão de estoque por produto e por lote.
+- **F1 — Visão de estoque por produto e por lote (RF07, RN16).** O sistema já sabe montar a
+  "foto" do estoque que a tela de consulta vai mostrar: por produto — saldo, categoria, se está
+  **abaixo do mínimo**, quantos lotes estão **vencidos** e **vencendo** e a validade mais próxima —
+  e por lote — quanto resta, quantos dias faltam para vencer e a situação (vencido, vencendo, dentro
+  da validade, sem validade). Testado com os exemplos da Apostila I: o iogurte vencido em 20/09
+  aparece destacado em 21/09 (RN16); o lote que vence em 24/09 aparece como "vencendo" em 21/09,
+  com o parâmetro de 3 dias (RN05). E foi conferido que a soma do que resta nos lotes bate com o
+  saldo depois de entradas e perdas. A visão é feita com consultas sobre o que já existe — nenhum
+  objeto novo foi criado no banco, que na apostila só tem a visão de saldo.
+  **Decisão L21:** a tabela de parâmetros (o "3 dias" do aviso, os "14 dias" de histórico etc.)
+  está no modelo de dados mas não estava em nenhuma tarefa do cronograma; foi criada aqui, igual à
+  apostila, com os 7 valores iniciais. 25 testes automáticos — total do projeto: 352, todos
+  passando.
+
+**Próxima tarefa:** F2 — API de consulta com filtros.
 
 ### 06/10/2026
 
