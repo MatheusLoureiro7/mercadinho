@@ -162,6 +162,29 @@ pelo admin do Django), operado pela equipe — sem criar uma 11ª tela.
 
 ---
 
+### L15 — Qual é a fórmula da sugestão de compra?
+
+O **RF11** pede para "indicar a quantidade a pedir de cada produto, considerando o prazo do
+fornecedor", e a tabela `previsao_produto` tem a coluna `sugestao_compra`. Nenhuma RN diz como esse
+número é calculado: até quantos dias de cobertura comprar, se desconta o saldo atual, se respeita
+`fornecedor.pedido_minimo`.
+
+**Impacto:** tarefa G3 (8 h).
+**Quem decide:** o grupo. Vale confirmar com o Sr. João como ele decide hoje quanto pedir.
+
+---
+
+### L16 — O que é o "resultado do período" no balanço?
+
+O **RF13** pede "vendas, perdas e resultado do período". Não está definido se o resultado é
+vendas menos perdas, se as perdas entram a preço de custo ou de venda, nem se o custo da mercadoria
+vendida entra na conta.
+
+**Impacto:** tarefa I3 (12 h).
+**Quem decide:** o grupo, confirmando com a esposa do Sr. João como ela faz a conta no caderno.
+
+---
+
 ## 2. Divergências internas da documentação entregue
 
 São erros pequenos nas apostilas, de contagem. Não impedem programar, mas é melhor corrigir numa
