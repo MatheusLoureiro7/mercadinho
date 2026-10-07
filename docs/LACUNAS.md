@@ -285,6 +285,22 @@ pede o lote ou se a perda sai sozinha pela ordem de validade.
 
 ---
 
+### L21 — A tabela `parametro` não está em nenhuma tarefa do cronograma
+
+A tabela `parametro` está no `schema.sql` (com os 7 valores iniciais da Apostila I, seção 7), mas
+nenhuma das tarefas da seção 9 da Apostila IV a cria: B1 cria cadastros, C1 lote e movimentação,
+E2 vendas, G1/G3 consumo e previsão, H1 avisos, I1 fechamento.
+
+**Impacto:** F1 (o que está "vencendo" usa `dias_aviso_validade`) e todas as regras com número
+configurável (RN05, RN08, RN09, RN10, RN12).
+
+> **✅ DECIDIDA em 07/10/2026 (tarefa F1):** a tabela é criada na F1, a primeira tarefa que precisa
+> dela — igual ao `schema.sql`, com os 7 valores iniciais copiados literalmente. Vale registrar
+> numa versão 1.1 da Apostila IV que a F1 também cria a tabela de parâmetros. A forma de **alterar**
+> os valores continua aberta (L14).
+
+---
+
 ## 2. Divergências internas da documentação entregue
 
 São erros pequenos nas apostilas, de contagem. Não impedem programar, mas é melhor corrigir numa

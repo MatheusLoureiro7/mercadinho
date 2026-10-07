@@ -13,29 +13,12 @@ segurança, como no schema.sql.
 
 from django.conf import settings
 from django.db import models
-from django.db.models import Func, Q
+from django.db.models import Q
 from django.db.models.functions import Length, Trim
 from django.db.models.lookups import GreaterThan
 
 from cadastro.models import Fornecedor, Produto
-
-
-class DataAtual(Func):
-    """CURRENT_DATE do PostgreSQL, para o DEFAULT de lote.data_entrada ficar igual ao schema.sql."""
-
-    template = "CURRENT_DATE"
-    output_field = models.DateField()
-
-
-class Agora(Func):
-    """
-    NOW() do PostgreSQL, como no schema.sql. (O Now() do Django gera STATEMENT_TIMESTAMP(); o NOW()
-    é o horário do início da transação, então lote e movimentação gravados juntos ficam com a
-    mesma hora — operação 02, passo 7.)
-    """
-
-    template = "NOW()"
-    output_field = models.DateTimeField()
+from comum.sql import Agora, DataAtual  # as migrações referenciam estoque.models.Agora/DataAtual
 
 
 class Lote(models.Model):
