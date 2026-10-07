@@ -21,12 +21,12 @@ O diário, no fim do arquivo, conta o que foi feito em cada dia.
 
 | | Concluído | Total | % |
 |---|---|---|---|
-| **Tarefas** | 5 | 51 | 9,8 % |
-| **Horas estimadas** | 40 h | 378 h | 10,6 % |
+| **Tarefas** | 6 | 51 | 11,8 % |
+| **Horas estimadas** | 48 h | 378 h | 12,7 % |
 
 | Etapa | Blocos | Horas concluídas | Total | % |
 |---|---|---|---|---|
-| 1 · Aviso de validade | A, B, C, D, F, J | 40 h | 212 h | 18,9 % |
+| 1 · Aviso de validade | A, B, C, D, F, J | 48 h | 212 h | 22,6 % |
 | 2 · Aviso de ruptura | E, G, H | 0 h | 136 h | 0,0 % |
 | 3 · Gestão | I | 0 h | 30 h | 0,0 % |
 
@@ -46,12 +46,12 @@ Prazo de entrega: **27/11/2026**.
 | ~~A4~~ | ~~Autenticação e os três perfis de acesso~~ | A3, B1 | 12 | ✅ Concluída | 06/10/2026 | `ec49325` |
 | A5 | Esteira de publicação em ambiente de teste | A1 | 6 | ⛔ Aguarda D05 | — | — |
 
-## Bloco B — Cadastros · 46 h  ·  6 de 46 h concluídas
+## Bloco B — Cadastros · 46 h  ·  14 de 46 h concluídas
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
 | ~~B1~~ | ~~Criar as tabelas de usuário, categoria, produto e fornecedor~~ | A2 | 6 | ✅ Concluída | 06/10/2026 | `a3923e2` |
-| B2 | API de categoria e fornecedor | B1, A3 | 8 | ⬜ A fazer | — | — |
+| ~~B2~~ | ~~API de categoria e fornecedor~~ | B1, A3 | 8 | ✅ Concluída | 06/10/2026 | `3f93ef1` |
 | B3 | API de produto, com validações | B1, A3 | 10 | ⬜ A fazer | — | — |
 | B4 | Regra: perecível exige prazo de durabilidade | B3 | 3 | ⬜ A fazer | — | — |
 | B5 | Tela de produtos | A3 | 8 | ⬜ A fazer | — | — |
@@ -146,7 +146,7 @@ cronograma, a regra de negócio (quando houver) e o commit.
 
 ### 06/10/2026
 
-**Tarefas concluídas: A1, A2, A3, B1 e A4** (40 h estimadas).
+**Tarefas concluídas: A1, A2, A3, B1, A4 e B2** (48 h estimadas).
 
 - **A1 — Repositório, ambiente e padrão de código.** Repositório git criado, com a especificação
   (Apostilas I a IV) no primeiro commit. Projeto Django com os sete módulos do sistema
@@ -204,4 +204,15 @@ cronograma, a regra de negócio (quando houver) e o commit.
 **Bloco A:** só falta a A5 (esteira de publicação), que aguarda a decisão D05 — onde o sistema vai
 rodar.
 
-**Próxima tarefa:** B2 — API de categoria e fornecedor.
+- **B2 — API de categoria e fornecedor.** O sobrinho já pode, pela API, cadastrar e corrigir
+  fornecedores com o prazo de entrega — obrigatório, porque é o número que faz o aviso de "vai
+  acabar" sair a tempo (RF02, RN08) — e as categorias da loja ("Secos e molhados", "Açougue",
+  "Frios"). Nada é apagado: categoria e fornecedor são registros de origem, que a Apostila IV
+  manda nunca apagar. Os outros dois perfis não mexem em fornecedor (RN14).
+  **Decisão L18:** a categoria não tem tela própria entre as 10; ler as categorias ficou com a
+  Consulta de estoque (os três perfis, que veem o saldo por categoria) e cadastrar ficou com a tela
+  de Produtos (só o sobrinho). Nenhuma tela nova foi criada. 32 testes automáticos — total do
+  projeto: 141, todos passando.
+
+**Próxima tarefa:** B3 — API de produto, com validações. Antes dela, a lacuna L17 (unidade de
+medida) precisa de decisão.
