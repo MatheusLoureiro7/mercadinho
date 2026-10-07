@@ -226,6 +226,13 @@ caixa, fardo).
 sobrinho na carga inicial (J2).
 **Quem decide:** o grupo, confirmando com o sobrinho.
 
+> **✅ DECIDIDA em 06/10/2026 (tarefa B3):** lista fechada **KG, UN, L, PCT** — a que o
+> `schema.sql` cita —, validada só na API (`UNIDADES_DE_MEDIDA` em
+> `backend/cadastro/serializers.py`). O banco continua sem restrição, como no `schema.sql`.
+> Minúsculas são aceitas e gravadas em maiúsculas. **Por quê:** evita o mesmo produto cadastrado
+> como "kg", "Kg" e "quilo", o que estragaria a previsão de consumo. Se a carga inicial (J2) mostrar
+> outra unidade, acrescentar é mudar uma linha.
+
 ---
 
 ### L18 — A categoria não tem tela própria: quem lê e quem cadastra?
@@ -242,6 +249,20 @@ categoria" — os três perfis).
 > tela nova: o cadastro de categoria é feito de dentro da tela de Produtos (B5).
 > Como categoria e fornecedor são tabelas de origem ("nunca podem ser apagadas", Apostila IV,
 > seção 5), a API **não tem exclusão** para nenhum dos dois.
+
+---
+
+### L19 — Para que serve `categoria.perecivel_padrao`?
+
+A coluna existe na Apostila IV (`categoria.perecivel_padrao BOOLEAN NOT NULL DEFAULT FALSE`), mas
+nenhum documento diz como ela é usada.
+
+**Impacto:** tarefa B3 (cadastro de produto).
+
+> **✅ DECIDIDA em 06/10/2026 (tarefa B3):** quando o produto é cadastrado **sem dizer** se é
+> perecível, ele herda o `perecivel_padrao` da categoria. Quem diz explicitamente prevalece (o
+> carvão pode ficar no Açougue sem ser perecível). **Por quê:** é a única função que justifica a
+> coluna, e poupa o sobrinho de marcar um por um os produtos do açougue e dos frios (RNF05).
 
 ---
 

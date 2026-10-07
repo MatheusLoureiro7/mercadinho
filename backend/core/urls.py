@@ -10,7 +10,7 @@ tarefas que os criam. Exemplo, quando a B3 chegar:
 from django.urls import include, path
 from rest_framework.routers import APIRootView, DefaultRouter
 
-from cadastro.views import CategoriaViewSet, FornecedorViewSet
+from cadastro.views import CategoriaViewSet, FornecedorViewSet, ProdutoViewSet
 from comum.views import SessaoAtualView, SessaoView
 
 
@@ -25,6 +25,7 @@ class Roteador(DefaultRouter):
 roteador = Roteador()
 roteador.register("categorias", CategoriaViewSet, basename="categoria")  # B2
 roteador.register("fornecedores", FornecedorViewSet, basename="fornecedor")  # B2
+roteador.register("produtos", ProdutoViewSet, basename="produto")  # B3
 
 urlpatterns = [
     path("api/sessoes/", SessaoView.as_view(), name="sessao"),

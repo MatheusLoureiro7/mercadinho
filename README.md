@@ -158,6 +158,10 @@ Endpoint sem `tela` é recusado para todos.
 | `/api/categorias/` · `/api/categorias/{id}/` | GET | os três perfis (Consulta de estoque) | B2 |
 | | POST, PUT, PATCH | OPERACAO (tela de Produtos) | B2 |
 | `/api/fornecedores/` · `/api/fornecedores/{id}/` | GET, POST, PUT, PATCH | OPERACAO | B2 |
+| `/api/produtos/` · `/api/produtos/{id}/` | GET, POST, PUT, PATCH | OPERACAO | B3 |
+
+Filtros de `/api/produtos/`: `?busca=<parte do nome>` e `?categoria=<id>`. Unidades aceitas:
+`KG`, `UN`, `L`, `PCT` (L17).
 
 Nada de origem é apagado (Apostila IV, seção 5): `DELETE` responde 405.
 
