@@ -69,7 +69,7 @@ projeto inteiro: tudo que vem depois consulta esse saldo.
 |---|---|---|---|---|---|
 | [x] | **D1** | API de registro de perda, com motivo obrigatório | API | C1 | 6 |
 | [x] | **D2** | Regra: perda não entra na base de consumo | Regra | D1 | 3 |
-| [ ] | **D3** | Tela de avarias e quebras | Tela | A3 | 7 |
+| [x] | **D3** | Tela de avarias e quebras | Tela | A3 | 7 |
 | [ ] | **D4** | Integração e teste | Tela/Teste | D1, D3 | 2 |
 
 **D2 = RN11.** Parece pequena (3 h) e é uma das mais críticas do sistema. Se furar, quanto mais

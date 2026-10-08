@@ -23,7 +23,8 @@ from estoque.models import Lote, Movimentacao
 
 
 def _quantidade_na_loja(valor: Decimal, produto: Produto) -> str:
-    return f"{valor:.3f}".replace(".", ",") + f" {produto.unidade_medida}"
+    """Como a loja escreve (e a tela mostra): "3 UN", "2 KG", "2,5 KG" — sem zeros sobrando."""
+    return f"{valor.normalize():f}".replace(".", ",") + f" {produto.unidade_medida}"
 
 
 @transaction.atomic

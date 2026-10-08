@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Avarias e quebras · Mercado do Sr. João</title>
+    <link rel="icon" href="img/icone.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="css/base.css" />
+    <script type="module" src="js/avarias.js"></script>
+  </head>
+  <body>
+    <a class="pular-para-conteudo" href="#conteudo">Pular para o conteúdo</a>
+
+    <header class="cabecalho">
+      <div class="cabecalho__interno">
+        <span class="cabecalho__marca">
+          <svg class="icone" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 9l1.5-5h15L21 9" /><path d="M4 9v11h16V9" /><path d="M9 20v-6h6v6" />
+          </svg>
+          Mercado do Sr. João
+        </span>
+        <nav aria-label="Menu principal">
+          <!-- Menu do perfil (RN14): montado por js/sessao.js com as telas que /api/sessoes/atual/ devolve. -->
+          <ul class="menu" id="menu"></ul>
+        </nav>
+        <span class="cabecalho__usuario">
+          <span id="usuario-nome"></span>
+          <button type="button" class="botao botao--cabecalho" id="botao-sair" hidden>Sair</button>
+        </span>
+      </div>
+    </header>
+
+    <main id="conteudo" class="pagina" tabindex="-1">
+      <p class="recado" id="recado" role="status" hidden>
+        <svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 8v5M12 16.5v.5" /></svg>
+        <span></span>
+      </p>
+      <div class="pagina__titulo">
+        <div>
+          <h1>Avarias e quebras</h1>
+          <p class="pagina__descricao">O que venceu, quebrou ou estragou sai do estoque, sempre com o motivo anotado.</p>
+        </div>
+      </div>
+
+      <!-- Formulário do fluxograma 03 (RF04). Sempre aberto, como a Entrada de mercadoria. -->
+      <section class="cartao" id="painel-formulario" aria-labelledby="titulo-formulario">
+        <h2 class="cartao__titulo" id="titulo-formulario">Registrar perda</h2>
+
+        <p class="sucesso" id="sucesso" role="status" hidden>
+          <svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6L9 17l-5-5" /></svg>
+          <span id="sucesso-texto"></span>
+        </p>
+
+        <div class="resumo-de-erros" id="resumo-de-erros" role="alert" tabindex="-1" aria-labelledby="titulo-erros" hidden>
+          <h3 id="titulo-erros">Confira os campos destacados</h3>
+          <ul id="lista-de-erros"></ul>
+        </div>
+
+        <form id="formulario" novalidate>
+          <div class="formulario__grade">
+            <div class="campo campo--largo">
+              <label for="campo-procurar">Procurar o produto</label>
+              <input id="campo-procurar" type="search" autocomplete="off" placeholder="Ex.: iogurte" aria-describedby="anuncio-produtos" />
+              <p class="campo__ajuda" id="anuncio-produtos" aria-live="polite"></p>
+            </div>
+
+            <div class="campo campo--largo">
+              <label for="campo-produto">Produto<span class="obrigatorio" aria-hidden="true">*</span></label>
+              <select id="campo-produto" name="produto" required aria-describedby="erro-produto"></select>
+              <p class="campo__erro" id="erro-produto" hidden></p>
+            </div>
+
+            <!-- L20: o sobrinho escolhe o lote que estragou; sem escolher, sai pela ordem de validade (RN02),
+                 vencidos primeiro (RN16). A lista vem da Consulta de estoque por lote (F2). -->
+            <div class="campo campo--largo">
+              <span class="rotulo" id="rotulo-lote">De qual lote?</span>
+              <div class="lotes" id="lista-de-lotes" role="radiogroup" aria-labelledby="rotulo-lote" aria-describedby="ajuda-lote erro-lote" tabindex="-1"></div>
+              <p class="campo__ajuda" id="ajuda-lote">Escolha o produto para ver os lotes que estão na loja.</p>
+              <p class="campo__erro" id="erro-lote" hidden></p>
+            </div>
+
+            <div class="campo">
+              <label for="campo-quantidade">Quanto se perdeu<span class="obrigatorio" aria-hidden="true">*</span></label>
+              <div class="campo__sufixo">
+                <input id="campo-quantidade" name="quantidade" inputmode="decimal" autocomplete="off" required aria-describedby="ajuda-quantidade erro-quantidade" />
+                <span id="sufixo-quantidade"></span>
+              </div>
+              <p class="campo__ajuda" id="ajuda-quantidade"></p>
+              <p class="campo__erro" id="erro-quantidade" hidden></p>
+            </div>
+
+            <div class="campo campo--largo">
+              <label for="campo-motivo">Motivo<span class="obrigatorio" aria-hidden="true">*</span></label>
+              <input id="campo-motivo" name="motivo" maxlength="200" autocomplete="off" required aria-describedby="ajuda-motivo erro-motivo" />
+              <div class="motivos" role="group" aria-label="Motivos mais comuns">
+                <button type="button" class="botao botao--secundario" data-motivo="Venceu">Venceu</button>
+                <button type="button" class="botao botao--secundario" data-motivo="Quebrou">Quebrou</button>
+                <button type="button" class="botao botao--secundario" data-motivo="Estragou">Estragou</button>
+              </div>
+              <p class="campo__ajuda" id="ajuda-motivo">Toque num dos botões ou escreva o que aconteceu.</p>
+              <p class="campo__erro" id="erro-motivo" hidden></p>
+            </div>
+          </div>
+
+          <div class="formulario__acoes">
+            <button type="submit" class="botao botao--acao" id="botao-salvar">Registrar perda</button>
+            <button type="button" class="botao botao--secundario" id="botao-limpar">Limpar</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- O caderno de avarias do dia. Perda não se apaga (RN01). -->
+      <section class="cartao" aria-labelledby="titulo-lista">
+        <h2 class="cartao__titulo" id="titulo-lista">Perdas de hoje</h2>
+        <p class="pagina__descricao">Confira antes de registrar: a perda não se apaga, fica no histórico do estoque.</p>
+
+        <p class="visualmente-oculto" id="anuncio-lista" aria-live="polite"></p>
+        <!-- Focável: no celular a tabela rola de lado e não tem botão dentro (WCAG 2.1.1). -->
+        <div class="tabela-rolavel" tabindex="0" role="region" aria-labelledby="titulo-lista">
+          <table class="tabela">
+            <thead>
+              <tr>
+                <th scope="col">Hora</th>
+                <th scope="col">Produto</th>
+                <th scope="col" class="numero">Quantidade</th>
+                <th scope="col">Lote</th>
+                <th scope="col">Motivo</th>
+                <th scope="col">Quem registrou</th>
+              </tr>
+            </thead>
+            <tbody id="corpo-tabela"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

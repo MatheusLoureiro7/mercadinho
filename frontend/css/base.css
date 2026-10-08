@@ -542,6 +542,33 @@ h3 {
   display: none;
 }
 
+/* Avarias (D3): lotes do produto como opções, e os motivos mais comuns em botões. */
+.lotes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--esp-1);
+}
+.lotes .opcao {
+  padding: var(--esp-2) var(--esp-3);
+  border: 1px solid var(--cor-divisoria);
+  border-radius: var(--raio);
+}
+.lotes .opcao:has(input:checked) {
+  border-color: var(--cor-acao);
+  background: var(--cor-ok-fundo);
+}
+.lotes[aria-invalid="true"] .opcao {
+  border-color: var(--cor-erro);
+}
+.opcao__detalhe {
+  display: block;
+}
+.motivos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--esp-2);
+}
+
 /* Confirmação dentro do formulário, para telas de registro em sequência (C5). */
 .sucesso {
   display: flex;

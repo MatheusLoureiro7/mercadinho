@@ -46,3 +46,19 @@ export function semAcento(texto) {
     .replace(/[̀-ͯ]/g, "")
     .toLowerCase();
 }
+
+const DIA_NA_LOJA = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo" }); // AAAA-MM-DD
+const HORA_NA_LOJA = new Intl.DateTimeFormat("pt-BR", { timeZone: "America/Sao_Paulo", hour: "2-digit", minute: "2-digit" });
+
+/**
+ * "Hoje" no dia da loja (São Paulo), como a API o calcula (CLAUDE.md). Só para filtrar a lista do
+ * dia: quem grava a data é sempre a API. `momento` opcional: o dia da loja de um data_hora da API.
+ */
+export function diaNaLoja(momento) {
+  return DIA_NA_LOJA.format(momento ? new Date(momento) : new Date());
+}
+
+/** "2026-10-08T14:32:10-03:00" (da API) → "14:32", no horário da loja. */
+export function horaNaLoja(momento) {
+  return HORA_NA_LOJA.format(new Date(momento));
+}

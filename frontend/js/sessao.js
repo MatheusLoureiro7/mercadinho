@@ -17,7 +17,7 @@ export const TELAS = {
   produtos: { nome: "Produtos", endereco: "produtos.html" },
   fornecedores: { nome: "Fornecedores", endereco: "fornecedores.html" },
   entrada_mercadoria: { nome: "Entrada de mercadoria", endereco: "entrada-mercadoria.html" },
-  avarias: { nome: "Avarias e quebras", endereco: null }, // D3
+  avarias: { nome: "Avarias e quebras", endereco: "avarias.html" },
   importacao_vendas: { nome: "Importação de vendas", endereco: null }, // E5
   consulta_estoque: { nome: "Consulta de estoque", endereco: null }, // F3
   fechamento_caixa: { nome: "Fechamento de caixa", endereco: null }, // I2

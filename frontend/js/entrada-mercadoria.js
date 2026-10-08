@@ -15,7 +15,17 @@
 
 import { api } from "./api.js";
 import { linhaDeFalha } from "./falha.js";
-import { dataBrasileira, emReais, numeroParaApi, quantidade, semAcento } from "./formatos.js";
+import { dataBrasileira, diaNaLoja, emReais, numeroParaApi, quantidade } from "./formatos.js";
+import {
+  apagarErroAoCorrigir,
+  celula,
+  confirmar,
+  limparErros,
+  linhaVazia,
+  mostrarErroNoCampo,
+  mostrarErros,
+} from "./formulario.js";
+import { procurarProduto } from "./procurar-produto.js";
 import { entrarNaTela } from "./sessao.js";
 
 // Exatamente os campos que a API recebe (EntradaDeLoteSerializer). Um teste confere.
@@ -30,19 +40,14 @@ const CAMPOS = {
 const UNIDADES = { KG: "quilo", L: "litro", UN: "unidade", PCT: "pacote" };
 
 const estado = {
-  produtos: [],
   fornecedores: [],
-  // "Hoje" da lista do dia: o dia de São Paulo, como o da API (CLAUDE.md). Depois da primeira
-  // entrada, vale a data que a própria API gravou — o relógio do computador pode estar errado.
-  hoje: hojeNaLoja(),
+  procura: null,
+  // "Hoje" da lista do dia, no dia da loja. Depois da primeira entrada, vale a data que a própria
+  // API gravou — o relógio do computador pode estar errado.
+  hoje: diaNaLoja(),
 };
 
 const $ = (id) => document.getElementById(id);
-
-function hojeNaLoja() {
-  // "en-CA" escreve a data como AAAA-MM-DD, o formato que a API recebe.
-  return new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo" }).format(new Date());
-}
 
 // ------------------------------------------------------------------------------------------ Início
 
@@ -58,22 +63,16 @@ async function iniciar() {
     $("botao-salvar").disabled = true;
     return;
   }
-  estado.produtos = produtos.dados;
   estado.fornecedores = fornecedores.dados;
 
   preencherFornecedores();
   $("campo-validade").min = estado.hoje; // só ajuda o calendário; quem recusa data vencida é a API (RN04)
-  filtrarProdutos();
+  estado.procura = procurarProduto({ produtos: produtos.dados, aoEscolher: aoEscolherProduto });
   mostrarProduto();
 
-  $("campo-procurar").addEventListener("input", filtrarProdutos);
-  $("campo-produto").addEventListener("change", aoEscolherProduto);
   $("formulario").addEventListener("submit", salvar);
   $("botao-limpar").addEventListener("click", () => limparFormulario({ manterFornecedor: false }));
-  Object.keys(CAMPOS).forEach((campo) => {
-    // Apaga o erro enquanto a pessoa corrige; nunca no "blur" (o clique em "Registrar" se perderia, B7).
-    $(CAMPOS[campo].id).addEventListener("input", () => mostrarErroNoCampo(campo, null));
-  });
+  apagarErroAoCorrigir(CAMPOS);
 
   carregarLista();
   $("campo-procurar").focus();
@@ -88,36 +87,12 @@ function preencherFornecedores() {
 
 // ------------------------------------------------------------------------------------------ Produto
 
-function filtrarProdutos() {
-  const busca = semAcento($("campo-procurar").value.trim());
-  const select = $("campo-produto");
-  const escolhido = select.value;
-  const encontrados = estado.produtos.filter((p) => !busca || semAcento(p.nome).indexOf(busca) >= 0);
-
-  select.textContent = "";
-  select.append(new Option(encontrados.length ? "Escolha…" : "Nenhum produto com esse nome", ""));
-  encontrados.forEach((p) => select.append(new Option(p.nome + " — " + p.categoria_nome, p.id)));
-
-  // Só escolhe sozinho quando não há dúvida (um resultado); senão mantém o que estava escolhido.
-  if (encontrados.length === 1) select.value = String(encontrados[0].id);
-  else if (encontrados.some((p) => String(p.id) === escolhido)) select.value = escolhido;
-
-  $("anuncio-produtos").textContent = !busca
-    ? estado.produtos.length + " produtos na lista."
-    : encontrados.length === 1
-      ? "1 produto encontrado e escolhido: " + encontrados[0].nome + "."
-      : encontrados.length + " produtos encontrados. Escolha na lista abaixo.";
-  if (select.value !== escolhido) aoEscolherProduto();
-}
-
 function produtoEscolhido() {
-  const id = Number($("campo-produto").value);
-  return estado.produtos.find((p) => p.id === id) || null;
+  return estado.procura ? estado.procura.escolhido() : null;
 }
 
-function aoEscolherProduto() {
-  mostrarErroNoCampo("produto", null);
-  const produto = produtoEscolhido();
+function aoEscolherProduto(produto) {
+  mostrarErroNoCampo(CAMPOS, "produto", null);
   // O fornecedor de costume vem junto, a não ser que a pessoa já tenha escolhido um para a carga.
   if (produto && produto.fornecedor_padrao && !$("campo-fornecedor").value) {
     $("campo-fornecedor").value = produto.fornecedor_padrao;
@@ -162,7 +137,7 @@ function dadosDoFormulario() {
 
 async function salvar(evento) {
   evento.preventDefault();
-  limparErros();
+  limparErros(CAMPOS);
   confirmar(null);
 
   const dados = dadosDoFormulario();
@@ -171,7 +146,7 @@ async function salvar(evento) {
   if (faltando.length) {
     const campos = {};
     faltando.forEach((campo) => (campos[campo] = [CAMPOS[campo].obrigatorio]));
-    return mostrarErros({ campos: campos });
+    return mostrarErros(CAMPOS, { campos: campos });
   }
 
   const botao = $("botao-salvar");
@@ -181,7 +156,7 @@ async function salvar(evento) {
   botao.disabled = false;
   botao.removeAttribute("aria-busy");
 
-  if (!resposta.ok) return mostrarErros(resposta.erro); // o que foi digitado fica onde está
+  if (!resposta.ok) return mostrarErros(CAMPOS, resposta.erro); // o que foi digitado fica onde está
 
   const lote = resposta.dados;
   limparFormulario({ manterFornecedor: true });
@@ -203,10 +178,10 @@ function mensagemDeSucesso(lote, validadeEmBranco) {
 function limparFormulario(opcoes) {
   const fornecedor = $("campo-fornecedor").value;
   $("formulario").reset();
-  limparErros();
+  limparErros(CAMPOS);
   confirmar(null);
   if (opcoes.manterFornecedor) $("campo-fornecedor").value = fornecedor;
-  filtrarProdutos();
+  estado.procura.filtrar();
   mostrarProduto();
   $("campo-procurar").focus();
 }
@@ -226,20 +201,13 @@ async function carregarLista() {
     return;
   }
   const lotes = resposta.dados;
-  if (!lotes.length) corpo.append(linhaVazia());
-  else lotes.forEach((lote) => corpo.append(linhaDoLote(lote)));
+  if (!lotes.length) {
+    corpo.append(linhaVazia(5, "Nenhuma entrada registrada hoje.", "O que você registrar aparece aqui."));
+  } else {
+    lotes.forEach((lote) => corpo.append(linhaDoLote(lote)));
+  }
   $("titulo-lista").textContent = "Entradas de hoje · " + dataBrasileira(estado.hoje);
   $("anuncio-lista").textContent = lotes.length === 1 ? "1 entrada hoje." : lotes.length + " entradas hoje.";
-}
-
-function linhaVazia() {
-  const linha = document.createElement("tr");
-  const celula = document.createElement("td");
-  celula.colSpan = 5;
-  celula.className = "vazio";
-  celula.innerHTML = "<strong>Nenhuma entrada registrada hoje.</strong>O que você registrar aparece aqui.";
-  linha.append(celula);
-  return linha;
 }
 
 function linhaDoLote(lote) {
@@ -256,69 +224,4 @@ function linhaDoLote(lote) {
     celula(emReais(lote.custo_unitario), "numero")
   );
   return linha;
-}
-
-function celula(conteudo, classe) {
-  const td = document.createElement("td");
-  if (classe) td.className = classe;
-  if (conteudo !== undefined) td.textContent = conteudo;
-  return td;
-}
-
-// ------------------------------------------------------------------------------------------ Erros
-
-function mostrarErros(erro) {
-  const campos = erro.campos || {};
-  const lista = $("lista-de-erros");
-  lista.textContent = "";
-
-  Object.keys(campos).forEach((campo) => {
-    const mensagem = [].concat(campos[campo]).join(" ");
-    mostrarErroNoCampo(campo, mensagem);
-    const item = document.createElement("li");
-    const link = document.createElement("a");
-    link.href = "#" + (CAMPOS[campo] ? CAMPOS[campo].id : "formulario");
-    link.textContent = (CAMPOS[campo] ? CAMPOS[campo].rotulo + ": " : "") + mensagem;
-    link.addEventListener("click", (e) => {
-      e.preventDefault();
-      if (CAMPOS[campo]) $(CAMPOS[campo].id).focus();
-    });
-    item.append(link);
-    lista.append(item);
-  });
-
-  if (!Object.keys(campos).length) {
-    const item = document.createElement("li");
-    item.textContent = erro.mensagem || "Não foi possível registrar. Tente de novo.";
-    lista.append(item);
-  }
-
-  const resumo = $("resumo-de-erros");
-  resumo.hidden = false;
-  resumo.focus();
-}
-
-function mostrarErroNoCampo(campo, mensagem) {
-  const info = CAMPOS[campo];
-  const paragrafo = $("erro-" + campo);
-  if (!info || !paragrafo) return;
-  const entrada = $(info.id);
-  paragrafo.textContent = mensagem || "";
-  paragrafo.hidden = !mensagem;
-  if (mensagem) entrada.setAttribute("aria-invalid", "true");
-  else entrada.removeAttribute("aria-invalid");
-}
-
-function limparErros() {
-  $("resumo-de-erros").hidden = true;
-  $("lista-de-erros").textContent = "";
-  Object.keys(CAMPOS).forEach((campo) => mostrarErroNoCampo(campo, null));
-}
-
-// ------------------------------------------------------------------------------------------ Confirmação
-
-/** Mostra (ou esconde, com null) a confirmação no topo do formulário. Fica até o próximo registro. */
-function confirmar(mensagem) {
-  $("sucesso-texto").textContent = mensagem || "";
-  $("sucesso").hidden = !mensagem;
 }

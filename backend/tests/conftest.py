@@ -194,12 +194,26 @@ def pytest_collection_modifyitems(config, items):
         items[:] = [item for item in items if not item.get_closest_marker("tela")] + de_tela
 
 
+def _regravar_parametros_iniciais():
+    """
+    Os 7 valores da tabela `parametro` (L21) são gravados por migração. Um teste com transação de
+    verdade esvazia o banco ao terminar, e o seguinte ficaria sem eles (a consulta de lotes falha
+    sem o "3 dias" da RN05 — achado na D3). A restauração automática do Django não serve aqui: com
+    o laço do Playwright aberto, a conexão do teste é outro objeto. Roda de novo a própria função
+    da migração (que não duplica o que já existe).
+    """
+    from django.apps import apps
+
+    importlib.import_module("comum.migrations.0002_parametros_iniciais").criar(apps, schema_editor=None)
+
+
 @pytest.fixture
 def painel(transactional_db):
     """
     Sobe a API (a aplicação WSGI do Django) e o servir.py na frente dela; devolve o endereço do
     painel. O banco é o de teste, com transação de verdade, porque a API roda em outra thread.
     """
+    _regravar_parametros_iniciais()
     cache.clear()  # zera o limite de 10 logins por minuto (RNF12) entre um teste e outro
 
     api = make_server("127.0.0.1", 0, WSGIHandler(), handler_class=_ApiSemRegistro)
@@ -222,11 +236,9 @@ def entrar_pelo_login(page, painel: str, login: str, senha: str):
     page.click("#botao-entrar")
 
 
-def abrir_tela(page, painel: str, usuario, tela: str):
-    """
-    Abre uma tela já com a sessão iniciada, sem passar pelo formulário de Login (que tem o seu
-    próprio teste). Guarda o token como a tela de Login guardaria (js/sessao.js).
-    """
+def guardar_sessao(page, painel: str, usuario):
+    """Inicia a sessão sem passar pelo formulário de Login (que tem o seu próprio teste): guarda o
+    token como a tela de Login guardaria (js/sessao.js)."""
     from comum.autenticacao import gerar_token  # depois do Django configurado
 
     page.goto(painel + "/login.html")
@@ -234,5 +246,10 @@ def abrir_tela(page, painel: str, usuario, tela: str):
         "([token]) => sessionStorage.setItem('mercadinho.token', token)",
         [gerar_token(usuario)],
     )
+
+
+def abrir_tela(page, painel: str, usuario, tela: str):
+    """Abre uma tela já com a sessão iniciada e espera ela conferir a sessão e montar o menu."""
+    guardar_sessao(page, painel, usuario)
     page.goto(f"{painel}/{tela}")
     page.wait_for_selector("#menu a")  # a tela conferiu a sessão com a API e montou o menu

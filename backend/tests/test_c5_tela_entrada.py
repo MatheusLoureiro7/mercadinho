@@ -93,7 +93,8 @@ def test_c5_tela_nao_tem_data_de_entrada():
 
 def test_c5_lista_do_dia_usa_o_dia_da_loja():
     # "Hoje" é o de São Paulo, não o do relógio em UTC (CLAUDE.md), também na tela.
-    assert "America/Sao_Paulo" in SCRIPT.read_text(encoding="utf-8")
+    assert "diaNaLoja()" in SCRIPT.read_text(encoding="utf-8")
+    assert 'timeZone: "America/Sao_Paulo"' in (FRONTEND / "js" / "formatos.js").read_text(encoding="utf-8")
 
 
 # ------------------------------------------------------------------------------------------------

@@ -206,7 +206,7 @@ def test_d1_perda_maior_que_o_lote_informado_e_recusada(api, presunto):
         {"produto": presunto.pk, "lote": lote.pk, "quantidade": "3", "motivo": "Estragou"}
     )
     assert resposta.status_code == 400
-    assert resposta.json()["erro"]["campos"]["quantidade"] == ["Esse lote só tem 2,000 KG."]
+    assert resposta.json()["erro"]["campos"]["quantidade"] == ["Esse lote só tem 2 KG."]
     lote.refresh_from_db()
     assert lote.quantidade_atual == Decimal("2")
 
@@ -215,7 +215,7 @@ def test_d1_perda_maior_que_o_estoque_e_recusada_e_nada_muda(api, presunto):
     lote = _lote(presunto, "2", date(2026, 9, 28))
     resposta = api("OPERACAO").post({"produto": presunto.pk, "quantidade": "2.5", "motivo": "Estragou"})
     assert resposta.status_code == 400
-    assert resposta.json()["erro"]["campos"]["quantidade"] == ["Só há 2,000 KG de Presunto no estoque."]
+    assert resposta.json()["erro"]["campos"]["quantidade"] == ["Só há 2 KG de Presunto no estoque."]
     lote.refresh_from_db()
     assert lote.quantidade_atual == Decimal("2")
     assert not Movimentacao.objects.filter(tipo="PERDA").exists()

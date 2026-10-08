@@ -15,6 +15,9 @@ seção 3). Sem framework, sem biblioteca, sem fonte externa — o computador da
 | `produtos.html` · `js/produtos.js` | Tela de Produtos (B5, ligada à API na B7) |
 | `fornecedores.html` · `js/fornecedores.js` | Tela de Fornecedores (B6, ligada à API na B7) |
 | `entrada-mercadoria.html` · `js/entrada-mercadoria.js` | Tela de Entrada de mercadoria (C5, RF03, fluxograma 02) |
+| `avarias.html` · `js/avarias.js` | Tela de Avarias e quebras (D3, RF04, fluxograma 03) |
+| `js/formulario.js` | Erros embaixo do campo, resumo com foco, confirmação no formulário (telas de registro) |
+| `js/procurar-produto.js` | "Procurar o produto" sem acento numa lista nativa (Entrada, Avarias) |
 | `servir.py` | Servidor de desenvolvimento: painel + `/api/` repassado ao Django, mesma origem (L25) |
 
 Telas por tarefa: B5 Produtos · B6 Fornecedores · C5 Entrada de mercadoria · D3 Avarias e
