@@ -21,12 +21,12 @@ O diário, no fim do arquivo, conta o que foi feito em cada dia.
 
 | | Concluído | Total | % |
 |---|---|---|---|
-| **Tarefas** | 23 | 51 | 45,1 % |
-| **Horas estimadas** | 150 h | 378 h | 39,7 % |
+| **Tarefas** | 24 | 51 | 47,1 % |
+| **Horas estimadas** | 160 h | 378 h | 42,3 % |
 
 | Etapa | Blocos | Horas concluídas | Total | % |
 |---|---|---|---|---|
-| 1 · Aviso de validade | A, B, C, D, F, J | 150 h | 212 h | 70,8 % |
+| 1 · Aviso de validade | A, B, C, D, F, J | 160 h | 212 h | 75,5 % |
 | 2 · Aviso de ruptura | E, G, H | 0 h | 136 h | 0,0 % |
 | 3 · Gestão | I | 0 h | 30 h | 0,0 % |
 
@@ -88,13 +88,13 @@ Prazo de entrega: **27/11/2026**.
 | E4 | Casar o produto do caixa com o produto cadastrado | E3 | 10 | ⛔ Aguarda D01 | — | — |
 | E5 | Tela de acompanhamento da importação | E3 | 6 | ⛔ Aguarda D01 | — | — |
 
-## Bloco F — Consulta de estoque · 22 h  ·  12 de 22 h concluídas
+## Bloco F — Consulta de estoque · 22 h  ·  22 de 22 h concluídas ✅
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
 | ~~F1~~ | ~~Visão de estoque por produto e por lote~~ | C4 | 6 | ✅ Concluída | 07/10/2026 | `01b84a8` |
 | ~~F2~~ | ~~API de consulta com filtros~~ | F1 | 6 | ✅ Concluída | 07/10/2026 | `2365139` |
-| F3 | Tela de estoque, com destaque para mínimo e vencidos | A3 | 10 | ⬜ A fazer | — | — |
+| ~~F3~~ | ~~Tela de estoque, com destaque para mínimo e vencidos~~ | A3 | 10 | ✅ Concluída | 08/10/2026 | `6a6321e` |
 
 ## Bloco G — Previsão · 40 h ⚠️ depende da decisão D01  ·  0 de 40 h concluídas
 
@@ -146,7 +146,7 @@ cronograma, a regra de negócio (quando houver) e o commit.
 
 ### 08/10/2026
 
-**Tarefas concluídas: B7, C5, C6, D3 e D4** (30 h estimadas). **Os blocos B, C e D estão completos.**
+**Tarefas concluídas: B7, C5, C6, D3, D4 e F3** (40 h estimadas). **Os blocos B, C, D e F estão completos.**
 
 - **B7 — Ligar as telas à API e tratar os erros na tela (inclui a tela de Login, L22).** As telas
   de Produtos e Fornecedores deixaram de usar dados de exemplo: agora leem e gravam no sistema de
@@ -273,8 +273,40 @@ regras de validade e saldo, tela e teste do fluxo inteiro.
 **Bloco D completo (D1 a D4):** perdas e avarias de ponta a ponta — API com motivo obrigatório,
 regra de que perda não é consumo, tela e teste do fluxo inteiro.
 
-**Próxima tarefa:** F3 — tela de estoque, com destaque para o que está abaixo do mínimo e o que está
-vencido. É a última tela da etapa 1 e a única que os três (dono, esposa e sobrinho) usam.
+- **F3 — Tela de consulta de estoque (RF07, RN16).** A única tela que os três usam. No topo, três
+  quadros dizem o que precisa de atenção — quantos produtos têm **lote vencido**, quantos estão
+  **perto de vencer** e quantos estão **abaixo do mínimo** — e cada quadro, tocado, mostra só aqueles
+  produtos. Embaixo, o saldo de cada produto **agrupado por categoria**, com o mínimo, a próxima
+  validade e as marcações em palavra e cor ("1 lote vencido", "Perto de vencer", "Abaixo do
+  mínimo", "Não pode faltar no fim de semana"). "Ver lotes" abre os lotes do produto, do que vence
+  primeiro ao último, com a situação de cada um. Conferido o caso que mais importa: o carvão,
+  cadastrado e nunca comprado (saldo zero), aparece como abaixo do mínimo. A tela só mostra — não
+  grava nada (RN01), e um teste confere que usá-la não envia nenhuma gravação ao sistema. Todos os
+  números vêm calculados pelo sistema (API da F2); para o computador antigo, a lista vem num pedido
+  só e procurar e filtrar acontecem na própria tela. **Dono e esposa agora caem nesta tela ao
+  entrar** — antes viam só a lista de telas em preparo.
+  **Achados, corrigidos:** (1) o botão "Ver lotes" trocava o texto visível para "Esconder lotes",
+  mas o leitor de tela continuava lendo "Ver lotes" (norma WCAG 2.5.3) — agora o texto fica e uma
+  seta mostra se está aberto; (2) com cinco telas no menu do sobrinho, o cabeçalho quebrava
+  desencontrado no computador da loja — o menu passou a ter uma linha própria, embaixo da marca e
+  do nome da pessoa, o que também deixa lugar para a sexta tela (Importação de vendas).
+  **Observações em aberto:** (a) no celular, a tabela rola de lado dentro do cartão, como nas
+  outras telas, e o saldo fica fora da vista inicial; uma versão em "cartões" para telas estreitas
+  seria melhor para a esposa consultar pelo celular — fica para o grupo decidir; (b) numa das
+  execuções da bateria de testes, um teste deu erro e não se repetiu em 14 execuções seguidas; a
+  causa não foi encontrada e o caso fica anotado para a J1.
+  19 testes automáticos (16 deles no navegador) — total do projeto: 488, todos passando. Conferida
+  com os três perfis, no tamanho do computador da loja e no de um celular: 49 verificações e
+  auditoria de acessibilidade (WCAG 2.2, nível AA) sem nenhuma falha.
+
+**Bloco F completo (F1 a F3)** e, com ele, **todas as telas da etapa 1**: Login, Produtos,
+Fornecedores, Entrada de mercadoria, Avarias e quebras e Consulta de estoque. Da etapa 1 faltam a
+publicação (A5, aguarda D05) e o bloco J (qualidade e implantação).
+
+**Próxima tarefa:** H1 — tabela de aviso e controle de estado. É o caminho que o roteiro aponta
+para o **aviso de validade no celular (H2)**, que não depende do caixa e é prometido na etapa 1
+(lacuna L23). A J2 (carga inicial dos produtos) é feita junto com o cliente e entra quando o grupo
+marcar a visita.
 
 ### 07/10/2026
 

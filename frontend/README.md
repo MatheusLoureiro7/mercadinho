@@ -18,6 +18,8 @@ seção 3). Sem framework, sem biblioteca, sem fonte externa — o computador da
 | `avarias.html` · `js/avarias.js` | Tela de Avarias e quebras (D3, RF04, fluxograma 03) |
 | `js/formulario.js` | Erros embaixo do campo, resumo com foco, confirmação no formulário (telas de registro) |
 | `js/procurar-produto.js` | "Procurar o produto" sem acento numa lista nativa (Entrada, Avarias) |
+| `consulta-estoque.html` · `js/consulta-estoque.js` | Tela de Consulta de estoque (F3, RF07, RN16) — os três perfis |
+| `js/situacao.js` | Situação do lote em palavra e cor: vencido, vence em N dias… (Avarias, Consulta) |
 | `servir.py` | Servidor de desenvolvimento: painel + `/api/` repassado ao Django, mesma origem (L25) |
 
 Telas por tarefa: B5 Produtos · B6 Fornecedores · C5 Entrada de mercadoria · D3 Avarias e
