@@ -21,12 +21,12 @@ O diário, no fim do arquivo, conta o que foi feito em cada dia.
 
 | | Concluído | Total | % |
 |---|---|---|---|
-| **Tarefas** | 22 | 51 | 43,1 % |
-| **Horas estimadas** | 148 h | 378 h | 39,2 % |
+| **Tarefas** | 23 | 51 | 45,1 % |
+| **Horas estimadas** | 150 h | 378 h | 39,7 % |
 
 | Etapa | Blocos | Horas concluídas | Total | % |
 |---|---|---|---|---|
-| 1 · Aviso de validade | A, B, C, D, F, J | 148 h | 212 h | 69,8 % |
+| 1 · Aviso de validade | A, B, C, D, F, J | 150 h | 212 h | 70,8 % |
 | 2 · Aviso de ruptura | E, G, H | 0 h | 136 h | 0,0 % |
 | 3 · Gestão | I | 0 h | 30 h | 0,0 % |
 
@@ -69,14 +69,14 @@ Prazo de entrega: **27/11/2026**.
 | ~~C5~~ | ~~Tela de entrada de mercadoria~~ | A3 | 10 | ✅ Concluída | 08/10/2026 | `30e51b1` |
 | ~~C6~~ | ~~Integração e teste do fluxo completo~~ | C2, C5 | 6 | ✅ Concluída | 08/10/2026 | `defb4a9` |
 
-## Bloco D — Perdas e avarias · 18 h  ·  16 de 18 h concluídas
+## Bloco D — Perdas e avarias · 18 h  ·  18 de 18 h concluídas ✅
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
 | ~~D1~~ | ~~API de registro de perda, com motivo obrigatório~~ | C1 | 6 | ✅ Concluída | 07/10/2026 | `18285b3` |
 | ~~D2~~ | ~~Regra: perda não entra na base de consumo~~ | D1 | 3 | ✅ Concluída | 07/10/2026 | `83dbc5f` |
 | ~~D3~~ | ~~Tela de avarias e quebras~~ | A3 | 7 | ✅ Concluída | 08/10/2026 | `c8c4252` |
-| D4 | Integração e teste | D1, D3 | 2 | ⬜ A fazer | — | — |
+| ~~D4~~ | ~~Integração e teste~~ | D1, D3 | 2 | ✅ Concluída | 08/10/2026 | `9fe0d21` |
 
 ## Bloco E — Entrada das vendas · 44 h ⚠️ depende da decisão D01  ·  0 de 44 h concluídas
 
@@ -146,7 +146,7 @@ cronograma, a regra de negócio (quando houver) e o commit.
 
 ### 08/10/2026
 
-**Tarefas concluídas: B7, C5, C6 e D3** (28 h estimadas). **Os blocos B e C estão completos.**
+**Tarefas concluídas: B7, C5, C6, D3 e D4** (30 h estimadas). **Os blocos B, C e D estão completos.**
 
 - **B7 — Ligar as telas à API e tratar os erros na tela (inclui a tela de Login, L22).** As telas
   de Produtos e Fornecedores deixaram de usar dados de exemplo: agora leem e gravam no sistema de
@@ -255,7 +255,26 @@ regras de validade e saldo, tela e teste do fluxo inteiro.
   no tamanho do computador da loja e no de um celular: 42 verificações e auditoria de
   acessibilidade (WCAG 2.2, nível AA) sem nenhuma falha.
 
-**Próxima tarefa:** D4 — integração e teste do fluxo de perdas.
+- **D4 — Integração e teste do fluxo de perdas.** Como a C6 fez com a entrada, o registro de perda
+  agora tem **teste automático de ponta a ponta**: o navegador usa a tela de Avarias como o
+  sobrinho, e o teste confere a tela e o que ficou gravado. Cada decisão do fluxograma 03 testada
+  pelo "sim" e pelo "não": **tem motivo?** (sem motivo, ou só com espaços, nada é gravado);
+  **escolheu o lote?** (se escolheu, sai só dele; se não, sai pela ordem de validade, o vencido
+  primeiro, com uma linha no histórico para cada lote); **a quantidade cabe?** ("Esse lote só tem
+  3 UN.", "Só há 19 UN de Iogurte natural no estoque."); **o lote está vencido?** (o iogurte vencido
+  da Apostila I sai pela tela, como manda a RN16). E o que a perda não pode fazer: o exemplo da
+  especificação — 6 kg de frango vendidos e 10 kg que foram fora: o saldo cai 16 kg e o consumo do
+  dia continua 6 kg (RN11) —, e o saldo continua batendo com a soma dos lotes (RN01). Dono e esposa
+  não registram perda (RN14). **Foi provado que os testes pegam erro:** quatro defeitos de
+  propósito (a tela não enviar o lote escolhido, a ordem de validade pular os vencidos, o sistema
+  aceitar motivo em branco, a perda ser contada como consumo) — cada um derrubou os testes certos.
+  15 testes de tela — total do projeto: 469, todos passando.
+
+**Bloco D completo (D1 a D4):** perdas e avarias de ponta a ponta — API com motivo obrigatório,
+regra de que perda não é consumo, tela e teste do fluxo inteiro.
+
+**Próxima tarefa:** F3 — tela de estoque, com destaque para o que está abaixo do mínimo e o que está
+vencido. É a última tela da etapa 1 e a única que os três (dono, esposa e sobrinho) usam.
 
 ### 07/10/2026
 
