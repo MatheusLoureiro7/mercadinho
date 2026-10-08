@@ -93,6 +93,12 @@ def restricoes(tabela: str) -> set[str]:
         return {linha[0] for linha in cursor.fetchall()}
 
 
+def _sem_conversao(padrao: str | None) -> str:
+    """O PostgreSQL devolve o padrão de texto com a conversão de tipo ('TELEGRAM'::character
+    varying); o schema.sql escreve só 'TELEGRAM'. É o mesmo padrão (achado na H1)."""
+    return re.sub(r"::[a-z ]+$", "", (padrao or "").lower())
+
+
 def divergencias_do_schema(tabela: str) -> list[str]:
     """
     Compara a tabela criada pelas migrações com o CREATE TABLE do schema.sql (Apostila IV) e
@@ -116,7 +122,7 @@ def divergencias_do_schema(tabela: str) -> list[str]:
             # SERIAL e IDENTITY são o mesmo inteiro sequencial; o Django gera IDENTITY.
             if not (r["identidade"] or (r["padrao"] or "").startswith("nextval")):
                 erros.append(f"{nome}: sem sequência")
-        elif (r["padrao"] or "").lower() != (e["padrao"] or "").lower():
+        elif _sem_conversao(r["padrao"]) != _sem_conversao(e["padrao"]):
             erros.append(f"{nome}: padrão {r['padrao']}, apostila {e['padrao']}")
     return erros
 

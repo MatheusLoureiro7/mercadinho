@@ -128,7 +128,7 @@ depois acrescente a média por dia da semana (RN07).
 
 | | ID | Tarefa | Tipo | Depende de | H |
 |---|---|---|---|---|---|
-| [ ] | **H1** | Tabela de aviso e controle de estado | BD/API | A2 | 8 |
+| [x] | **H1** | Tabela de aviso e controle de estado | BD/API | A2 | 8 |
 | [ ] | **H2** | Gerador do aviso de validade | Regra | H1, C3 | 8 |
 | [ ] | **H3** | Gerador do aviso de ruptura | Regra | H1, G3 | 10 |
 | [ ] | **H4** | Janela de silêncio e agrupamento | Regra | H1 | 8 |

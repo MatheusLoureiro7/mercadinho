@@ -143,6 +143,11 @@ A coluna existe e a **RN13** manda ordenar os avisos "por urgência" (severidade
 **Proposta para o grupo decidir:** `ALTA`, `MEDIA`, `BAIXA`, com uma restrição CHECK.
 **Quem decide:** o grupo.
 
+> **✅ DECIDIDA em 08/10/2026 (tarefa H1):** `ALTA`, `MEDIA`, `BAIXA`, nessa ordem de urgência,
+> **validadas no código** (`alertas.servicos.criar_aviso`), sem restrição CHECK nova — o banco fica
+> igual ao `schema.sql`, como na L17 (unidade de medida). Qual tipo de aviso recebe qual
+> severidade fica para os geradores (H2, H3). Vale registrar numa versão 1.1 da Apostila IV.
+
 ---
 
 ### L12 — De onde vem `fechamento_caixa.valor_sistema`?
