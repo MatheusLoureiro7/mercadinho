@@ -21,13 +21,13 @@ O diário, no fim do arquivo, conta o que foi feito em cada dia.
 
 | | Concluído | Total | % |
 |---|---|---|---|
-| **Tarefas** | 24 | 51 | 47,1 % |
-| **Horas estimadas** | 160 h | 378 h | 42,3 % |
+| **Tarefas** | 25 | 51 | 49,0 % |
+| **Horas estimadas** | 168 h | 378 h | 44,4 % |
 
 | Etapa | Blocos | Horas concluídas | Total | % |
 |---|---|---|---|---|
 | 1 · Aviso de validade | A, B, C, D, F, J | 160 h | 212 h | 75,5 % |
-| 2 · Aviso de ruptura | E, G, H | 0 h | 136 h | 0,0 % |
+| 2 · Aviso de ruptura | E, G, H | 8 h | 136 h | 5,9 % |
 | 3 · Gestão | I | 0 h | 30 h | 0,0 % |
 
 As horas concluídas são as **estimadas** na apostila para cada tarefa entregue, não horas medidas.
@@ -106,11 +106,11 @@ Prazo de entrega: **27/11/2026**.
 | G4 | Regra: histórico mínimo antes de projetar | G2 | 4 | ⛔ Aguarda D01 | — | — |
 | G5 | Agendador das rotinas diárias | G3 | 6 | ⛔ Aguarda D01 | — | — |
 
-## Bloco H — Avisos · 52 h ⚠️ depende da decisão D01  ·  0 de 52 h concluídas
+## Bloco H — Avisos · 52 h ⚠️ depende da decisão D01  ·  8 de 52 h concluídas
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
-| H1 | Tabela de aviso e controle de estado | A2 | 8 | ⬜ A fazer | — | — |
+| ~~H1~~ | ~~Tabela de aviso e controle de estado~~ | A2 | 8 | ✅ Concluída | 08/10/2026 | `eae1d23` |
 | H2 | Gerador do aviso de validade | H1, C3 | 8 | ⬜ A fazer | — | — |
 | H3 | Gerador do aviso de ruptura | H1, G3 | 10 | ⛔ Aguarda D01 | — | — |
 | H4 | Janela de silêncio e agrupamento | H1 | 8 | ⬜ A fazer | — | — |
@@ -146,7 +146,7 @@ cronograma, a regra de negócio (quando houver) e o commit.
 
 ### 08/10/2026
 
-**Tarefas concluídas: B7, C5, C6, D3, D4 e F3** (40 h estimadas). **Os blocos B, C, D e F estão completos.**
+**Tarefas concluídas: B7, C5, C6, D3, D4, F3 e H1** (48 h estimadas). **Os blocos B, C, D e F estão completos.**
 
 - **B7 — Ligar as telas à API e tratar os erros na tela (inclui a tela de Login, L22).** As telas
   de Produtos e Fornecedores deixaram de usar dados de exemplo: agora leem e gravam no sistema de
@@ -303,10 +303,27 @@ regra de que perda não é consumo, tela e teste do fluxo inteiro.
 Fornecedores, Entrada de mercadoria, Avarias e quebras e Consulta de estoque. Da etapa 1 faltam a
 publicação (A5, aguarda D05) e o bloco J (qualidade e implantação).
 
-**Próxima tarefa:** H1 — tabela de aviso e controle de estado. É o caminho que o roteiro aponta
-para o **aviso de validade no celular (H2)**, que não depende do caixa e é prometido na etapa 1
-(lacuna L23). A J2 (carga inicial dos produtos) é feita junto com o cliente e entra quando o grupo
-marcar a visita.
+- **H1 — Tabela de aviso e controle de estado.** Primeira tarefa do bloco de avisos. O sistema já
+  tem onde guardar cada aviso que vai para o celular do Sr. João — a tabela `alerta`, **igual à
+  Apostila IV** (conferida coluna por coluna pelo teste automático) — e as regras de como um aviso
+  muda de situação: nasce **pendente**; se for gerado na hora do movimento, fica **segurado** até a
+  janela acabar (RN12); quando sai, todos os da mesma mensagem ficam **enviados** com a mesma hora
+  (RN13); e pode ser **cancelado** antes de sair. Enviado e cancelado não mudam mais. Quando a
+  mercadoria chega, o aviso de "vai acabar" daquele produto que ainda não saiu é cancelado
+  sozinho (operação 02, passo 10) — o ponto de chamada já existia desde a C2 e agora age de
+  verdade; aviso de validade e de outro produto não são tocados. As mudanças de situação são à
+  prova de duas partes do sistema mexerem no mesmo aviso ao mesmo tempo (a rodada da madrugada e
+  uma entrada de mercadoria): vale o que está gravado, e é tudo ou nada.
+  **Decisão L11:** a urgência do aviso é **alta, média ou baixa** — a lista é conferida pelo sistema,
+  sem mudar o banco entregue (como na L17). Os avisos saem nessa ordem e, empatando, o mais antigo
+  primeiro (RN13). **Decisão de escopo:** nenhum endereço novo na API — nenhuma das 10 telas mostra
+  avisos; eles só vão para o Telegram.
+  **Achado:** a primeira versão do cancelamento automático quebraria toda entrada de mercadoria
+  (pedia uma trava de banco fora de transação); foi refeita antes de qualquer teste passar.
+  43 testes automáticos — total do projeto: 531, todos passando.
+
+**Próxima tarefa:** H2 — gerador do aviso de validade (RN05). Com ele, o sistema passa a saber,
+todo dia, o que está para vencer e a gravar o aviso; o envio pelo Telegram é a H5.
 
 ### 07/10/2026
 
