@@ -256,4 +256,4 @@ um confere o que aparece na tela **e** o que ficou gravado. Rodam junto com o `p
 `pytest -m tela --headed --slowmo 300`.
 
 As fixtures ficam em `backend/tests/conftest.py`: `painel` (sobe a API e o painel), `abrir_tela`
-(abre uma tela já com sessão) e `entrar_pelo_login`. Exemplo: `backend/tests/test_c6_fluxo_entrada.py`.
+(abre uma tela já com sessão) e `entrar_pelo_login`. Exemplos: `backend/tests/test_c6_fluxo_entrada.py` e `test_d4_fluxo_perdas.py`.
