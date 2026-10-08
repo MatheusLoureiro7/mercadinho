@@ -21,13 +21,13 @@ O diário, no fim do arquivo, conta o que foi feito em cada dia.
 
 | | Concluído | Total | % |
 |---|---|---|---|
-| **Tarefas** | 25 | 51 | 49,0 % |
-| **Horas estimadas** | 168 h | 378 h | 44,4 % |
+| **Tarefas** | 26 | 51 | 51,0 % |
+| **Horas estimadas** | 176 h | 378 h | 46,6 % |
 
 | Etapa | Blocos | Horas concluídas | Total | % |
 |---|---|---|---|---|
 | 1 · Aviso de validade | A, B, C, D, F, J | 160 h | 212 h | 75,5 % |
-| 2 · Aviso de ruptura | E, G, H | 8 h | 136 h | 5,9 % |
+| 2 · Aviso de ruptura | E, G, H | 16 h | 136 h | 11,8 % |
 | 3 · Gestão | I | 0 h | 30 h | 0,0 % |
 
 As horas concluídas são as **estimadas** na apostila para cada tarefa entregue, não horas medidas.
@@ -106,12 +106,12 @@ Prazo de entrega: **27/11/2026**.
 | G4 | Regra: histórico mínimo antes de projetar | G2 | 4 | ⛔ Aguarda D01 | — | — |
 | G5 | Agendador das rotinas diárias | G3 | 6 | ⛔ Aguarda D01 | — | — |
 
-## Bloco H — Avisos · 52 h ⚠️ depende da decisão D01  ·  8 de 52 h concluídas
+## Bloco H — Avisos · 52 h ⚠️ depende da decisão D01  ·  16 de 52 h concluídas
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
 | ~~H1~~ | ~~Tabela de aviso e controle de estado~~ | A2 | 8 | ✅ Concluída | 08/10/2026 | `eae1d23` |
-| H2 | Gerador do aviso de validade | H1, C3 | 8 | ⬜ A fazer | — | — |
+| ~~H2~~ | ~~Gerador do aviso de validade~~ | H1, C3 | 8 | ✅ Concluída | 08/10/2026 | `a3627f3` |
 | H3 | Gerador do aviso de ruptura | H1, G3 | 10 | ⛔ Aguarda D01 | — | — |
 | H4 | Janela de silêncio e agrupamento | H1 | 8 | ⬜ A fazer | — | — |
 | H5 | Integração com o serviço de mensagens | H1 | 10 | ⬜ A fazer | — | — |
@@ -146,7 +146,7 @@ cronograma, a regra de negócio (quando houver) e o commit.
 
 ### 08/10/2026
 
-**Tarefas concluídas: B7, C5, C6, D3, D4, F3 e H1** (48 h estimadas). **Os blocos B, C, D e F estão completos.**
+**Tarefas concluídas: B7, C5, C6, D3, D4, F3, H1 e H2** (56 h estimadas). **Os blocos B, C, D e F estão completos.**
 
 - **B7 — Ligar as telas à API e tratar os erros na tela (inclui a tela de Login, L22).** As telas
   de Produtos e Fornecedores deixaram de usar dados de exemplo: agora leem e gravam no sistema de
@@ -322,8 +322,28 @@ publicação (A5, aguarda D05) e o bloco J (qualidade e implantação).
   (pedia uma trava de banco fora de transação); foi refeita antes de qualquer teste passar.
   43 testes automáticos — total do projeto: 531, todos passando.
 
-**Próxima tarefa:** H2 — gerador do aviso de validade (RN05). Com ele, o sistema passa a saber,
-todo dia, o que está para vencer e a gravar o aviso; o envio pelo Telegram é a H5.
+- **H2 — Gerador do aviso de validade (RN05).** O sistema já sabe, a cada rodada, **o que está para
+  vencer** e grava o aviso para o Sr. João, com a frase da loja: "Presunto vence em 3 dias — 2,5 KG
+  na prateleira.", "vence amanhã", "vence hoje". Testado com o exemplo da Apostila I: lote que vence
+  em 24/09, prazo de 3 dias, gera aviso em 21/09; o que vence em 30/09, não. Só produto perecível,
+  só lote com mercadoria, e o prazo vem da tabela de parâmetros — mudando para 5 dias, o sistema
+  passa a avisar com 5 dias, sem mexer no código. O prazo já é lido produto a produto, para quando
+  o grupo decidir a lacuna L01 (prazo por categoria). **Decisões do grupo nesta tarefa:**
+  (1) o aviso se repete **todo dia** enquanto o lote estiver no prazo e com mercadoria — pela RN13,
+  os do dia chegam juntos numa mensagem só, como a volta pelas gôndolas que o Sr. João faz de manhã;
+  rodar duas vezes no mesmo dia não duplica; (2) o lote **já vencido também avisa**, com frase
+  própria: "Iogurte natural venceu ontem — 3 UN na prateleira. Tire e registre a perda em Avarias e
+  quebras." (RN16). **Decisões de implementação:** o aviso de um dia anterior que não chegou a sair é
+  trocado pelo de hoje, com a contagem de dias certa; urgência **alta** para vencido e para o que
+  vence hoje, **média** para o resto (L11); o aviso vai para o usuário DONO — sem dono cadastrado,
+  ele é gravado mesmo assim e não se perde. **Foi provado que os testes pegam erro:** quatro defeitos
+  de propósito (prazo errado por um dia, não perecível avisando, rodada dupla duplicando, aviso
+  antigo não trocado) — todos pegos. 22 testes automáticos — total do projeto: 553, todos passando.
+  **Falta para o aviso chegar ao celular:** a janela de silêncio e o agrupamento (H4), o envio pelo
+  Telegram (H5) e ligar o celular do dono (H6). A rodada das 03h00 (G5) depende da decisão D01;
+  até lá, o gerador pode ser chamado sozinho.
+
+**Próxima tarefa:** H4 — janela de silêncio e agrupamento (RN12, RN13).
 
 ### 07/10/2026
 
