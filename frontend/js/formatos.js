@@ -31,3 +31,18 @@ export function numeroParaCampo(daApi) {
   if (daApi === null || daApi === undefined) return "";
   return String(daApi).replace(".", ",");
 }
+
+/** "2026-10-25" (da API) → "25/10/2026". Sem passar por Date, que mudaria o dia pelo fuso. */
+export function dataBrasileira(daApi) {
+  if (!daApi) return "—";
+  const [ano, mes, dia] = String(daApi).split("-");
+  return dia + "/" + mes + "/" + ano;
+}
+
+/** "Feijão" → "feijao": para procurar na tela sem depender de acento (como a busca da API, B7). */
+export function semAcento(texto) {
+  return String(texto || "")
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase();
+}

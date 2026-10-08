@@ -14,6 +14,7 @@ seção 3). Sem framework, sem biblioteca, sem fonte externa — o computador da
 | `login.html` · `js/login.js` | Tela de Login (B7, L22) |
 | `produtos.html` · `js/produtos.js` | Tela de Produtos (B5, ligada à API na B7) |
 | `fornecedores.html` · `js/fornecedores.js` | Tela de Fornecedores (B6, ligada à API na B7) |
+| `entrada-mercadoria.html` · `js/entrada-mercadoria.js` | Tela de Entrada de mercadoria (C5, RF03, fluxograma 02) |
 | `servir.py` | Servidor de desenvolvimento: painel + `/api/` repassado ao Django, mesma origem (L25) |
 
 Telas por tarefa: B5 Produtos · B6 Fornecedores · C5 Entrada de mercadoria · D3 Avarias e
@@ -44,6 +45,10 @@ principal). O endereço da API nunca é escrito no código do painel — é semp
 - Recusa da API: **manter tudo o que foi digitado** e apontar só o campo com problema (fluxograma 01).
 - A tela não decide regra de negócio — mostra o que a API responde.
 - Lista que não carregou diz o porquê e oferece "Tentar de novo"; nunca aparece como vazia.
+- Tela de registro em sequência (Entrada, Avarias): a confirmação fica no topo do formulário até o
+  próximo registro, não num aviso flutuante que cobriria os campos (C5).
+- Tabela sem botão dentro: a área que rola de lado recebe `tabindex="0"`, `role="region"` e nome,
+  para rolar pelo teclado no celular (WCAG 2.1.1, C5).
 - Erro embaixo do campo some enquanto a pessoa corrige (`input`), nunca no `blur`: sumir no `blur`
   encolhe o formulário no meio do clique em "Salvar" e o clique se perde (achado na B7).
 - Alvos de clique com no mínimo 44 px; texto base 16 px; contraste WCAG AA; foco visível.

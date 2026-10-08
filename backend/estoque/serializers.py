@@ -44,9 +44,16 @@ class EntradaDeLoteSerializer(serializers.Serializer):
         min_value=0,
         required=False,
         allow_null=True,
-        error_messages={"min_value": "O custo não pode ser negativo."},
+        error_messages={
+            "min_value": "O custo não pode ser negativo.",
+            "invalid": "Informe o custo só com números, por exemplo 12.90.",
+        },
     )
-    data_validade = serializers.DateField(required=False, allow_null=True)
+    data_validade = serializers.DateField(
+        required=False,
+        allow_null=True,
+        error_messages={"invalid": "Informe a validade completa: dia, mês e ano."},
+    )
 
     def validate_quantidade(self, valor):
         if valor <= 0:

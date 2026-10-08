@@ -302,6 +302,7 @@ h3 {
 .campo input[type="text"],
 .campo input[type="search"],
 .campo input[type="password"],
+.campo input[type="date"],
 .campo input:not([type]),
 .campo select {
   min-height: var(--alvo-minimo);
@@ -538,6 +539,22 @@ h3 {
   font-weight: 600;
 }
 .recado[hidden] {
+  display: none;
+}
+
+/* Confirmação dentro do formulário, para telas de registro em sequência (C5). */
+.sucesso {
+  display: flex;
+  gap: var(--esp-2);
+  align-items: flex-start;
+  margin: 0 0 var(--esp-4);
+  padding: var(--esp-3) var(--esp-4);
+  background: var(--cor-ok-fundo);
+  color: var(--cor-ok-texto);
+  border-radius: var(--raio);
+  font-weight: 600;
+}
+.sucesso[hidden] {
   display: none;
 }
 
