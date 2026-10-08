@@ -14,6 +14,7 @@ As seis situações do fluxograma 02 (Apostila II) — cada losango pelo "sim" e
 Pular estes testes (mais lentos, abrem navegador): pytest -m "not tela"
 """
 
+import re
 from datetime import timedelta
 from decimal import Decimal
 
@@ -256,10 +257,11 @@ def test_c6_do_login_a_entrada_registrada(page, painel, loja):
 
 def test_c6_rn14_outro_perfil_nao_abre_a_entrada(page, painel, loja):
     entrar_pelo_login(page, painel, "esposa", SENHA)
-    expect(page.locator("#painel-sem-telas")).to_be_visible()
+    page.wait_for_url(re.compile(r"consulta-estoque\.html$"))  # a tela do perfil dela (F3)
 
     page.goto(f"{painel}/{TELA}")
 
+    # Levada de volta à tela do perfil, com o recado — sem ver nada da Entrada.
+    page.wait_for_url(re.compile(r"consulta-estoque\.html$"))
     recado = "O seu perfil não tem acesso à tela de Entrada de mercadoria."
     expect(page.locator("#recado")).to_have_text(recado)
-    assert "login.html" in page.url

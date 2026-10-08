@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Consulta de estoque · Mercado do Sr. João</title>
+    <link rel="icon" href="img/icone.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="css/base.css" />
+    <script type="module" src="js/consulta-estoque.js"></script>
+  </head>
+  <body>
+    <a class="pular-para-conteudo" href="#conteudo">Pular para o conteúdo</a>
+
+    <header class="cabecalho">
+      <div class="cabecalho__interno">
+        <span class="cabecalho__marca">
+          <svg class="icone" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 9l1.5-5h15L21 9" /><path d="M4 9v11h16V9" /><path d="M9 20v-6h6v6" />
+          </svg>
+          Mercado do Sr. João
+        </span>
+        <nav aria-label="Menu principal">
+          <!-- Menu do perfil (RN14): montado por js/sessao.js com as telas que /api/sessoes/atual/ devolve. -->
+          <ul class="menu" id="menu"></ul>
+        </nav>
+        <span class="cabecalho__usuario">
+          <span id="usuario-nome"></span>
+          <button type="button" class="botao botao--cabecalho" id="botao-sair" hidden>Sair</button>
+        </span>
+      </div>
+    </header>
+
+    <!-- Consulta de estoque (RF07): só leitura (RN01). Os três perfis usam (RN14). -->
+    <main id="conteudo" class="pagina" tabindex="-1">
+      <p class="recado" id="recado" role="status" hidden>
+        <svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 8v5M12 16.5v.5" /></svg>
+        <span></span>
+      </p>
+      <div class="pagina__titulo">
+        <div>
+          <h1>Consulta de estoque</h1>
+          <p class="pagina__descricao">Quanto tem de cada produto, o que está acabando e o que está vencendo.</p>
+        </div>
+        <div class="atualizacao">
+          <button type="button" class="botao botao--secundario" id="botao-atualizar">
+            <svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.6M20 4v4h-4" /></svg>
+            Atualizar
+          </button>
+          <span class="campo__ajuda" id="hora-atualizacao" aria-live="polite"></span>
+        </div>
+      </div>
+
+      <!-- O que precisa de atenção. Cada número é também um filtro (aperta de novo para tirar). -->
+      <section aria-labelledby="titulo-resumo">
+        <h2 class="visualmente-oculto" id="titulo-resumo">O que precisa de atenção</h2>
+        <div class="resumo">
+          <button type="button" class="resumo__item resumo__item--erro" id="filtro-vencidos" aria-pressed="false" aria-describedby="ajuda-resumo">
+            <span class="resumo__numero" id="contador-vencidos">–</span>
+            <span class="resumo__rotulo">com lote vencido</span>
+          </button>
+          <button type="button" class="resumo__item resumo__item--aviso" id="filtro-vencendo" aria-pressed="false" aria-describedby="ajuda-resumo">
+            <span class="resumo__numero" id="contador-vencendo">–</span>
+            <span class="resumo__rotulo">perto de vencer</span>
+          </button>
+          <button type="button" class="resumo__item resumo__item--aviso" id="filtro-abaixo" aria-pressed="false" aria-describedby="ajuda-resumo">
+            <span class="resumo__numero" id="contador-abaixo">–</span>
+            <span class="resumo__rotulo">abaixo do mínimo</span>
+          </button>
+        </div>
+        <p class="campo__ajuda" id="ajuda-resumo">Toque num quadro para ver só aqueles produtos. Toque de novo para ver todos.</p>
+      </section>
+
+      <section class="cartao" aria-labelledby="titulo-lista">
+        <h2 class="cartao__titulo" id="titulo-lista">Produtos</h2>
+
+        <div class="barra">
+          <div class="campo">
+            <label for="campo-procurar">Procurar pelo nome</label>
+            <input id="campo-procurar" type="search" autocomplete="off" placeholder="Ex.: arroz" />
+          </div>
+          <div class="campo">
+            <label for="filtro-categoria">Categoria</label>
+            <select id="filtro-categoria"></select>
+          </div>
+        </div>
+
+        <p class="visualmente-oculto" id="anuncio-lista" aria-live="polite"></p>
+        <!-- Focável: no celular a tabela rola de lado (WCAG 2.1.1). -->
+        <div class="tabela-rolavel" tabindex="0" role="region" aria-labelledby="titulo-lista">
+          <table class="tabela tabela--estoque" id="lista-estoque">
+            <thead>
+              <tr>
+                <th scope="col">Produto</th>
+                <th scope="col" class="numero">Em estoque</th>
+                <th scope="col" class="numero">Mínimo</th>
+                <th scope="col">Validade</th>
+                <th scope="col"><span class="visualmente-oculto">Lotes</span></th>
+              </tr>
+            </thead>
+            <!-- Um grupo de linhas por categoria ("saldo por categoria", RF07), montado pelo script. -->
+          </table>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

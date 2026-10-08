@@ -19,7 +19,7 @@ export const TELAS = {
   entrada_mercadoria: { nome: "Entrada de mercadoria", endereco: "entrada-mercadoria.html" },
   avarias: { nome: "Avarias e quebras", endereco: "avarias.html" },
   importacao_vendas: { nome: "Importação de vendas", endereco: null }, // E5
-  consulta_estoque: { nome: "Consulta de estoque", endereco: null }, // F3
+  consulta_estoque: { nome: "Consulta de estoque", endereco: "consulta-estoque.html" },
   fechamento_caixa: { nome: "Fechamento de caixa", endereco: null }, // I2
   balanco_semana: { nome: "Balanço da semana", endereco: null }, // I3
 };

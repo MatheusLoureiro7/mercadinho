@@ -124,7 +124,9 @@ h3 {
   gap: var(--esp-2);
 }
 .cabecalho nav {
-  flex: 1 1 auto;
+  /* Menu sempre na segunda linha (F3): com 5 ou 6 telas não cabe ao lado da marca em 1024 px. */
+  order: 3;
+  flex: 1 1 100%;
 }
 .menu {
   display: flex;
@@ -476,6 +478,107 @@ h3 {
 .tabela .numero {
   text-align: right;
   white-space: nowrap;
+}
+
+/* ---------------------------------------------------------------- Consulta de estoque (F3) */
+
+.atualizacao {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--esp-2) var(--esp-3);
+}
+/* Resumo: três quadros que também são filtros (aria-pressed). Palavra + número + cor. */
+.resumo {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--esp-3);
+  margin-bottom: var(--esp-2);
+}
+.resumo__item {
+  display: flex;
+  align-items: baseline;
+  gap: var(--esp-2);
+  min-height: var(--alvo-minimo);
+  padding: var(--esp-3) var(--esp-4);
+  font: inherit;
+  text-align: left;
+  color: var(--cor-texto);
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-divisoria);
+  border-left: 6px solid var(--cor-borda-campo);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+  cursor: pointer;
+  transition: background var(--transicao), border-color var(--transicao);
+}
+.resumo__item--erro {
+  border-left-color: var(--cor-erro);
+}
+.resumo__item--aviso {
+  border-left-color: var(--cor-aviso-texto);
+}
+.resumo__item:hover {
+  background: var(--cor-suave);
+}
+.resumo__item[aria-pressed="true"] {
+  background: var(--cor-suave);
+  border-color: var(--cor-primaria);
+  border-left-width: 6px;
+  box-shadow: inset 0 0 0 1px var(--cor-primaria);
+}
+.resumo__item[aria-pressed="true"] .resumo__rotulo::after {
+  content: " · filtrando";
+  font-weight: 600;
+}
+.resumo__numero {
+  font-size: 1.75rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.resumo__item--erro .resumo__numero {
+  color: var(--cor-erro-texto);
+}
+.resumo__item--aviso .resumo__numero {
+  color: var(--cor-aviso-texto);
+}
+.resumo + .campo__ajuda {
+  margin-bottom: var(--esp-4);
+}
+.tabela tbody th {
+  font-weight: normal;
+}
+.tabela .tabela__grupo {
+  background: var(--cor-suave);
+  font-weight: 700;
+  color: var(--cor-primaria);
+}
+/* Linha que pede atenção: faixa à esquerda, além das etiquetas com palavra (WCAG 1.4.1). */
+.linha--vencido > :first-child {
+  box-shadow: inset 4px 0 0 var(--cor-erro);
+}
+.linha--atencao > :first-child {
+  box-shadow: inset 4px 0 0 var(--cor-aviso-texto);
+}
+.botao--abre .icone {
+  transition: transform var(--transicao);
+}
+.botao--abre[aria-expanded="true"] .icone {
+  transform: rotate(90deg);
+}
+.validade-proxima {
+  white-space: nowrap;
+}
+.linha-lotes td {
+  background: var(--cor-fundo);
+  border-top: none;
+}
+.lotes-do-produto {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 var(--esp-4);
+  display: grid;
+  gap: var(--esp-2);
 }
 .tabela tbody tr:hover {
   background: #f8fafc;

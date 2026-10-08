@@ -25,6 +25,7 @@ import {
 } from "./formulario.js";
 import { procurarProduto } from "./procurar-produto.js";
 import { entrarNaTela } from "./sessao.js";
+import { etiquetaDaSituacao } from "./situacao.js";
 
 // Exatamente os campos que a API recebe (RegistroDePerdaSerializer). Um teste confere.
 const CAMPOS = {
@@ -146,23 +147,6 @@ function descricaoDoLote(lote) {
   const tem = quantidade(lote.quantidade_atual, lote.unidade_medida);
   if (!lote.data_validade) return "Sem validade · entrou em " + dataBrasileira(lote.data_entrada) + " · " + tem;
   return "Validade " + dataBrasileira(lote.data_validade) + " · " + tem;
-}
-
-function etiquetaDaSituacao(lote) {
-  // Cor e palavra juntas (WCAG 1.4.1); cores do sistema de design (MASTER.md).
-  const etiqueta = document.createElement("span");
-  const dias = Math.abs(lote.dias_para_vencer);
-  const plural = dias === 1 ? " dia" : " dias";
-  const situacoes = {
-    VENCIDO: ["erro", "Vencido há " + dias + plural],
-    VENCENDO: ["aviso", lote.dias_para_vencer === 0 ? "Vence hoje" : "Vence em " + dias + plural],
-    OK: ["ok", "Dentro da validade"],
-    SEM_VALIDADE: ["neutra", "Sem validade"],
-  };
-  const [tipo, texto] = situacoes[lote.situacao] || ["neutra", lote.situacao];
-  etiqueta.className = "etiqueta etiqueta--" + tipo;
-  etiqueta.textContent = texto;
-  return etiqueta;
 }
 
 function loteEscolhido() {
