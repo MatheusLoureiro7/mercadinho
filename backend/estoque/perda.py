@@ -18,13 +18,13 @@ from django.utils import timezone
 
 from cadastro.models import Produto, Usuario
 from comum.erros import ErroDeRegraDeNegocio
+from comum.formatos import quantidade_na_loja
 from estoque.fifo import lotes_em_ordem_de_validade
 from estoque.models import Lote, Movimentacao
 
 
 def _quantidade_na_loja(valor: Decimal, produto: Produto) -> str:
-    """Como a loja escreve (e a tela mostra): "3 UN", "2 KG", "2,5 KG" — sem zeros sobrando."""
-    return f"{valor.normalize():f}".replace(".", ",") + f" {produto.unidade_medida}"
+    return quantidade_na_loja(valor, produto.unidade_medida)
 
 
 @transaction.atomic

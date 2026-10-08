@@ -6,6 +6,8 @@ Avisos — serviços chamados por outras partes do sistema. Tarefa H1.
 - cancelar_aviso_de_ruptura_pendente: operação 02, passo 10, chamado pela entrada de mercadoria.
 """
 
+from django.utils import timezone
+
 from alertas.estados import cancelar_os_abertos
 from alertas.models import Alerta
 from cadastro.models import Produto, Usuario
@@ -33,6 +35,10 @@ def criar_aviso(
     return Alerta.objects.create(
         produto=produto,
         lote=lote,
+        # A hora do relógio do sistema, o mesmo que dá o "hoje" da loja (timezone.localdate()): o
+        # dia em que o aviso nasce é sempre o dia da rodada que o gerou (achado na H2). Na prática é
+        # o NOW() do schema.sql; o padrão do banco continua lá para quem gravar por fora.
+        gerado_em=timezone.now(),
         tipo=tipo,
         severidade=severidade,
         mensagem=mensagem.strip(),
