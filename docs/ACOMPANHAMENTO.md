@@ -17,16 +17,16 @@ O diário, no fim do arquivo, conta o que foi feito em cada dia.
 
 ## Resumo
 
-*Atualizado em 07/10/2026.*
+*Atualizado em 08/10/2026.*
 
 | | Concluído | Total | % |
 |---|---|---|---|
-| **Tarefas** | 18 | 51 | 35,3 % |
-| **Horas estimadas** | 120 h | 378 h | 31,7 % |
+| **Tarefas** | 19 | 51 | 37,3 % |
+| **Horas estimadas** | 125 h | 378 h | 33,1 % |
 
 | Etapa | Blocos | Horas concluídas | Total | % |
 |---|---|---|---|---|
-| 1 · Aviso de validade | A, B, C, D, F, J | 120 h | 212 h | 56,6 % |
+| 1 · Aviso de validade | A, B, C, D, F, J | 125 h | 212 h | 59,0 % |
 | 2 · Aviso de ruptura | E, G, H | 0 h | 136 h | 0,0 % |
 | 3 · Gestão | I | 0 h | 30 h | 0,0 % |
 
@@ -46,7 +46,7 @@ Prazo de entrega: **27/11/2026**.
 | ~~A4~~ | ~~Autenticação e os três perfis de acesso~~ | A3, B1 | 12 | ✅ Concluída | 06/10/2026 | `ec49325` |
 | A5 | Esteira de publicação em ambiente de teste | A1 | 6 | ⛔ Aguarda D05 | — | — |
 
-## Bloco B — Cadastros · 46 h  ·  41 de 46 h concluídas
+## Bloco B — Cadastros · 46 h  ·  46 de 46 h concluídas ✅
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
@@ -56,7 +56,7 @@ Prazo de entrega: **27/11/2026**.
 | ~~B4~~ | ~~Regra: perecível exige prazo de durabilidade~~ | B3 | 3 | ✅ Concluída | 06/10/2026 | `a7d6512` |
 | ~~B5~~ | ~~Tela de produtos~~ | A3 | 8 | ✅ Concluída | 07/10/2026 | `7f32893` |
 | ~~B6~~ | ~~Tela de fornecedores~~ | A3 | 6 | ✅ Concluída | 07/10/2026 | `e6c031e` |
-| B7 | Ligar as telas à API e tratar os erros na tela | B2, B3, B5, B6 | 5 | ⬜ A fazer | — | — |
+| ~~B7~~ | ~~Ligar as telas à API e tratar os erros na tela~~ | B2, B3, B5, B6 | 5 | ✅ Concluída | 08/10/2026 | `71a8811` |
 
 ## Bloco C — Entrada de mercadoria · 40 h  ·  24 de 40 h concluídas
 
@@ -143,6 +143,49 @@ Prazo de entrega: **27/11/2026**.
 
 O que foi feito em cada dia, do mais recente para o mais antigo. Cada linha aponta a tarefa do
 cronograma, a regra de negócio (quando houver) e o commit.
+
+### 08/10/2026
+
+**Tarefa concluída: B7** (5 h estimadas). **O bloco B está completo.**
+
+- **B7 — Ligar as telas à API e tratar os erros na tela (inclui a tela de Login, L22).** As telas
+  de Produtos e Fornecedores deixaram de usar dados de exemplo: agora leem e gravam no sistema de
+  verdade. Para isso nasceu a **tela de Login** — a pessoa entra com login e senha, e o menu
+  aparece conforme o seu perfil (RN14): o sobrinho vê Produtos e Fornecedores; a esposa e o
+  Sr. João, cujas telas ainda vão ser feitas, veem a lista das telas do seu perfil. A entrada vale
+  só enquanto a aba estiver aberta (o computador da loja é compartilhado) e há botão "Sair". Se a
+  senha estiver errada, a tela não diz se o erro foi no login ou na senha — dizer ajudaria quem
+  tenta adivinhar. O gerenciador de senha e o "colar" funcionam, como pede a norma de
+  acessibilidade. Se o perfil não tem acesso a uma tela, ela nem abre (e a API também recusaria).
+  **Os erros agora aparecem na tela, em português da loja:** "Sem conexão com o sistema. Confira se
+  o computador está na rede e tente de novo."; sessão vencida leva de volta ao Login e, depois de
+  entrar, à tela onde a pessoa estava; lista que não carregou diz o porquê e oferece "Tentar de
+  novo" — nunca aparece vazia, o que daria a entender que não há nada cadastrado. A frase técnica
+  anotada na B6 ("Este campo pode não estar em branco.") virou "Preencha o nome do fornecedor."
+  **Decisão L25 — painel e sistema no mesmo endereço:** o navegador bloqueia uma página que fala com
+  outro endereço. Em vez de liberar esse bloqueio (o que exigiria uma dependência que o grupo não
+  aprovou), o painel e o sistema ficam atrás do mesmo endereço, que é o arranjo usual. Na máquina
+  do grupo, um script de 140 linhas, só com o Python, faz esse papel; na publicação (D05), o
+  servidor web.
+  **Dois problemas que só apareceram ao ligar as telas no sistema de verdade:** (1) a busca "acha
+  'feijão' digitando 'feijao'", prometida na B5, funcionava só com os dados de exemplo — o sistema
+  diferenciava acento. Corrigido na busca de produtos e na da consulta de estoque, que a tela F3 vai
+  usar, sem mexer no banco. (2) Ao digitar o prazo de entrega e clicar direto em "Salvar", o
+  clique se perdia: a mensagem de erro do campo sumia nesse instante, o formulário encolhia e o
+  botão saía de baixo do mouse. Agora a mensagem some enquanto a pessoa corrige o campo.
+  **Limitação conhecida:** se a entrada vencer (12 h) no meio de um cadastro, a pessoa volta ao
+  Login e perde o que estava digitando.
+  31 testes automáticos — total do projeto: 416, todos passando. Testada num navegador de verdade,
+  falando com o sistema, no tamanho do computador da loja e no de um celular: 126 verificações
+  (entrar, errar a senha, cadastrar, editar, regra RN03, nome repetido, sem conexão, erro do
+  sistema, sessão vencida, sair, perfil sem acesso) e auditoria de acessibilidade (WCAG 2.2, nível
+  AA) sem nenhuma falha. As capturas de tela pegaram o cabeçalho ocupando três linhas e o botão
+  "Sair" sem borda; os dois foram corrigidos.
+
+**Bloco B completo (B1 a B7):** cadastro de produtos e fornecedores pronto de ponta a ponta — banco,
+API, regras e telas ligadas ao sistema.
+
+**Próxima tarefa:** C5 — tela de entrada de mercadoria.
 
 ### 07/10/2026
 
