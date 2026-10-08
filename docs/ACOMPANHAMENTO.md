@@ -21,12 +21,12 @@ O diário, no fim do arquivo, conta o que foi feito em cada dia.
 
 | | Concluído | Total | % |
 |---|---|---|---|
-| **Tarefas** | 21 | 51 | 41,2 % |
-| **Horas estimadas** | 141 h | 378 h | 37,3 % |
+| **Tarefas** | 22 | 51 | 43,1 % |
+| **Horas estimadas** | 148 h | 378 h | 39,2 % |
 
 | Etapa | Blocos | Horas concluídas | Total | % |
 |---|---|---|---|---|
-| 1 · Aviso de validade | A, B, C, D, F, J | 141 h | 212 h | 66,5 % |
+| 1 · Aviso de validade | A, B, C, D, F, J | 148 h | 212 h | 69,8 % |
 | 2 · Aviso de ruptura | E, G, H | 0 h | 136 h | 0,0 % |
 | 3 · Gestão | I | 0 h | 30 h | 0,0 % |
 
@@ -69,13 +69,13 @@ Prazo de entrega: **27/11/2026**.
 | ~~C5~~ | ~~Tela de entrada de mercadoria~~ | A3 | 10 | ✅ Concluída | 08/10/2026 | `30e51b1` |
 | ~~C6~~ | ~~Integração e teste do fluxo completo~~ | C2, C5 | 6 | ✅ Concluída | 08/10/2026 | `defb4a9` |
 
-## Bloco D — Perdas e avarias · 18 h  ·  9 de 18 h concluídas
+## Bloco D — Perdas e avarias · 18 h  ·  16 de 18 h concluídas
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
 | ~~D1~~ | ~~API de registro de perda, com motivo obrigatório~~ | C1 | 6 | ✅ Concluída | 07/10/2026 | `18285b3` |
 | ~~D2~~ | ~~Regra: perda não entra na base de consumo~~ | D1 | 3 | ✅ Concluída | 07/10/2026 | `83dbc5f` |
-| D3 | Tela de avarias e quebras | A3 | 7 | ⬜ A fazer | — | — |
+| ~~D3~~ | ~~Tela de avarias e quebras~~ | A3 | 7 | ✅ Concluída | 08/10/2026 | `c8c4252` |
 | D4 | Integração e teste | D1, D3 | 2 | ⬜ A fazer | — | — |
 
 ## Bloco E — Entrada das vendas · 44 h ⚠️ depende da decisão D01  ·  0 de 44 h concluídas
@@ -146,7 +146,7 @@ cronograma, a regra de negócio (quando houver) e o commit.
 
 ### 08/10/2026
 
-**Tarefas concluídas: B7, C5 e C6** (21 h estimadas). **Os blocos B e C estão completos.**
+**Tarefas concluídas: B7, C5, C6 e D3** (28 h estimadas). **Os blocos B e C estão completos.**
 
 - **B7 — Ligar as telas à API e tratar os erros na tela (inclui a tela de Login, L22).** As telas
   de Produtos e Fornecedores deixaram de usar dados de exemplo: agora leem e gravam no sistema de
@@ -234,7 +234,28 @@ API, regras e telas ligadas ao sistema.
 **Bloco C completo (C1 a C6):** a entrada de mercadoria funciona de ponta a ponta — banco, API,
 regras de validade e saldo, tela e teste do fluxo inteiro.
 
-**Próxima tarefa:** D3 — tela de avarias e quebras.
+- **D3 — Tela de avarias e quebras (RF04, fluxograma 03).** O caderno de avarias do sobrinho virou
+  tela: ele procura o produto, diz quanto se perdeu e por quê — com botões "Venceu", "Quebrou" e
+  "Estragou" para não precisar escrever —, e a perda sai do estoque. A tela mostra **os lotes do
+  produto que estão na loja**, do que vence primeiro para o último, cada um com a situação em
+  palavra e cor: "Vencido há 1 dia", "Vence em 2 dias", "Dentro da validade" (RN16). Se ele sabe
+  qual lote estragou, escolhe; se não sabe, a opção já marcada deixa o sistema tirar pela ordem de
+  validade, começando pelos vencidos (decisão L20). Depois de registrar: "Perda registrada: 4 UN de
+  Iogurte natural (Estragou na geladeira). Agora tem 15 UN em estoque. Saiu de 2 lotes, pela ordem
+  de validade." Embaixo, as perdas de hoje, com hora, lote, motivo e quem registrou. A perda não se
+  apaga (RN01), e a tela avisa isso antes. Todas as regras continuam no sistema (API da D1): a tela
+  não decide nada.
+  **Achados:** (1) a frase de recusa do sistema dizia "Esse lote só tem 3,000 UN." — agora diz "3 UN",
+  como a loja fala; (2) nos testes de tela, a tabela de parâmetros (o "3 dias" do aviso de
+  validade) sumia depois do primeiro teste e a lista de lotes falhava — os testes agora a regravam;
+  (3) ajustes de aparência vistos nas capturas de tela. As partes comuns às telas de Entrada e de
+  Avarias (procurar produto, mostrar erros, confirmar) passaram a ser compartilhadas, e a tela de
+  Entrada continua passando nos seus 14 testes de tela.
+  15 testes automáticos (7 deles no navegador) — total do projeto: 454, todos passando. Conferida
+  no tamanho do computador da loja e no de um celular: 42 verificações e auditoria de
+  acessibilidade (WCAG 2.2, nível AA) sem nenhuma falha.
+
+**Próxima tarefa:** D4 — integração e teste do fluxo de perdas.
 
 ### 07/10/2026
 
