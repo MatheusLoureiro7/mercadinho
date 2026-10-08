@@ -21,12 +21,12 @@ O diário, no fim do arquivo, conta o que foi feito em cada dia.
 
 | | Concluído | Total | % |
 |---|---|---|---|
-| **Tarefas** | 19 | 51 | 37,3 % |
-| **Horas estimadas** | 125 h | 378 h | 33,1 % |
+| **Tarefas** | 20 | 51 | 39,2 % |
+| **Horas estimadas** | 135 h | 378 h | 35,7 % |
 
 | Etapa | Blocos | Horas concluídas | Total | % |
 |---|---|---|---|---|
-| 1 · Aviso de validade | A, B, C, D, F, J | 125 h | 212 h | 59,0 % |
+| 1 · Aviso de validade | A, B, C, D, F, J | 135 h | 212 h | 63,7 % |
 | 2 · Aviso de ruptura | E, G, H | 0 h | 136 h | 0,0 % |
 | 3 · Gestão | I | 0 h | 30 h | 0,0 % |
 
@@ -58,7 +58,7 @@ Prazo de entrega: **27/11/2026**.
 | ~~B6~~ | ~~Tela de fornecedores~~ | A3 | 6 | ✅ Concluída | 07/10/2026 | `e6c031e` |
 | ~~B7~~ | ~~Ligar as telas à API e tratar os erros na tela~~ | B2, B3, B5, B6 | 5 | ✅ Concluída | 08/10/2026 | `71a8811` |
 
-## Bloco C — Entrada de mercadoria · 40 h  ·  24 de 40 h concluídas
+## Bloco C — Entrada de mercadoria · 40 h  ·  34 de 40 h concluídas
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
@@ -66,7 +66,7 @@ Prazo de entrega: **27/11/2026**.
 | ~~C2~~ | ~~API de entrada de lote~~ | C1, B3 | 8 | ✅ Concluída | 07/10/2026 | `92bf7de` |
 | ~~C3~~ | ~~Regra: validade obrigatória e cálculo automático~~ | C2 | 4 | ✅ Concluída | 07/10/2026 | `43dc95d` |
 | ~~C4~~ | ~~Saldo derivado das movimentações~~ | C1 | 6 | ✅ Concluída | 06/10/2026 | `48451c5` |
-| C5 | Tela de entrada de mercadoria | A3 | 10 | ⬜ A fazer | — | — |
+| ~~C5~~ | ~~Tela de entrada de mercadoria~~ | A3 | 10 | ✅ Concluída | 08/10/2026 | `30e51b1` |
 | C6 | Integração e teste do fluxo completo | C2, C5 | 6 | ⬜ A fazer | — | — |
 
 ## Bloco D — Perdas e avarias · 18 h  ·  9 de 18 h concluídas
@@ -146,7 +146,7 @@ cronograma, a regra de negócio (quando houver) e o commit.
 
 ### 08/10/2026
 
-**Tarefa concluída: B7** (5 h estimadas). **O bloco B está completo.**
+**Tarefas concluídas: B7 e C5** (15 h estimadas). **O bloco B está completo.**
 
 - **B7 — Ligar as telas à API e tratar os erros na tela (inclui a tela de Login, L22).** As telas
   de Produtos e Fornecedores deixaram de usar dados de exemplo: agora leem e gravam no sistema de
@@ -185,7 +185,32 @@ cronograma, a regra de negócio (quando houver) e o commit.
 **Bloco B completo (B1 a B7):** cadastro de produtos e fornecedores pronto de ponta a ponta — banco,
 API, regras e telas ligadas ao sistema.
 
-**Próxima tarefa:** C5 — tela de entrada de mercadoria.
+- **C5 — Tela de entrada de mercadoria (RF03, fluxograma 02).** O sobrinho já registra, na tela,
+  cada carga que chega: procura o produto (digitando "frango" ou "feijao", sem precisar de acento),
+  informa a quantidade — em quilo fracionado, como a carne —, o custo da nota, a validade e o
+  fornecedor. A tela mostra se o produto é perecível e quanto tempo dura, e explica a regra RN04 em
+  palavras da loja: "Se deixar em branco, o sistema conta 4 dias a partir de hoje". Quem calcula e
+  quem recusa validade vencida é o sistema (a API da C2/C3), nunca a tela; depois de registrar, a
+  tela confirma "Entrada registrada: 12,5 KG de Frango resfriado 1 kg. Agora tem 25 KG em estoque.
+  Validade calculada: 12/10/2026." Como uma carga traz vários produtos do mesmo fornecedor, ele
+  **continua escolhido** para o próximo produto, e o fornecedor de costume do produto já vem
+  preenchido. Embaixo, as **entradas de hoje** (operação 02, passo 11); errou, a correção é por
+  Avarias e quebras, para o estoque guardar o histórico (RN01). A data de entrada não aparece na
+  tela: é sempre o dia da loja, decidido pelo sistema.
+  **Decisão de ordem:** a tela já nasceu ligada ao sistema, e não com dados de exemplo como B5 e
+  B6 — a API (C2) e a ligação (B7) já existiam, e refazer seria retrabalho. A C6 continua sendo o
+  teste do fluxo completo, pela tela.
+  **Dois achados das verificações, corrigidos:** o aviso flutuante de "registrado" cobria os campos
+  (no celular, por 6 segundos) — virou uma confirmação fixa no topo do formulário, que fica até o
+  próximo registro; e no celular a lista do dia, que rola de lado, não podia ser rolada só pelo
+  teclado (norma WCAG 2.1.1).
+  9 testes automáticos — total do projeto: 425, todos passando. Testada num navegador de verdade,
+  falando com o sistema, no tamanho do computador da loja e no de um celular: 120 verificações
+  (validade vencida recusada sem gravar nada, validade calculada, validade informada, não perecível
+  sem validade, quantidade zero, custo com letras, sem conexão, outro perfil sem acesso) e
+  auditoria de acessibilidade (WCAG 2.2, nível AA) sem nenhuma falha.
+
+**Próxima tarefa:** C6 — integração e teste do fluxo completo da entrada de mercadoria.
 
 ### 07/10/2026
 
