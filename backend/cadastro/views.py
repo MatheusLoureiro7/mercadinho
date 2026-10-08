@@ -10,6 +10,7 @@ from rest_framework.exceptions import ValidationError
 
 from cadastro.models import Categoria, Fornecedor, Produto
 from cadastro.serializers import CategoriaSerializer, FornecedorSerializer, ProdutoSerializer
+from comum.busca import filtrar_por_nome
 
 
 class CadastroSemExclusao(
@@ -57,9 +58,7 @@ class ProdutoViewSet(CadastroSemExclusao):
 
     def get_queryset(self):
         produtos = Produto.objects.select_related("categoria", "fornecedor_padrao")
-        busca = self.request.query_params.get("busca", "").strip()
-        if busca:
-            produtos = produtos.filter(nome__icontains=busca)
+        produtos = filtrar_por_nome(produtos, "nome", self.request.query_params.get("busca", ""))
         categoria = self.request.query_params.get("categoria")
         if categoria:
             if not categoria.isdigit():

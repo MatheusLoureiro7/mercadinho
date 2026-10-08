@@ -342,6 +342,21 @@ pedido mínimo).
 > tela mostra "Pedido mínimo · R$". Nada muda no banco nem na API; se o grupo decidir diferente,
 > muda só o rótulo.
 
+### L25 — Como o painel estático chega à API?
+
+A Apostila IV, figura 2, separa os "arquivos estáticos" (o painel) do servidor da API, mas não diz
+em que endereço cada um fica. Em endereços diferentes (porta 8090 e 8000, por exemplo), o
+navegador bloqueia a chamada (CORS), e liberar exigiria configuração a mais — ou a dependência
+`corsheaders`, que o CLAUDE.md só permite com decisão do grupo.
+
+**Impacto:** tarefa B7 em diante (toda tela) e a publicação (A5, J6, decisão D05).
+
+> **✅ DECIDIDA em 08/10/2026 (tarefa B7):** **mesma origem**. O painel chama sempre `/api/...`,
+> caminho relativo; quem serve o painel repassa `/api/` para a API. Em desenvolvimento isso é o
+> `frontend/servir.py` (só biblioteca padrão do Python); na publicação, o servidor web faz o mesmo
+> papel. É o arranjo usual de painel + API: sem CORS, sem dependência nova, nenhuma linha a mais no
+> Django, e o painel continua separado do servidor da API, como na figura 2.
+
 ---
 
 ## 2. Divergências internas da documentação entregue

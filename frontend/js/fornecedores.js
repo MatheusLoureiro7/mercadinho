@@ -3,14 +3,16 @@
  *
  * O número que importa aqui é o prazo de entrega: é ele que faz o aviso de "vai acabar" sair com
  * antecedência suficiente para o fornecedor entregar (RN08). A tela não decide regra: envia o que
- * foi digitado e mostra o que a fonte de dados responder. Recusa mantém tudo o que foi digitado e
+ * foi digitado e mostra o que a API responder. Recusa mantém tudo o que foi digitado e
  * aponta só o campo com problema, como na tela de Produtos.
  *
  * Sem exclusão: fornecedor é tabela de origem e nunca é apagado (L18).
- * Fonte de dados: até a B7, dados de exemplo (js/dados-de-exemplo.js); na B7, a API.
+ * Dados: a API (js/api.js), desde a B7. A tela abre só para quem tem o perfil (js/sessao.js, RN14).
  */
 
-import { fonte } from "./dados-de-exemplo.js";
+import { api } from "./api.js";
+import { linhaDeFalha } from "./falha.js";
+import { entrarNaTela } from "./sessao.js";
 import { emReais, numeroParaApi, numeroParaCampo } from "./formatos.js";
 
 const CAMPOS = {
@@ -31,15 +33,14 @@ const $ = (id) => document.getElementById(id);
 
 document.addEventListener("DOMContentLoaded", iniciar);
 
-function iniciar() {
-  $("aviso-fonte").textContent =
-    "Tela de demonstração com " + fonte.nome + " (tarefa B6). Ela passa a usar o sistema de verdade na tarefa B7.";
+async function iniciar() {
+  if (!(await entrarNaTela("fornecedores"))) return;
 
   $("botao-novo").addEventListener("click", (evento) => abrirFormulario(null, evento.currentTarget));
   $("botao-cancelar").addEventListener("click", fecharFormulario);
   $("formulario").addEventListener("submit", salvar);
   ["nome", "prazo_entrega_dias"].forEach((campo) => {
-    $(CAMPOS[campo].id).addEventListener("blur", () => conferirPreenchido(campo));
+    $(CAMPOS[campo].id).addEventListener("input", () => conferirPreenchido(campo));
   });
 
   carregarLista();
@@ -50,9 +51,17 @@ function iniciar() {
 async function carregarLista() {
   const corpo = $("corpo-tabela");
   corpo.setAttribute("aria-busy", "true");
-  const fornecedores = await fonte.listarFornecedores();
+  const resposta = await api.ler("fornecedores/");
   corpo.removeAttribute("aria-busy");
   corpo.textContent = "";
+
+  if (!resposta.ok) {
+    // Sem conexão ou erro do sistema: nunca mostrar "nenhum fornecedor cadastrado".
+    corpo.append(linhaDeFalha(resposta.erro, 5, carregarLista));
+    $("anuncio-lista").textContent = "Não foi possível carregar os fornecedores.";
+    return;
+  }
+  const fornecedores = resposta.dados;
 
   if (!fornecedores.length) corpo.append(linhaVazia());
   else fornecedores.forEach((fornecedor) => corpo.append(linhaDoFornecedor(fornecedor)));
@@ -145,7 +154,9 @@ function fecharFormulario() {
 }
 
 function conferirPreenchido(campo) {
-  // Só apaga o erro de quem já foi corrigido, ao sair do campo. A regra de verdade é da API.
+  // Só apaga o erro de quem já foi corrigido, enquanto a pessoa digita. Não no "blur": sumir o
+  // erro ao sair do campo encolhe o formulário no meio do clique em "Salvar", e o clique se perde
+  // (achado na B7). A regra de verdade é da API.
   if ($(CAMPOS[campo].id).value.trim()) mostrarErroNoCampo(campo, null);
 }
 
@@ -168,7 +179,8 @@ async function salvar(evento) {
   botao.disabled = true;
 
   const id = estado.fornecedorEmEdicao ? estado.fornecedorEmEdicao.id : null;
-  const resposta = await fonte.salvarFornecedor(dadosDoFormulario(), id);
+  const dados = dadosDoFormulario();
+  const resposta = id ? await api.alterar("fornecedores/", id, dados) : await api.criar("fornecedores/", dados);
 
   botao.removeAttribute("aria-busy");
   botao.disabled = false;

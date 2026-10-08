@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Entrar · Mercado do Sr. João</title>
+    <link rel="icon" href="img/icone.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="css/base.css" />
+    <script type="module" src="js/login.js"></script>
+  </head>
+  <body>
+    <header class="cabecalho">
+      <div class="cabecalho__interno">
+        <span class="cabecalho__marca">
+          <svg class="icone" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 9l1.5-5h15L21 9" /><path d="M4 9v11h16V9" /><path d="M9 20v-6h6v6" />
+          </svg>
+          Mercado do Sr. João
+        </span>
+      </div>
+    </header>
+
+    <!-- Tela de Login (Apostila II): identifica a pessoa e monta o menu conforme o papel (RN14). -->
+    <main id="conteudo" class="pagina pagina--entrada" tabindex="-1">
+      <section class="cartao entrada" id="painel-entrada" aria-labelledby="titulo-entrada">
+        <h1 class="cartao__titulo" id="titulo-entrada">Entrar no sistema</h1>
+        <p class="pagina__descricao">Use o login e a senha que a equipe entregou para você.</p>
+
+        <p class="recado" id="recado" role="status" hidden>
+          <svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 8v5M12 16.5v.5" /></svg>
+          <span></span>
+        </p>
+
+        <div class="resumo-de-erros" id="resumo-de-erros" role="alert" tabindex="-1" aria-labelledby="titulo-erros" hidden>
+          <h2 id="titulo-erros">Não foi possível entrar</h2>
+          <ul id="lista-de-erros"></ul>
+        </div>
+
+        <form id="formulario" novalidate>
+          <div class="campo">
+            <label for="campo-login">Login</label>
+            <input
+              id="campo-login"
+              name="login"
+              type="text"
+              autocomplete="username"
+              autocapitalize="none"
+              spellcheck="false"
+              maxlength="60"
+              required
+              aria-describedby="erro-login"
+            />
+            <p class="campo__erro" id="erro-login" hidden></p>
+          </div>
+
+          <div class="campo">
+            <label for="campo-senha">Senha</label>
+            <div class="campo__com-botao">
+              <input
+                id="campo-senha"
+                name="senha"
+                type="password"
+                autocomplete="current-password"
+                maxlength="128"
+                required
+                aria-describedby="erro-senha"
+              />
+              <button type="button" class="botao botao--secundario" id="botao-ver-senha" aria-pressed="false" aria-controls="campo-senha">
+                Mostrar
+              </button>
+            </div>
+            <p class="campo__erro" id="erro-senha" hidden></p>
+          </div>
+
+          <div class="formulario__acoes">
+            <button type="submit" class="botao botao--acao entrada__botao" id="botao-entrar">Entrar</button>
+          </div>
+        </form>
+        <p class="campo__ajuda entrada__ajuda">Esqueceu a senha? Fale com a equipe do sistema.</p>
+      </section>
+
+      <!-- Quem já entrou mas ainda não tem tela pronta no painel (as telas chegam tarefa a tarefa). -->
+      <section class="cartao entrada" id="painel-sem-telas" aria-labelledby="titulo-sem-telas" hidden>
+        <h1 class="cartao__titulo" id="titulo-sem-telas">Olá!</h1>
+        <p id="texto-sem-telas"></p>
+        <ul class="entrada__telas" id="lista-sem-telas"></ul>
+        <div class="formulario__acoes">
+          <button type="button" class="botao botao--secundario" id="botao-sair-sem-telas">Sair</button>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

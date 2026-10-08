@@ -155,7 +155,9 @@ h3 {
 .cabecalho__usuario {
   margin-left: auto;
   font-size: 0.9375rem;
-  opacity: 0.95;
+  display: flex;
+  align-items: center;
+  gap: var(--esp-3);
 }
 
 /* ---------------------------------------------------------------- Página */
@@ -239,6 +241,19 @@ h3 {
 }
 .botao--discreto:hover {
   background: var(--cor-suave);
+}
+/* "Sair", no cabeçalho escuro (B7). */
+.botao--cabecalho {
+  background: transparent;
+  color: var(--cor-sobre-primaria);
+  border-color: var(--cor-sobre-primaria);
+  padding: 0 var(--esp-3);
+}
+.botao--cabecalho:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+.botao--cabecalho:focus-visible {
+  outline-color: var(--cor-sobre-primaria);
 }
 .botao[disabled],
 .botao[aria-busy="true"] {
@@ -326,6 +341,37 @@ h3 {
 .campo__sufixo span {
   color: var(--cor-texto-suave);
   min-width: 2.5em;
+}
+.campo__com-botao {
+  display: flex;
+  gap: var(--esp-2);
+}
+
+/* Tela de Login (B7). */
+.pagina--entrada {
+  display: flex;
+  justify-content: center;
+}
+.entrada {
+  width: 100%;
+  max-width: 420px;
+  margin-top: var(--esp-6);
+}
+.entrada .pagina__descricao {
+  margin-bottom: var(--esp-5);
+}
+.entrada .campo + .campo {
+  margin-top: var(--esp-4);
+}
+.entrada__botao {
+  width: 100%;
+}
+.entrada__ajuda {
+  margin-top: var(--esp-4);
+}
+.entrada__telas {
+  margin: var(--esp-3) 0 var(--esp-5);
+  padding-left: var(--esp-5);
 }
 
 .opcao {
@@ -479,10 +525,35 @@ h3 {
 
 /* ---------------------------------------------------------------- Avisos */
 
-.aviso-rodape {
-  margin-top: var(--esp-5);
-  font-size: 0.875rem;
-  color: var(--cor-texto-suave);
+/* Recado de uma tela para outra (ex.: "Sua sessão expirou."), em cima do conteúdo. B7. */
+.recado {
+  display: flex;
+  gap: var(--esp-2);
+  align-items: flex-start;
+  margin: 0 0 var(--esp-4);
+  padding: var(--esp-3) var(--esp-4);
+  background: var(--cor-aviso-fundo);
+  color: var(--cor-aviso-texto);
+  border-radius: var(--raio);
+  font-weight: 600;
+}
+.recado[hidden] {
+  display: none;
+}
+
+/* Lista que não carregou (sem conexão, erro do sistema). B7. */
+.vazio--falha {
+  color: var(--cor-erro-texto);
+}
+.vazio--falha span {
+  display: block;
+  margin-bottom: var(--esp-3);
+}
+.falha {
+  padding: var(--esp-6) 0;
+}
+.falha p {
+  margin: var(--esp-2) 0 var(--esp-4);
 }
 .toast {
   position: fixed;

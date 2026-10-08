@@ -35,7 +35,7 @@ autenticação — não dentro de cada regra de negócio.
 | [x] | **B4** | Regra: perecível exige prazo de durabilidade | Regra | B3 | 3 |
 | [x] | **B5** | Tela de produtos | Tela | A3 | 8 |
 | [x] | **B6** | Tela de fornecedores | Tela | A3 | 6 |
-| [ ] | **B7** | Ligar as telas à API e tratar os erros na tela | Tela | B2, B3, B5, B6 | 5 |
+| [x] | **B7** | Ligar as telas à API e tratar os erros na tela | Tela | B2, B3, B5, B6 | 5 |
 
 **B4 = RN03.** **B2** precisa guardar `prazo_entrega_dias`, que é o número que faz o ponto de
 pedido funcionar lá no bloco G.

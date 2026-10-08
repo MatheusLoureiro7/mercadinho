@@ -15,9 +15,16 @@ from cadastro.regras import verificar_rn03
 UNIDADES_DE_MEDIDA = ("KG", "UN", "L", "PCT")
 
 
+def _nome_obrigatorio(mensagem: str) -> dict:
+    """Mensagens do nome em branco ou ausente. A tradução do DRF ("Este campo pode não estar em
+    branco.") não é frase da loja (RNF10) e aparece direto na tela (B7)."""
+    return {"required": mensagem, "blank": mensagem, "null": mensagem}
+
+
 class CategoriaSerializer(serializers.ModelSerializer):
     nome = serializers.CharField(
         max_length=80,
+        error_messages=_nome_obrigatorio("Preencha o nome da categoria."),
         validators=[
             UniqueValidator(
                 queryset=Categoria.objects.all(), message="Já existe uma categoria com esse nome."
@@ -48,13 +55,17 @@ class FornecedorSerializer(serializers.ModelSerializer):
         min_value=0,
         required=False,
         allow_null=True,
-        error_messages={"min_value": "O pedido mínimo não pode ser negativo."},
+        error_messages={
+            "min_value": "O pedido mínimo não pode ser negativo.",
+            "invalid": "Informe o pedido mínimo só com números, por exemplo 500.00.",
+        },
     )
     contato = serializers.CharField(max_length=160, required=False, allow_blank=True, allow_null=True)
 
     class Meta:
         model = Fornecedor
         fields = ["id", "nome", "prazo_entrega_dias", "pedido_minimo", "contato"]
+        extra_kwargs = {"nome": {"error_messages": _nome_obrigatorio("Preencha o nome do fornecedor.")}}
 
     def validate_contato(self, valor):
         return valor or None  # vazio vira nulo, como no schema.sql
@@ -103,7 +114,11 @@ class ProdutoSerializer(serializers.ModelSerializer):
         source="fornecedor_padrao.nome", read_only=True, default=None
     )
     unidade_medida = serializers.CharField(
-        max_length=10, error_messages={"required": "Escolha a unidade: KG, UN, L ou PCT."}
+        max_length=10,
+        error_messages={
+            "required": "Escolha a unidade: KG, UN, L ou PCT.",
+            "blank": "Escolha a unidade: KG, UN, L ou PCT.",
+        },
     )
     # Opcionais: se não vierem, valem os padrões (L19 para perecível; DEFAULT FALSE do banco).
     perecivel = serializers.BooleanField(required=False)
@@ -147,6 +162,7 @@ class ProdutoSerializer(serializers.ModelSerializer):
         # O nome único na categoria é checado em validate(), com a mensagem da loja e apontando o
         # campo `nome` (fluxograma 01). Desliga a validação automática do DRF, de texto técnico.
         validators = []
+        extra_kwargs = {"nome": {"error_messages": _nome_obrigatorio("Preencha o nome do produto.")}}
 
     def validate_unidade_medida(self, valor):
         unidade = valor.strip().upper()

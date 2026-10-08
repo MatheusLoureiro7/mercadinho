@@ -18,6 +18,7 @@ from rest_framework import generics, mixins, status, viewsets
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
+from comum.busca import filtrar_por_nome
 from estoque.consulta import Situacao, posicao_por_lote, posicao_por_produto
 from estoque.entrada import registrar_entrada
 from estoque.models import Lote, Movimentacao
@@ -139,8 +140,7 @@ class EstoquePorProdutoView(generics.ListAPIView):
         produtos = posicao_por_produto(hoje=timezone.localdate())
         if (categoria := _id(parametros, "categoria")) is not None:
             produtos = produtos.filter(categoria_id=categoria)
-        if busca := parametros.get("busca", "").strip():
-            produtos = produtos.filter(nome__icontains=busca)
+        produtos = filtrar_por_nome(produtos, "nome", parametros.get("busca", ""))
         if _sim_ou_nao(parametros, "abaixo_do_minimo"):
             produtos = produtos.filter(abaixo_do_minimo=True)
         if _sim_ou_nao(parametros, "validade_proxima"):
@@ -166,8 +166,7 @@ class EstoquePorLoteView(generics.ListAPIView):
             lotes = lotes.filter(produto__categoria_id=categoria)
         if (produto := _id(parametros, "produto")) is not None:
             lotes = lotes.filter(produto_id=produto)
-        if busca := parametros.get("busca", "").strip():
-            lotes = lotes.filter(produto__nome__icontains=busca)
+        lotes = filtrar_por_nome(lotes, "produto__nome", parametros.get("busca", ""))
         if situacao := parametros.get("situacao", "").strip():
             pedidas = {item.strip().upper() for item in situacao.split(",") if item.strip()}
             if not pedidas <= set(Situacao.values):

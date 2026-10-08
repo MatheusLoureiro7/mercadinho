@@ -5,10 +5,12 @@
  * responder. Fluxograma 01: se algo for recusado, mantém tudo o que já foi digitado e aponta só o
  * campo com problema.
  *
- * Fonte de dados: até a B7, dados de exemplo (js/dados-de-exemplo.js); na B7, a API.
+ * Dados: a API (js/api.js), desde a B7. A tela abre só para quem tem o perfil (js/sessao.js, RN14).
  */
 
-import { fonte } from "./dados-de-exemplo.js";
+import { api } from "./api.js";
+import { entrarNaTela } from "./sessao.js";
+import { linhaDeFalha } from "./falha.js";
 import { emReais, numeroParaApi, numeroParaCampo, quantidade } from "./formatos.js";
 
 const CAMPOS = {
@@ -29,6 +31,7 @@ const estado = {
   produtoEmEdicao: null, // null = cadastro novo
   pereciveltocado: false, // L19: só herda da categoria enquanto a pessoa não mexeu no "É perecível"
   quemAbriu: null, // para devolver o foco ao fechar o formulário
+  pedidoDaLista: 0, // busca digitada rápido: só vale a resposta do último pedido
 };
 
 const $ = (id) => document.getElementById(id);
@@ -38,13 +41,17 @@ const $ = (id) => document.getElementById(id);
 document.addEventListener("DOMContentLoaded", iniciar);
 
 async function iniciar() {
-  $("aviso-fonte").textContent =
-    "Tela de demonstração com " + fonte.nome + " (tarefa B5). Ela passa a usar o sistema de verdade na tarefa B7.";
+  if (!(await entrarNaTela("produtos"))) return;
 
-  const [categorias, fornecedores] = await Promise.all([fonte.listarCategorias(), fonte.listarFornecedores()]);
-  estado.categorias = categorias;
+  const [categorias, fornecedores] = await Promise.all([api.ler("categorias/"), api.ler("fornecedores/")]);
+  const falha = [categorias, fornecedores].find((resposta) => !resposta.ok);
+  if (falha) {
+    mostrarFalhaNaLista(falha.erro, () => window.location.reload());
+    return;
+  }
+  estado.categorias = categorias.dados;
   preencherCategorias();
-  preencherSelect($("campo-fornecedor"), fornecedores, "Nenhum");
+  preencherSelect($("campo-fornecedor"), fornecedores.dados, "Nenhum");
 
   $("botao-novo").addEventListener("click", (evento) => abrirFormulario(null, evento.currentTarget));
   $("botao-cancelar").addEventListener("click", fecharFormulario);
@@ -59,7 +66,7 @@ async function iniciar() {
   $("botao-salvar-categoria").addEventListener("click", criarCategoria);
 
   ["nome", "categoria", "unidade_medida"].forEach((campo) => {
-    $(CAMPOS[campo].id).addEventListener("blur", () => conferirPreenchido(campo));
+    $(CAMPOS[campo].id).addEventListener("input", () => conferirPreenchido(campo));
   });
 
   let espera;
@@ -91,12 +98,18 @@ function preencherCategorias() {
 
 async function carregarLista() {
   const corpo = $("corpo-tabela");
+  const pedido = ++estado.pedidoDaLista;
   corpo.setAttribute("aria-busy", "true");
-  const resposta = await fonte.listarProdutos({ busca: $("busca").value.trim(), categoria: $("filtro-categoria").value });
+  const resposta = await api.ler("produtos/", { busca: $("busca").value.trim(), categoria: $("filtro-categoria").value });
+  if (pedido !== estado.pedidoDaLista) return; // chegou depois de uma busca mais nova
   corpo.removeAttribute("aria-busy");
-  corpo.textContent = "";
 
-  const produtos = resposta.ok ? resposta.dados : [];
+  if (!resposta.ok) {
+    mostrarFalhaNaLista(resposta.erro, carregarLista);
+    return;
+  }
+  corpo.textContent = "";
+  const produtos = resposta.dados;
   if (!produtos.length) {
     corpo.append(linhaVazia());
   } else {
@@ -104,6 +117,15 @@ async function carregarLista() {
   }
   $("anuncio-lista").textContent =
     produtos.length === 1 ? "1 produto encontrado." : produtos.length + " produtos encontrados.";
+}
+
+function mostrarFalhaNaLista(erro, tentarDeNovo) {
+  // Sem conexão ou erro do sistema: diz o que houve e como sair, sem fingir que a lista está vazia.
+  const corpo = $("corpo-tabela");
+  corpo.removeAttribute("aria-busy");
+  corpo.textContent = "";
+  corpo.append(linhaDeFalha(erro, 7, tentarDeNovo));
+  $("anuncio-lista").textContent = "Não foi possível carregar os produtos.";
 }
 
 function linhaVazia() {
@@ -244,7 +266,9 @@ function atualizarSufixoDoMinimo() {
 }
 
 function conferirPreenchido(campo) {
-  // Só obrigatoriedade visual, ao sair do campo. A regra de verdade é da API.
+  // Só apaga o erro de quem já foi corrigido, enquanto a pessoa digita ou escolhe. Não no "blur":
+  // sumir o erro ao sair do campo encolhe o formulário no meio do clique em "Salvar", e o clique
+  // se perde (achado na B7). A regra de verdade é da API.
   const valor = $(CAMPOS[campo].id).value.trim();
   if (valor) mostrarErroNoCampo(campo, null);
 }
@@ -273,7 +297,8 @@ async function salvar(evento) {
   botao.disabled = true;
 
   const id = estado.produtoEmEdicao ? estado.produtoEmEdicao.id : null;
-  const resposta = await fonte.salvarProduto(dadosDoFormulario(), id);
+  const dados = dadosDoFormulario();
+  const resposta = id ? await api.alterar("produtos/", id, dados) : await api.criar("produtos/", dados);
 
   botao.removeAttribute("aria-busy");
   botao.disabled = false;
@@ -363,8 +388,8 @@ function fecharNovaCategoria() {
 }
 
 async function criarCategoria() {
-  const resposta = await fonte.criarCategoria({
-    nome: $("campo-nova-categoria").value,
+  const resposta = await api.criar("categorias/", {
+    nome: $("campo-nova-categoria").value.trim(),
     perecivel_padrao: $("campo-nova-categoria-perecivel").checked,
   });
   const erro = $("erro-nova-categoria");
@@ -376,7 +401,9 @@ async function criarCategoria() {
     $("campo-nova-categoria").focus();
     return;
   }
-  estado.categorias = await fonte.listarCategorias();
+  const categorias = await api.ler("categorias/");
+  if (categorias.ok) estado.categorias = categorias.dados;
+  else estado.categorias = estado.categorias.concat([resposta.dados]); // a criada entra mesmo assim
   preencherCategorias();
   $("campo-categoria").value = resposta.dados.id;
   herdarPerecivelDaCategoria();

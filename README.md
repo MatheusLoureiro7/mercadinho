@@ -115,6 +115,22 @@ O `.env` nunca vai para o git (RNF12).
 
 ---
 
+## O painel
+
+O painel (`frontend/`) e a API ficam no **mesmo endereço**: o painel chama sempre `/api/...`, sem
+CORS (decisão L25). Na máquina do grupo, com a API rodando em outro terminal:
+
+```bash
+python backend/manage.py runserver      # terminal 1 — a API, em 127.0.0.1:8000
+python frontend/servir.py               # terminal 2 — o painel, em http://127.0.0.1:8090/
+```
+
+O `servir.py` entrega os arquivos do painel e repassa o que começa com `/api/` para a API. Usa só
+a biblioteca padrão do Python e aceita conexão só da própria máquina. Na publicação (D05), o
+servidor web faz o mesmo papel. Para entrar, crie os usuários (abaixo).
+
+---
+
 ## A API
 
 Tudo fica sob `/api/`, sempre em JSON. Rodar localmente:

@@ -20,21 +20,21 @@
           Mercado do Sr. João
         </span>
         <nav aria-label="Menu principal">
-          <!-- Menu do perfil OPERACAO (RN14). Na B7 ele passa a vir de /api/sessoes/atual/. -->
-          <ul class="menu">
-            <li><a href="produtos.html" aria-current="page">Produtos</a></li>
-            <li><a href="fornecedores.html">Fornecedores</a></li>
-            <li><a href="#">Entrada de mercadoria</a></li>
-            <li><a href="#">Avarias e quebras</a></li>
-            <li><a href="#">Importação de vendas</a></li>
-            <li><a href="#">Consulta de estoque</a></li>
-          </ul>
+          <!-- Menu do perfil (RN14): montado por js/sessao.js com as telas que /api/sessoes/atual/ devolve. -->
+          <ul class="menu" id="menu"></ul>
         </nav>
-        <span class="cabecalho__usuario">Sobrinho</span>
+        <span class="cabecalho__usuario">
+          <span id="usuario-nome"></span>
+          <button type="button" class="botao botao--cabecalho" id="botao-sair" hidden>Sair</button>
+        </span>
       </div>
     </header>
 
     <main id="conteudo" class="pagina" tabindex="-1">
+      <p class="recado" id="recado" role="status" hidden>
+        <svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 8v5M12 16.5v.5" /></svg>
+        <span></span>
+      </p>
       <div class="pagina__titulo">
         <div>
           <h1>Produtos</h1>
@@ -203,7 +203,6 @@
         </div>
       </section>
 
-      <p class="aviso-rodape" id="aviso-fonte"></p>
     </main>
 
     <div class="toast" id="toast" role="status" aria-live="polite" hidden>
