@@ -9,19 +9,22 @@
     <script type="module" src="js/login.js"></script>
   </head>
   <body>
-    <header class="cabecalho">
-      <div class="cabecalho__interno">
-        <span class="cabecalho__marca">
-          <svg class="icone" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M3 9l1.5-5h15L21 9" /><path d="M4 9v11h16V9" /><path d="M9 20v-6h6v6" />
-          </svg>
-          Mercado do Sr. João
-        </span>
-      </div>
-    </header>
+    <div class="login">
+      <aside class="login__marca" aria-label="Sobre o sistema">
+        <div>
+          <span class="marca__logo" aria-hidden="true"><svg class="icone" viewBox="0 0 24 24"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7" /><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" /><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4" /><path d="M2 7h20" /><path d="M22 7v3a2 2 0 0 1-2 2 2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7" /></svg></span>
+          <p class="login__titulo">Mercado do Sr. João</p>
+          <p class="login__frase">Estoque e compras da loja: o que entra, o que sai e o que está vencendo.</p>
+        </div>
+        <ul class="login__lista">
+          <li><svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><path d="M21.8 10A10 10 0 1 1 17 3.34" /><path d="m9 11 3 3L22 4" /></svg><span>Avisa no celular antes de o produto vencer.</span></li>
+          <li><svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><path d="M21.8 10A10 10 0 1 1 17 3.34" /><path d="m9 11 3 3L22 4" /></svg><span>Mostra o que está acabando e o que está abaixo do mínimo.</span></li>
+          <li><svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><path d="M21.8 10A10 10 0 1 1 17 3.34" /><path d="m9 11 3 3L22 4" /></svg><span>Guarda cada entrada e cada perda, com o motivo.</span></li>
+        </ul>
+      </aside>
 
     <!-- Tela de Login (Apostila II): identifica a pessoa e monta o menu conforme o papel (RN14). -->
-    <main id="conteudo" class="pagina pagina--entrada" tabindex="-1">
+    <main id="conteudo" class="login__conteudo" tabindex="-1">
       <section class="cartao entrada" id="painel-entrada" aria-labelledby="titulo-entrada">
         <h1 class="cartao__titulo" id="titulo-entrada">Entrar no sistema</h1>
         <p class="pagina__descricao">Use o login e a senha que a equipe entregou para você.</p>
@@ -89,5 +92,6 @@
         </div>
       </section>
     </main>
+    </div>
   </body>
 </html>

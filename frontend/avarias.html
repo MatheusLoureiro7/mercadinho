@@ -14,18 +14,23 @@
     <header class="cabecalho">
       <div class="cabecalho__interno">
         <span class="cabecalho__marca">
-          <svg class="icone" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M3 9l1.5-5h15L21 9" /><path d="M4 9v11h16V9" /><path d="M9 20v-6h6v6" />
-          </svg>
-          Mercado do Sr. João
+          <span class="marca__logo" aria-hidden="true"><svg class="icone" viewBox="0 0 24 24"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7" /><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" /><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4" /><path d="M2 7h20" /><path d="M22 7v3a2 2 0 0 1-2 2 2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7" /></svg></span>
+          <span class="marca__texto">
+            <span class="marca__nome">Mercado do Sr. João</span>
+            <span class="marca__sub">Estoque e compras</span>
+          </span>
         </span>
         <nav aria-label="Menu principal">
           <!-- Menu do perfil (RN14): montado por js/sessao.js com as telas que /api/sessoes/atual/ devolve. -->
           <ul class="menu" id="menu"></ul>
         </nav>
         <span class="cabecalho__usuario">
+          <span class="avatar" id="usuario-inicial" aria-hidden="true"></span>
           <span id="usuario-nome"></span>
-          <button type="button" class="botao botao--cabecalho" id="botao-sair" hidden>Sair</button>
+          <button type="button" class="botao botao--cabecalho" id="botao-sair" hidden>
+            <svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><path d="m16 17 5-5-5-5" /><path d="M21 12H9" /></svg>
+            <span class="botao__texto">Sair</span>
+          </button>
         </span>
       </div>
     </header>

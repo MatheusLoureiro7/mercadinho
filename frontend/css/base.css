@@ -1,33 +1,43 @@
 /*
- * Painel do Mercado do Sr. João — estilos base.
- * Sistema de design: frontend/design-system/mercado-do-sr-joao/MASTER.md (UI UX Pro Max),
- * com as adaptações do projeto no topo daquele arquivo. Sem biblioteca, sem fonte externa (RNF06).
+ * Painel do Mercado do Sr. João — estilos.
+ * Sistema de design: frontend/design-system/mercado-do-sr-joao/MASTER.md (UI UX Pro Max).
+ * Redesenho de 08/10/2026: "mercado fresco, claro e calmo" — fundo claro levemente quente, verde de
+ * produto fresco na marca e nas ações, âmbar só para o que pede atenção, hierarquia por tamanho e
+ * espaço (estilo minimalista/suíço). Sem biblioteca e sem fonte externa (RNF06). Contraste de cada
+ * par de cores conferido por cálculo (WCAG 2.2 AA): o menor é 4,97:1.
  */
 
 :root {
-  /* Cores — contraste conferido (WCAG AA) */
-  --cor-primaria: #334155;
+  /* Cores */
+  --cor-fundo: #f6f7f4;
+  --cor-superficie: #ffffff;
+  --cor-superficie-2: #f9fafb; /* cabeçalho de tabela, linhas de grupo */
+  --cor-texto: #101828;
+  --cor-texto-suave: #475467;
+  --cor-menu: #344054;
+  --cor-divisoria: #e4e7ec;
+  --cor-borda-campo: #667085; /* 4,97:1 — borda de controle precisa de 3:1 (WCAG 1.4.11) */
+  --cor-primaria: #1d2939;
   --cor-sobre-primaria: #ffffff;
   --cor-acao: #047857;
   --cor-acao-hover: #065f46;
   --cor-sobre-acao: #ffffff;
-  --cor-fundo: #f8fafc;
-  --cor-texto: #0f172a;
-  --cor-superficie: #ffffff;
-  --cor-suave: #f1f5f9;
-  --cor-texto-suave: #475569;
-  --cor-divisoria: #e2e8f0;
-  --cor-borda-campo: #64748b;
+  --cor-marca-suave: #ecfdf3;
+  --cor-marca-escura: #064e3b;
   --cor-foco: #1d4ed8;
+  --cor-suave: #f2f4f7;
   --cor-erro: #b91c1c;
-  --cor-erro-fundo: #fee2e2;
-  --cor-erro-texto: #991b1b;
-  --cor-aviso-fundo: #fef3c7;
-  --cor-aviso-texto: #92400e;
-  --cor-ok-fundo: #d1fae5;
-  --cor-ok-texto: #065f46;
+  --cor-erro-fundo: #fef0ef;
+  --cor-erro-texto: #9f1c1c;
+  --cor-aviso-fundo: #fef6e7;
+  --cor-aviso-texto: #93370d;
+  --cor-aviso-borda: #f5b25c;
+  --cor-ok-fundo: #ecfdf3;
+  --cor-ok-texto: #05603a;
+  --cor-neutra-fundo: #f2f4f7;
+  --cor-neutra-texto: #344054;
 
-  /* Espaçamento (densidade 7/10) */
+  /* Espaço (múltiplos de 4) */
   --esp-1: 4px;
   --esp-2: 8px;
   --esp-3: 12px;
@@ -36,11 +46,15 @@
   --esp-6: 32px;
   --esp-7: 48px;
 
-  --raio: 8px;
-  --sombra: 0 1px 2px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.08);
+  --raio: 10px;
+  --raio-grande: 14px;
+  --raio-pilula: 999px;
+  --sombra: 0 1px 2px rgba(16, 24, 40, 0.05);
+  --sombra-cartao: 0 1px 3px rgba(16, 24, 40, 0.06), 0 1px 2px rgba(16, 24, 40, 0.04);
+  --sombra-flutuante: 0 12px 24px -6px rgba(16, 24, 40, 0.18);
   --fonte: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-  --transicao: 150ms ease;
-  --largura-maxima: 1180px;
+  --transicao: 160ms ease;
+  --largura-maxima: 1200px;
   --alvo-minimo: 44px;
 }
 
@@ -61,6 +75,7 @@ body {
   line-height: 1.5;
   color: var(--cor-texto);
   background: var(--cor-fundo);
+  -webkit-font-smoothing: antialiased;
 }
 
 h1,
@@ -68,6 +83,7 @@ h2,
 h3 {
   line-height: 1.25;
   margin: 0;
+  letter-spacing: -0.01em;
 }
 
 .visualmente-oculto {
@@ -95,43 +111,84 @@ h3 {
   background: var(--cor-superficie);
   padding: var(--esp-2) var(--esp-4);
   border-radius: var(--raio);
+  box-shadow: var(--sombra-flutuante);
   z-index: 100;
 }
 .pular-para-conteudo:focus {
   top: var(--esp-2);
 }
 
-/* ---------------------------------------------------------------- Cabeçalho e menu */
+.icone {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ---------------------------------------------------------------- Cabeçalho: marca, menu, pessoa */
 
 .cabecalho {
-  background: var(--cor-primaria);
-  color: var(--cor-sobre-primaria);
+  background: var(--cor-superficie);
+  border-bottom: 1px solid var(--cor-divisoria);
+  box-shadow: var(--sombra);
 }
 .cabecalho__interno {
   max-width: var(--largura-maxima);
   margin: 0 auto;
-  padding: var(--esp-2) var(--esp-4);
+  padding: var(--esp-3) var(--esp-5) 0;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--esp-2) var(--esp-5);
+  gap: var(--esp-3) var(--esp-5);
 }
 .cabecalho__marca {
-  font-weight: 700;
-  font-size: 1.125rem;
   display: flex;
   align-items: center;
-  gap: var(--esp-2);
+  gap: var(--esp-3);
+  color: var(--cor-texto);
+  text-decoration: none;
 }
+.marca__logo {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--raio);
+  background: var(--cor-acao);
+  color: var(--cor-sobre-acao);
+}
+.marca__logo .icone {
+  width: 22px;
+  height: 22px;
+}
+.marca__texto {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+.marca__nome {
+  font-weight: 700;
+  font-size: 1.0625rem;
+}
+.marca__sub {
+  font-size: 0.8125rem;
+  color: var(--cor-texto-suave);
+}
+
+/* Menu em abas, sempre na segunda linha do cabeçalho (cabem as 6 telas do sobrinho em 1024 px). */
 .cabecalho nav {
-  /* Menu sempre na segunda linha (F3): com 5 ou 6 telas não cabe ao lado da marca em 1024 px. */
   order: 3;
   flex: 1 1 100%;
+  min-width: 0; /* deixa o menu deslizante encolher no celular, sem esticar a página */
 }
 .menu {
   display: flex;
   flex-wrap: wrap;
-  gap: 2px;
+  gap: var(--esp-1);
   list-style: none;
   margin: 0;
   padding: 0;
@@ -139,27 +196,51 @@ h3 {
 .menu a {
   display: flex;
   align-items: center;
+  gap: var(--esp-2);
   min-height: var(--alvo-minimo);
-  padding: 0 var(--esp-2);
-  color: var(--cor-sobre-primaria);
+  padding: 0 var(--esp-3);
+  color: var(--cor-menu);
+  font-weight: 500;
   text-decoration: none;
-  border-radius: var(--raio);
-  transition: background-color var(--transicao);
+  border-radius: var(--raio) var(--raio) 0 0;
+  border-bottom: 3px solid transparent;
+  transition: background-color var(--transicao), color var(--transicao);
+}
+.menu a .icone {
+  width: 18px;
+  height: 18px;
 }
 .menu a:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--cor-suave);
+  color: var(--cor-texto);
 }
 .menu a[aria-current="page"] {
-  background: rgba(255, 255, 255, 0.18);
-  font-weight: 600;
-  box-shadow: inset 0 -3px 0 var(--cor-sobre-primaria);
+  background: var(--cor-marca-suave);
+  color: var(--cor-acao-hover);
+  font-weight: 700;
+  border-bottom-color: var(--cor-acao);
 }
 .cabecalho__usuario {
   margin-left: auto;
-  font-size: 0.9375rem;
   display: flex;
   align-items: center;
   gap: var(--esp-3);
+  font-size: 0.9375rem;
+  color: var(--cor-texto);
+}
+.avatar {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--cor-marca-suave);
+  color: var(--cor-acao-hover);
+  font-weight: 700;
+  font-size: 0.9375rem;
+}
+.avatar:empty {
+  display: none;
 }
 
 /* ---------------------------------------------------------------- Página */
@@ -167,18 +248,22 @@ h3 {
 .pagina {
   max-width: var(--largura-maxima);
   margin: 0 auto;
-  padding: var(--esp-5) var(--esp-4) var(--esp-7);
+  padding: var(--esp-6) var(--esp-5) var(--esp-7);
+}
+.pagina:focus {
+  outline: none;
 }
 .pagina__titulo {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
-  gap: var(--esp-3);
-  margin-bottom: var(--esp-4);
+  gap: var(--esp-3) var(--esp-4);
+  margin-bottom: var(--esp-5);
 }
 .pagina__titulo h1 {
-  font-size: 1.75rem;
+  font-size: 1.875rem;
+  font-weight: 750;
 }
 .pagina__descricao {
   color: var(--cor-texto-suave);
@@ -188,16 +273,21 @@ h3 {
 .cartao {
   background: var(--cor-superficie);
   border: 1px solid var(--cor-divisoria);
-  border-radius: var(--raio);
-  box-shadow: var(--sombra);
+  border-radius: var(--raio-grande);
+  box-shadow: var(--sombra-cartao);
   padding: var(--esp-5);
 }
-.cartao + .cartao {
-  margin-top: var(--esp-4);
+.cartao + .cartao,
+section + .cartao {
+  margin-top: var(--esp-5);
 }
 .cartao__titulo {
-  font-size: 1.25rem;
+  font-size: 1.1875rem;
+  font-weight: 700;
   margin-bottom: var(--esp-4);
+}
+.cartao > .pagina__descricao {
+  margin: calc(-1 * var(--esp-3)) 0 var(--esp-4);
 }
 
 /* ---------------------------------------------------------------- Botões */
@@ -212,15 +302,18 @@ h3 {
   font: inherit;
   font-weight: 600;
   border-radius: var(--raio);
-  border: 2px solid transparent;
+  border: 1px solid transparent;
   cursor: pointer;
   text-decoration: none;
-  transition: background-color var(--transicao), border-color var(--transicao), color var(--transicao);
+  white-space: nowrap;
+  transition: background-color var(--transicao), border-color var(--transicao), color var(--transicao),
+    box-shadow var(--transicao);
   touch-action: manipulation;
 }
 .botao--acao {
   background: var(--cor-acao);
   color: var(--cor-sobre-acao);
+  box-shadow: var(--sombra);
 }
 .botao--acao:hover {
   background: var(--cor-acao-hover);
@@ -228,7 +321,8 @@ h3 {
 .botao--secundario {
   background: var(--cor-superficie);
   color: var(--cor-primaria);
-  border-color: var(--cor-primaria);
+  border-color: var(--cor-borda-campo);
+  box-shadow: var(--sombra);
 }
 .botao--secundario:hover {
   background: var(--cor-suave);
@@ -236,41 +330,29 @@ h3 {
 .botao--discreto {
   align-self: flex-start;
   background: transparent;
-  color: var(--cor-primaria);
+  color: var(--cor-acao-hover);
   padding: 0 var(--esp-2);
   text-decoration: underline;
   text-underline-offset: 3px;
 }
 .botao--discreto:hover {
-  background: var(--cor-suave);
+  background: var(--cor-marca-suave);
 }
-/* "Sair", no cabeçalho escuro (B7). */
+/* "Sair": discreto ao lado do nome, separado do menu (ação que encerra a sessão). */
 .botao--cabecalho {
   background: transparent;
-  color: var(--cor-sobre-primaria);
-  border-color: var(--cor-sobre-primaria);
+  color: var(--cor-menu);
+  border-color: var(--cor-divisoria);
   padding: 0 var(--esp-3);
 }
 .botao--cabecalho:hover {
-  background: rgba(255, 255, 255, 0.12);
-}
-.botao--cabecalho:focus-visible {
-  outline-color: var(--cor-sobre-primaria);
+  background: var(--cor-suave);
+  color: var(--cor-texto);
 }
 .botao[disabled],
 .botao[aria-busy="true"] {
   opacity: 0.55;
   cursor: not-allowed;
-}
-.icone {
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
-  stroke: currentColor;
-  fill: none;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
 }
 
 /* ---------------------------------------------------------------- Formulário */
@@ -278,12 +360,12 @@ h3 {
 .formulario__grade {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: var(--esp-4) var(--esp-5);
+  gap: var(--esp-5) var(--esp-5);
 }
 .campo {
   display: flex;
   flex-direction: column;
-  gap: var(--esp-1);
+  gap: 6px;
 }
 .campo--largo {
   grid-column: 1 / -1;
@@ -291,6 +373,7 @@ h3 {
 .campo label,
 .campo .rotulo {
   font-weight: 600;
+  font-size: 0.9375rem;
 }
 .obrigatorio {
   color: var(--cor-erro);
@@ -315,7 +398,15 @@ h3 {
   border: 1px solid var(--cor-borda-campo);
   border-radius: var(--raio);
   width: 100%;
+  box-shadow: var(--sombra);
   transition: border-color var(--transicao), box-shadow var(--transicao);
+}
+.campo input::placeholder {
+  color: #667085;
+}
+.campo input:hover,
+.campo select:hover {
+  border-color: var(--cor-texto-suave);
 }
 .campo input:focus,
 .campo select:focus {
@@ -344,37 +435,11 @@ h3 {
 .campo__sufixo span {
   color: var(--cor-texto-suave);
   min-width: 2.5em;
+  font-weight: 600;
 }
 .campo__com-botao {
   display: flex;
   gap: var(--esp-2);
-}
-
-/* Tela de Login (B7). */
-.pagina--entrada {
-  display: flex;
-  justify-content: center;
-}
-.entrada {
-  width: 100%;
-  max-width: 420px;
-  margin-top: var(--esp-6);
-}
-.entrada .pagina__descricao {
-  margin-bottom: var(--esp-5);
-}
-.entrada .campo + .campo {
-  margin-top: var(--esp-4);
-}
-.entrada__botao {
-  width: 100%;
-}
-.entrada__ajuda {
-  margin-top: var(--esp-4);
-}
-.entrada__telas {
-  margin: var(--esp-3) 0 var(--esp-5);
-  padding-left: var(--esp-5);
 }
 
 .opcao {
@@ -396,23 +461,27 @@ h3 {
 .opcao strong {
   display: block;
 }
+.opcao__detalhe {
+  display: block;
+}
 
 .formulario__acoes {
   display: flex;
   flex-wrap: wrap;
   gap: var(--esp-3);
   margin-top: var(--esp-5);
-  padding-top: var(--esp-4);
+  padding-top: var(--esp-5);
   border-top: 1px solid var(--cor-divisoria);
 }
 
 .resumo-de-erros {
-  border: 2px solid var(--cor-erro);
+  border: 1px solid var(--cor-erro);
+  border-left-width: 5px;
   background: var(--cor-erro-fundo);
   color: var(--cor-erro-texto);
   border-radius: var(--raio);
-  padding: var(--esp-4);
-  margin-bottom: var(--esp-4);
+  padding: var(--esp-4) var(--esp-5);
+  margin-bottom: var(--esp-5);
 }
 .resumo-de-erros h3 {
   font-size: 1.0625rem;
@@ -425,6 +494,34 @@ h3 {
 .resumo-de-erros a {
   color: inherit;
   font-weight: 600;
+}
+
+/* Recado de uma tela para outra (ex.: "Sua sessão expirou.") e confirmação no formulário. */
+.recado,
+.sucesso {
+  display: flex;
+  gap: var(--esp-3);
+  align-items: flex-start;
+  margin: 0 0 var(--esp-5);
+  padding: var(--esp-3) var(--esp-4);
+  border-radius: var(--raio);
+  border: 1px solid;
+  border-left-width: 5px;
+  font-weight: 600;
+}
+.recado {
+  background: var(--cor-aviso-fundo);
+  color: var(--cor-aviso-texto);
+  border-color: var(--cor-aviso-borda);
+}
+.sucesso {
+  background: var(--cor-ok-fundo);
+  color: var(--cor-ok-texto);
+  border-color: #6ce9a6;
+}
+.recado[hidden],
+.sucesso[hidden] {
+  display: none;
 }
 
 /* ---------------------------------------------------------------- Barra de busca */
@@ -454,162 +551,78 @@ h3 {
   border-collapse: collapse;
   font-variant-numeric: tabular-nums;
 }
-.tabela caption {
-  text-align: left;
-  padding: var(--esp-3) var(--esp-4);
-  color: var(--cor-texto-suave);
-}
 .tabela th,
 .tabela td {
   text-align: left;
-  padding: var(--esp-3);
+  padding: var(--esp-3) var(--esp-4);
   border-top: 1px solid var(--cor-divisoria);
   vertical-align: middle;
 }
 .tabela thead th {
-  background: var(--cor-suave);
-  font-size: 0.875rem;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
+  background: var(--cor-superficie-2);
+  font-size: 0.8125rem;
+  font-weight: 600;
   color: var(--cor-texto-suave);
   border-top: none;
   white-space: nowrap;
+}
+.tabela tbody tr {
+  transition: background-color var(--transicao);
+}
+.tabela tbody tr:hover {
+  background: var(--cor-superficie-2);
+}
+.tabela tbody th {
+  font-weight: normal;
 }
 .tabela .numero {
   text-align: right;
   white-space: nowrap;
 }
-
-/* ---------------------------------------------------------------- Consulta de estoque (F3) */
-
-.atualizacao {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--esp-2) var(--esp-3);
-}
-/* Resumo: três quadros que também são filtros (aria-pressed). Palavra + número + cor. */
-.resumo {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: var(--esp-3);
-  margin-bottom: var(--esp-2);
-}
-.resumo__item {
-  display: flex;
-  align-items: baseline;
-  gap: var(--esp-2);
-  min-height: var(--alvo-minimo);
-  padding: var(--esp-3) var(--esp-4);
-  font: inherit;
-  text-align: left;
-  color: var(--cor-texto);
-  background: var(--cor-superficie);
-  border: 1px solid var(--cor-divisoria);
-  border-left: 6px solid var(--cor-borda-campo);
-  border-radius: var(--raio);
-  box-shadow: var(--sombra);
-  cursor: pointer;
-  transition: background var(--transicao), border-color var(--transicao);
-}
-.resumo__item--erro {
-  border-left-color: var(--cor-erro);
-}
-.resumo__item--aviso {
-  border-left-color: var(--cor-aviso-texto);
-}
-.resumo__item:hover {
-  background: var(--cor-suave);
-}
-.resumo__item[aria-pressed="true"] {
-  background: var(--cor-suave);
-  border-color: var(--cor-primaria);
-  border-left-width: 6px;
-  box-shadow: inset 0 0 0 1px var(--cor-primaria);
-}
-.resumo__item[aria-pressed="true"] .resumo__rotulo::after {
-  content: " · filtrando";
-  font-weight: 600;
-}
-.resumo__numero {
-  font-size: 1.75rem;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-}
-.resumo__item--erro .resumo__numero {
-  color: var(--cor-erro-texto);
-}
-.resumo__item--aviso .resumo__numero {
-  color: var(--cor-aviso-texto);
-}
-.resumo + .campo__ajuda {
-  margin-bottom: var(--esp-4);
-}
-.tabela tbody th {
-  font-weight: normal;
+.tabela td:last-child .botao {
+  min-height: 40px; /* ainda ≥ 24 px (WCAG 2.5.8) e com 44 px de área na linha */
 }
 .tabela .tabela__grupo {
-  background: var(--cor-suave);
+  background: var(--cor-superficie-2);
   font-weight: 700;
+  font-size: 0.875rem;
   color: var(--cor-primaria);
-}
-/* Linha que pede atenção: faixa à esquerda, além das etiquetas com palavra (WCAG 1.4.1). */
-.linha--vencido > :first-child {
-  box-shadow: inset 4px 0 0 var(--cor-erro);
-}
-.linha--atencao > :first-child {
-  box-shadow: inset 4px 0 0 var(--cor-aviso-texto);
-}
-.botao--abre .icone {
-  transition: transform var(--transicao);
-}
-.botao--abre[aria-expanded="true"] .icone {
-  transform: rotate(90deg);
-}
-.validade-proxima {
-  white-space: nowrap;
-}
-.linha-lotes td {
-  background: var(--cor-fundo);
-  border-top: none;
-}
-.lotes-do-produto {
-  list-style: none;
-  margin: 0;
-  padding: 0 0 0 var(--esp-4);
-  display: grid;
-  gap: var(--esp-2);
-}
-.tabela tbody tr:hover {
-  background: #f8fafc;
+  letter-spacing: 0.01em;
 }
 
 .etiqueta {
-  position: relative; /* prende o texto só para leitor de tela */
   display: inline-flex;
   align-items: center;
-  gap: var(--esp-1);
-  padding: 2px var(--esp-2);
-  border-radius: 999px;
+  gap: 6px;
+  padding: 2px 10px;
+  border-radius: var(--raio-pilula);
   font-size: 0.8125rem;
   font-weight: 600;
   white-space: nowrap;
+  line-height: 1.6;
 }
-.etiqueta--aviso {
-  background: var(--cor-aviso-fundo);
-  color: var(--cor-aviso-texto);
+.etiqueta::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
 }
 .etiqueta--erro {
   background: var(--cor-erro-fundo);
   color: var(--cor-erro-texto);
+}
+.etiqueta--aviso {
+  background: var(--cor-aviso-fundo);
+  color: var(--cor-aviso-texto);
 }
 .etiqueta--ok {
   background: var(--cor-ok-fundo);
   color: var(--cor-ok-texto);
 }
 .etiqueta--neutra {
-  background: var(--cor-suave);
-  color: var(--cor-texto-suave);
+  background: var(--cor-neutra-fundo);
+  color: var(--cor-neutra-texto);
 }
 .texto-suave {
   color: var(--cor-texto-suave);
@@ -626,69 +639,6 @@ h3 {
   font-size: 1.125rem;
   margin-bottom: var(--esp-1);
 }
-
-/* ---------------------------------------------------------------- Avisos */
-
-/* Recado de uma tela para outra (ex.: "Sua sessão expirou."), em cima do conteúdo. B7. */
-.recado {
-  display: flex;
-  gap: var(--esp-2);
-  align-items: flex-start;
-  margin: 0 0 var(--esp-4);
-  padding: var(--esp-3) var(--esp-4);
-  background: var(--cor-aviso-fundo);
-  color: var(--cor-aviso-texto);
-  border-radius: var(--raio);
-  font-weight: 600;
-}
-.recado[hidden] {
-  display: none;
-}
-
-/* Avarias (D3): lotes do produto como opções, e os motivos mais comuns em botões. */
-.lotes {
-  display: flex;
-  flex-direction: column;
-  gap: var(--esp-1);
-}
-.lotes .opcao {
-  padding: var(--esp-2) var(--esp-3);
-  border: 1px solid var(--cor-divisoria);
-  border-radius: var(--raio);
-}
-.lotes .opcao:has(input:checked) {
-  border-color: var(--cor-acao);
-  background: var(--cor-ok-fundo);
-}
-.lotes[aria-invalid="true"] .opcao {
-  border-color: var(--cor-erro);
-}
-.opcao__detalhe {
-  display: block;
-}
-.motivos {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--esp-2);
-}
-
-/* Confirmação dentro do formulário, para telas de registro em sequência (C5). */
-.sucesso {
-  display: flex;
-  gap: var(--esp-2);
-  align-items: flex-start;
-  margin: 0 0 var(--esp-4);
-  padding: var(--esp-3) var(--esp-4);
-  background: var(--cor-ok-fundo);
-  color: var(--cor-ok-texto);
-  border-radius: var(--raio);
-  font-weight: 600;
-}
-.sucesso[hidden] {
-  display: none;
-}
-
-/* Lista que não carregou (sem conexão, erro do sistema). B7. */
 .vazio--falha {
   color: var(--cor-erro-texto);
 }
@@ -702,16 +652,18 @@ h3 {
 .falha p {
   margin: var(--esp-2) 0 var(--esp-4);
 }
+
 .toast {
   position: fixed;
   bottom: var(--esp-5);
   left: 50%;
   transform: translateX(-50%);
+  max-width: calc(100% - 2 * var(--esp-4));
   background: var(--cor-ok-texto);
   color: #ffffff;
   padding: var(--esp-3) var(--esp-5);
   border-radius: var(--raio);
-  box-shadow: 0 10px 15px rgba(15, 23, 42, 0.2);
+  box-shadow: var(--sombra-flutuante);
   font-weight: 600;
   z-index: 50;
   display: flex;
@@ -722,15 +674,334 @@ h3 {
   display: none;
 }
 
+/* ---------------------------------------------------------------- Login (B7) */
+
+.pagina--entrada {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+.entrada {
+  width: 100%;
+  max-width: 440px;
+}
+.entrada .cartao__titulo {
+  font-size: 1.5rem;
+  margin-bottom: var(--esp-2);
+}
+.entrada .pagina__descricao {
+  margin-bottom: var(--esp-5);
+}
+.entrada .campo + .campo {
+  margin-top: var(--esp-4);
+}
+.entrada__botao {
+  width: 100%;
+}
+.entrada__ajuda {
+  margin-top: var(--esp-4);
+}
+.entrada__telas {
+  margin: var(--esp-3) 0 var(--esp-5);
+  padding-left: var(--esp-5);
+}
+/* Duas partes: a marca à esquerda e o formulário à direita; empilhadas no celular. */
+.login {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+}
+.login__marca {
+  background: var(--cor-marca-escura);
+  color: #ffffff;
+  padding: var(--esp-7) var(--esp-6);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--esp-6);
+}
+.login__marca .marca__logo {
+  width: 52px;
+  height: 52px;
+  background: #ffffff;
+  color: var(--cor-marca-escura);
+}
+.login__marca .marca__logo .icone {
+  width: 28px;
+  height: 28px;
+}
+.login__titulo {
+  font-size: 2rem;
+  font-weight: 750;
+  margin: var(--esp-5) 0 var(--esp-3);
+  letter-spacing: -0.02em;
+}
+.login__frase {
+  color: #a7f3d0;
+  font-size: 1.0625rem;
+  max-width: 34ch;
+  margin: 0;
+}
+.login__lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--esp-3);
+}
+.login__lista li {
+  display: flex;
+  gap: var(--esp-3);
+  align-items: flex-start;
+}
+.login__lista .icone {
+  color: #a7f3d0;
+  margin-top: 2px;
+}
+.login__conteudo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--esp-6) var(--esp-5);
+}
+.login__conteudo .cartao {
+  box-shadow: var(--sombra-flutuante);
+}
+
+/* ---------------------------------------------------------------- Consulta de estoque (F3) */
+
+.atualizacao {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--esp-2) var(--esp-3);
+}
+/* Resumo: três quadros que também são filtros (aria-pressed). Ícone + número + palavra + cor. */
+.resumo {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--esp-4);
+  margin-bottom: var(--esp-2);
+}
+.resumo__item {
+  display: flex;
+  align-items: center;
+  gap: var(--esp-4);
+  min-height: var(--alvo-minimo);
+  padding: var(--esp-4) var(--esp-5);
+  font: inherit;
+  text-align: left;
+  color: var(--cor-texto);
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-divisoria);
+  border-radius: var(--raio-grande);
+  box-shadow: var(--sombra-cartao);
+  cursor: pointer;
+  transition: background-color var(--transicao), border-color var(--transicao), box-shadow var(--transicao);
+}
+.resumo__item:hover {
+  border-color: var(--cor-borda-campo);
+}
+.resumo__icone {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.resumo__item--erro .resumo__icone {
+  background: var(--cor-erro-fundo);
+  color: var(--cor-erro-texto);
+}
+.resumo__item--aviso .resumo__icone {
+  background: var(--cor-aviso-fundo);
+  color: var(--cor-aviso-texto);
+}
+.resumo__texto {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+.resumo__numero {
+  font-size: 1.875rem;
+  font-weight: 750;
+  font-variant-numeric: tabular-nums;
+}
+.resumo__item--erro .resumo__numero {
+  color: var(--cor-erro-texto);
+}
+.resumo__item--aviso .resumo__numero {
+  color: var(--cor-aviso-texto);
+}
+.resumo__rotulo {
+  color: var(--cor-texto-suave);
+  font-weight: 600;
+}
+.resumo__item[aria-pressed="true"] {
+  border-color: var(--cor-primaria);
+  box-shadow: inset 0 0 0 1px var(--cor-primaria), var(--sombra-cartao);
+  background: var(--cor-superficie-2);
+}
+.resumo__item[aria-pressed="true"] .resumo__rotulo::after {
+  content: " · filtrando";
+  color: var(--cor-texto);
+}
+.resumo + .campo__ajuda {
+  margin-bottom: var(--esp-5);
+}
+/* Linha que pede atenção: faixa à esquerda, além das etiquetas com palavra (WCAG 1.4.1). */
+.linha--vencido > :first-child {
+  box-shadow: inset 4px 0 0 var(--cor-erro);
+}
+.linha--atencao > :first-child {
+  box-shadow: inset 4px 0 0 var(--cor-aviso-borda);
+}
+.botao--abre .icone {
+  transition: transform var(--transicao);
+}
+.botao--abre[aria-expanded="true"] .icone {
+  transform: rotate(90deg);
+}
+.validade-proxima {
+  white-space: nowrap;
+  color: var(--cor-texto-suave);
+}
+.linha-lotes td {
+  background: var(--cor-superficie-2);
+  border-top: none;
+}
+.lotes-do-produto {
+  list-style: none;
+  margin: 0;
+  padding: var(--esp-1) 0 var(--esp-2) var(--esp-4);
+  display: grid;
+  gap: var(--esp-2);
+}
+
+/* ---------------------------------------------------------------- Avarias (D3) */
+
+.lotes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--esp-2);
+}
+.lotes .opcao {
+  padding: var(--esp-3) var(--esp-4);
+  border: 1px solid var(--cor-divisoria);
+  border-radius: var(--raio);
+  background: var(--cor-superficie);
+  transition: border-color var(--transicao), background-color var(--transicao);
+}
+.lotes .opcao:hover {
+  border-color: var(--cor-borda-campo);
+}
+.lotes .opcao:has(input:checked) {
+  border-color: var(--cor-acao);
+  background: var(--cor-marca-suave);
+  box-shadow: inset 0 0 0 1px var(--cor-acao);
+}
+.lotes[aria-invalid="true"] .opcao {
+  border-color: var(--cor-erro);
+}
+.motivos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--esp-2);
+}
+
+/* ---------------------------------------------------------------- Telas estreitas */
+
+@media (max-width: 860px) {
+  .login {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+  .login__marca {
+    padding: var(--esp-5);
+  }
+  .login__titulo {
+    font-size: 1.5rem;
+    margin-top: var(--esp-3);
+  }
+  .login__lista {
+    display: none; /* no celular, direto ao formulário (conteúdo principal primeiro) */
+  }
+}
+
 @media (max-width: 640px) {
+  .cabecalho__interno {
+    padding: var(--esp-3) var(--esp-4) 0;
+  }
+  .marca__sub {
+    display: none;
+  }
+  /* Menu numa fila só, que desliza para o lado (o resto da página não rola de lado). */
+  .menu {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    margin: 0 calc(-1 * var(--esp-4));
+    padding: 0 var(--esp-4);
+  }
+  .menu::-webkit-scrollbar {
+    display: none;
+  }
+  .menu a {
+    white-space: nowrap;
+  }
+  /* "Sair" só com o ícone; o nome continua no botão para o leitor de tela. */
+  .botao--cabecalho {
+    width: var(--alvo-minimo);
+    padding: 0;
+  }
+  .botao--cabecalho .botao__texto {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+  /* Resumo: os três quadros lado a lado, compactos. */
+  .resumo {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--esp-2);
+  }
+  .resumo__item {
+    padding: var(--esp-3);
+    gap: 0;
+  }
+  .resumo__icone {
+    display: none;
+  }
+  .resumo__numero {
+    font-size: 1.5rem;
+  }
+  .resumo__rotulo {
+    font-size: 0.8125rem;
+  }
+  /* Só a inicial à vista; o nome continua para o leitor de tela. */
+  #usuario-nome {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
   .pagina {
-    padding: var(--esp-4) var(--esp-3) var(--esp-6);
+    padding: var(--esp-5) var(--esp-4) var(--esp-6);
   }
   .cartao {
     padding: var(--esp-4);
   }
   .pagina__titulo h1 {
     font-size: 1.5rem;
+  }
+  .login__conteudo {
+    padding: var(--esp-5) var(--esp-4);
   }
 }
 

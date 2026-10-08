@@ -14,18 +14,23 @@
     <header class="cabecalho">
       <div class="cabecalho__interno">
         <span class="cabecalho__marca">
-          <svg class="icone" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M3 9l1.5-5h15L21 9" /><path d="M4 9v11h16V9" /><path d="M9 20v-6h6v6" />
-          </svg>
-          Mercado do Sr. João
+          <span class="marca__logo" aria-hidden="true"><svg class="icone" viewBox="0 0 24 24"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7" /><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" /><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4" /><path d="M2 7h20" /><path d="M22 7v3a2 2 0 0 1-2 2 2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7" /></svg></span>
+          <span class="marca__texto">
+            <span class="marca__nome">Mercado do Sr. João</span>
+            <span class="marca__sub">Estoque e compras</span>
+          </span>
         </span>
         <nav aria-label="Menu principal">
           <!-- Menu do perfil (RN14): montado por js/sessao.js com as telas que /api/sessoes/atual/ devolve. -->
           <ul class="menu" id="menu"></ul>
         </nav>
         <span class="cabecalho__usuario">
+          <span class="avatar" id="usuario-inicial" aria-hidden="true"></span>
           <span id="usuario-nome"></span>
-          <button type="button" class="botao botao--cabecalho" id="botao-sair" hidden>Sair</button>
+          <button type="button" class="botao botao--cabecalho" id="botao-sair" hidden>
+            <svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><path d="m16 17 5-5-5-5" /><path d="M21 12H9" /></svg>
+            <span class="botao__texto">Sair</span>
+          </button>
         </span>
       </div>
     </header>
@@ -55,16 +60,25 @@
         <h2 class="visualmente-oculto" id="titulo-resumo">O que precisa de atenção</h2>
         <div class="resumo">
           <button type="button" class="resumo__item resumo__item--erro" id="filtro-vencidos" aria-pressed="false" aria-describedby="ajuda-resumo">
+            <span class="resumo__icone" aria-hidden="true"><svg class="icone" viewBox="0 0 24 24"><path d="M12 9v4" /><path d="M12 17h.01" /><circle cx="12" cy="12" r="10" /></svg></span>
+            <span class="resumo__texto">
             <span class="resumo__numero" id="contador-vencidos">–</span>
             <span class="resumo__rotulo">com lote vencido</span>
+            </span>
           </button>
           <button type="button" class="resumo__item resumo__item--aviso" id="filtro-vencendo" aria-pressed="false" aria-describedby="ajuda-resumo">
+            <span class="resumo__icone" aria-hidden="true"><svg class="icone" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg></span>
+            <span class="resumo__texto">
             <span class="resumo__numero" id="contador-vencendo">–</span>
             <span class="resumo__rotulo">perto de vencer</span>
+            </span>
           </button>
           <button type="button" class="resumo__item resumo__item--aviso" id="filtro-abaixo" aria-pressed="false" aria-describedby="ajuda-resumo">
+            <span class="resumo__icone" aria-hidden="true"><svg class="icone" viewBox="0 0 24 24"><path d="M16 17h6v-6" /><path d="m22 17-8.5-8.5-5 5L2 7" /></svg></span>
+            <span class="resumo__texto">
             <span class="resumo__numero" id="contador-abaixo">–</span>
             <span class="resumo__rotulo">abaixo do mínimo</span>
+            </span>
           </button>
         </div>
         <p class="campo__ajuda" id="ajuda-resumo">Toque num quadro para ver só aqueles produtos. Toque de novo para ver todos.</p>

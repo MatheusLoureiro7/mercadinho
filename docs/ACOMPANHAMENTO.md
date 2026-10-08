@@ -343,6 +343,20 @@ publicação (A5, aguarda D05) e o bloco J (qualidade e implantação).
   Telegram (H5) e ligar o celular do dono (H6). A rodada das 03h00 (G5) depende da decisão D01;
   até lá, o gerador pode ser chamado sozinho.
 
+- **Redesenho visual do painel (fora do cronograma, a pedido do grupo).** As seis telas ganharam um
+  visual mais profissional e fácil de ler, feito com a skill **UI UX Pro Max**: cabeçalho branco
+  com o logotipo do mercado, menu com ícone e nome de cada tela (a tela atual destacada em verde),
+  a inicial da pessoa num círculo, cartões e tabelas mais leves, marcações em "pílula" (vencido,
+  perto de vencer, abaixo do mínimo), "Editar" com ícone de lápis, quadros do resumo da Consulta
+  com ícone, e a tela de Login em duas partes, com a marca e o que o sistema faz. No celular, o menu
+  vira uma fila que desliza para o lado. **Nada mudou no funcionamento**: mesmos campos, mensagens e
+  regras. Conferido: contraste de cada cor calculado pela norma WCAG; auditoria de acessibilidade
+  sem nenhuma falha nas 6 telas, no computador da loja e no celular; sem rolagem lateral.
+  **Pendência registrada:** alguns testes de tela falham de vez em quando (uma tela que não termina
+  de carregar dentro do tempo do teste). Já tinha acontecido uma vez na F3; nas rodadas desta
+  sessão foram 4 de 36. Medido que o banco não está travado e descartada a hipótese do servidor de
+  testes; a causa ainda não foi encontrada. Fica para investigar à parte (e entra na J1).
+
 **Próxima tarefa:** H4 — janela de silêncio e agrupamento (RN12, RN13).
 
 ### 07/10/2026

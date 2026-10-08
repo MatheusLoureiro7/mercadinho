@@ -23,9 +23,21 @@ implementação está em `frontend/css/base.css`.
 | Ícones Heroicons/Lucide por biblioteca | SVG embutido no HTML, traço 2px, estilo Lucide | Sem dependência externa |
 | Textos em inglês | Português, vocabulário da loja (RNF10) | "Salvar produto", nunca "Submit" |
 
+**Redesenho de 08/10/2026 ("mercado fresco, claro e calmo"), a pedido do grupo.** Consulta à UI UX
+Pro Max: o sistema de design geral sugeriu página de vendas em tema escuro com fonte do Google —
+descartado (painel, RNF06); a busca por paleta de mercearia trouxe "verde de produto fresco +
+âmbar de alimento", e a de estilo, minimalista/suíço. Adotado: fundo claro levemente quente
+(`#F6F7F4`), cabeçalho branco com logotipo verde, menu em abas com ícone e nome (aba atual em verde
+claro com traço embaixo), pessoa com a inicial num círculo, cartões com borda fina e sombra suave
+(raio 14 px), tabelas com cabeçalho em letra normal e linha destacada ao passar o mouse, etiquetas em
+pílula com ponto, "Editar" com lápis, resumo da Consulta com ícone em círculo, Login em duas
+partes (marca e formulário). No celular: menu numa fila que desliza para o lado já mostrando a aba
+atual, "Sair" só com o ícone (o nome segue para o leitor de tela), resumo em três quadros lado a
+lado. Contraste de cada par conferido por cálculo (o menor, 4,97:1, é borda de campo, que pede 3:1).
+
 **Cores de situação** (texto sobre fundo, todas ≥ 4,5:1, e sempre com palavra além da cor):
-vencido `#991B1B` sobre `#FEE2E2` (6,80:1) · vencendo `#92400E` sobre `#FEF3C7` (6,37:1) ·
-ok `#065F46` sobre `#D1FAE5` (6,78:1). Foco: anel `#1D4ED8` de 3px (6,70:1).
+vencido `#9F1C1C` sobre `#FEF0EF` (7,12:1) · vencendo `#93370D` sobre `#FEF6E7` (7,00:1) ·
+ok `#05603A` sobre `#ECFDF3` (7,26:1). Foco: anel `#1D4ED8` de 3px (6,70:1).
 
 **Regras de tela do projeto:** campos com rótulo visível; erro embaixo do campo e resumo no topo
 que recebe o foco (fluxograma 01: manter o que foi digitado); nada de regra de negócio na tela — a
