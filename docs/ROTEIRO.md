@@ -54,7 +54,7 @@ As telas B5 e B6 começam com dados fixos no próprio código e só em B7 passam
 | [x] | **C3** | Regra: validade obrigatória e cálculo automático | Regra | C2 | 4 |
 | [x] | **C4** | Saldo derivado das movimentações | BD/Regra | C1 | 6 |
 | [x] | **C5** | Tela de entrada de mercadoria | Tela | A3 | 10 |
-| [ ] | **C6** | Integração e teste do fluxo completo | Tela/Teste | C2, C5 | 6 |
+| [x] | **C6** | Integração e teste do fluxo completo | Tela/Teste | C2, C5 | 6 |
 
 **C3 = RN04.** **C4 = RN01** — é a view `vw_estoque_atual`, e é a tarefa mais importante do
 projeto inteiro: tudo que vem depois consulta esse saldo.

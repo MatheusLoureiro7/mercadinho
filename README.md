@@ -55,6 +55,7 @@ cd mercadinho
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements-dev.txt
+playwright install chromium   # uma vez: navegador dos testes de tela
 
 cp .env.example .env          # edite: DJANGO_SECRET_KEY e POSTGRES_PASSWORD
 docker compose up -d --wait   # sobe o PostgreSQL
@@ -71,6 +72,7 @@ cd mercadinho
 py -3.11 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -r requirements-dev.txt
+playwright install chromium   # uma vez: navegador dos testes de tela
 
 Copy-Item .env.example .env   # edite: DJANGO_SECRET_KEY e POSTGRES_PASSWORD
 docker compose up -d --wait   # sobe o PostgreSQL
@@ -244,3 +246,14 @@ O corpo da requisição nunca vai para o log (RNF12).
   `C3: regra de validade obrigatória e cálculo automático (RN04)`.
 
 Antes de cada commit: `ruff check . && ruff format --check . && pytest`.
+
+### Testes de tela
+
+Os testes marcados `@pytest.mark.tela` abrem o painel num navegador de verdade (Chromium, pelo
+`pytest-playwright`) e percorrem o fluxo inteiro: tela → `servir.py` → API → banco de teste. Cada
+um confere o que aparece na tela **e** o que ficou gravado. Rodam junto com o `pytest`, sempre por
+último. Para rodar só os rápidos: `pytest -m "not tela"`. Para ver o navegador trabalhando:
+`pytest -m tela --headed --slowmo 300`.
+
+As fixtures ficam em `backend/tests/conftest.py`: `painel` (sobe a API e o painel), `abrir_tela`
+(abre uma tela já com sessão) e `entrar_pelo_login`. Exemplo: `backend/tests/test_c6_fluxo_entrada.py`.

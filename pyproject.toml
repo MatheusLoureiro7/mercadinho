@@ -22,3 +22,6 @@ DJANGO_SETTINGS_MODULE = "core.settings"
 pythonpath = ["backend"]
 testpaths = ["backend"]
 python_files = ["test_*.py"]
+markers = [
+    "tela: teste no navegador, de ponta a ponta (painel → API → banco). Pular: pytest -m 'not tela'",
+]

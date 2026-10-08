@@ -2,13 +2,20 @@
 Utilitários compartilhados pelos testes.
 """
 
+import importlib.util
+import os
 import re
+import threading
 from pathlib import Path
+from wsgiref.simple_server import WSGIRequestHandler, make_server
 
 import pytest
-from django.db import connection
+from django.core.cache import cache
+from django.core.handlers.wsgi import WSGIHandler
+from django.db import connection, connections
 
-SCHEMA_SQL = Path(__file__).resolve().parents[2] / "schema.sql"
+RAIZ = Path(__file__).resolve().parents[2]
+SCHEMA_SQL = RAIZ / "schema.sql"
 
 
 def colunas_do_schema(tabela: str) -> dict[str, dict]:
@@ -129,3 +136,103 @@ def _hash_de_senha_rapido_nos_testes(settings):
     (test_rnf12_sistema_usa_o_hash_de_senha_forte_do_django garante isso).
     """
     settings.PASSWORD_HASHERS = ["django.contrib.auth.hashers.MD5PasswordHasher"]
+
+
+# --- Testes de tela (tarefa C6) ------------------------------------------------------------------
+# O painel de verdade no navegador, falando com a API de verdade, que grava no banco de teste:
+#
+#     navegador → frontend/servir.py → API (Django) → PostgreSQL
+#
+# Os testes marcados com @pytest.mark.tela usam `page` (pytest-playwright) e a fixture `painel`.
+# Antes da primeira vez, em cada máquina:  playwright install chromium
+
+
+@pytest.fixture(scope="session")
+def browser_context_args(browser_context_args):
+    # O computador da loja: tela de 1024 px, português, horário de São Paulo.
+    return {
+        **browser_context_args,
+        "viewport": {"width": 1024, "height": 768},
+        "locale": "pt-BR",
+        "timezone_id": "America/Sao_Paulo",
+    }
+
+
+class _ApiSemRegistro(WSGIRequestHandler):
+    def log_message(self, *args):
+        pass
+
+
+def _no_fundo(servidor) -> str:
+    threading.Thread(target=servidor.serve_forever, daemon=True).start()
+    return f"http://127.0.0.1:{servidor.server_address[1]}"
+
+
+def carregar_servir():
+    """O frontend/servir.py como módulo (ele não é um pacote Python)."""
+    especificacao = importlib.util.spec_from_file_location("servir", RAIZ / "frontend" / "servir.py")
+    modulo = importlib.util.module_from_spec(especificacao)
+    especificacao.loader.exec_module(modulo)
+    return modulo
+
+
+def pytest_collection_modifyitems(config, items):
+    """
+    O Playwright síncrono deixa um laço assíncrono aberto enquanto o navegador existir (até o fim
+    da sessão de testes), e o Django passa a recusar o ORM achando que está em código assíncrono.
+    É o caso previsto pela documentação do Playwright para Django: liberar com
+    DJANGO_ALLOW_ASYNC_UNSAFE — só quando a execução tem teste de tela; o sistema não tem código
+    assíncrono e nada muda fora dos testes.
+
+    Os testes de tela rodam por último: depois que o navegador abre, o Django guarda as conexões
+    num contexto diferente, e um teste comum rodando depois deixaria uma conexão aberta (o banco de
+    teste não poderia ser apagado no fim). De quebra, os testes rápidos dão resultado primeiro.
+    """
+    de_tela = [item for item in items if item.get_closest_marker("tela")]
+    if de_tela:
+        os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
+        items[:] = [item for item in items if not item.get_closest_marker("tela")] + de_tela
+
+
+@pytest.fixture
+def painel(transactional_db):
+    """
+    Sobe a API (a aplicação WSGI do Django) e o servir.py na frente dela; devolve o endereço do
+    painel. O banco é o de teste, com transação de verdade, porque a API roda em outra thread.
+    """
+    cache.clear()  # zera o limite de 10 logins por minuto (RNF12) entre um teste e outro
+
+    api = make_server("127.0.0.1", 0, WSGIHandler(), handler_class=_ApiSemRegistro)
+    servidor_do_painel = carregar_servir().criar_servidor(porta=0, endereco_api=_no_fundo(api))
+    endereco = _no_fundo(servidor_do_painel)
+    yield endereco
+    for servidor in (servidor_do_painel, api):
+        servidor.shutdown()
+        servidor.server_close()
+    # Com o laço do Playwright aberto, a conexão que o próprio teste usou (para montar e conferir
+    # dados) não é fechada pelo pytest-django; sem isto, o banco de teste não poderia ser apagado.
+    connections.close_all()
+
+
+def entrar_pelo_login(page, painel: str, login: str, senha: str):
+    """Entra no sistema pela tela de Login, como a pessoa faz."""
+    page.goto(painel + "/login.html")
+    page.fill("#campo-login", login)
+    page.fill("#campo-senha", senha)
+    page.click("#botao-entrar")
+
+
+def abrir_tela(page, painel: str, usuario, tela: str):
+    """
+    Abre uma tela já com a sessão iniciada, sem passar pelo formulário de Login (que tem o seu
+    próprio teste). Guarda o token como a tela de Login guardaria (js/sessao.js).
+    """
+    from comum.autenticacao import gerar_token  # depois do Django configurado
+
+    page.goto(painel + "/login.html")
+    page.evaluate(
+        "([token]) => sessionStorage.setItem('mercadinho.token', token)",
+        [gerar_token(usuario)],
+    )
+    page.goto(f"{painel}/{tela}")
+    page.wait_for_selector("#menu a")  # a tela conferiu a sessão com a API e montou o menu

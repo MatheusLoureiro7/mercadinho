@@ -66,7 +66,7 @@ Decidida pelo grupo. A Apostila IV fixa o banco e a arquitetura; o resto o grupo
 | Painel web | **HTML + CSS + JavaScript puro**, arquivos estáticos | Apostila IV, figura 2 lista "Arquivos estáticos" separado do servidor da API |
 | Agendador | comando `manage.py` disparado por cron/APScheduler às 03h00 | Apostila IV, comunicação nº 4 |
 | Canal de aviso | **Telegram** (bot) | Apostila I RN13, Apostila IV figura 1 |
-| Testes | `pytest` + `pytest-django` | Apostila IV, tarefa J1 |
+| Testes | `pytest` + `pytest-django`; `pytest-playwright` nos testes de tela | Apostila IV, tarefa J1; Playwright por decisão do grupo em 08/10/2026 (C6), só em desenvolvimento |
 
 ### Por que Django e não Flask/FastAPI
 
