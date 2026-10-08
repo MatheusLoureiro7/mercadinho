@@ -21,12 +21,12 @@ O diário, no fim do arquivo, conta o que foi feito em cada dia.
 
 | | Concluído | Total | % |
 |---|---|---|---|
-| **Tarefas** | 20 | 51 | 39,2 % |
-| **Horas estimadas** | 135 h | 378 h | 35,7 % |
+| **Tarefas** | 21 | 51 | 41,2 % |
+| **Horas estimadas** | 141 h | 378 h | 37,3 % |
 
 | Etapa | Blocos | Horas concluídas | Total | % |
 |---|---|---|---|---|
-| 1 · Aviso de validade | A, B, C, D, F, J | 135 h | 212 h | 63,7 % |
+| 1 · Aviso de validade | A, B, C, D, F, J | 141 h | 212 h | 66,5 % |
 | 2 · Aviso de ruptura | E, G, H | 0 h | 136 h | 0,0 % |
 | 3 · Gestão | I | 0 h | 30 h | 0,0 % |
 
@@ -58,7 +58,7 @@ Prazo de entrega: **27/11/2026**.
 | ~~B6~~ | ~~Tela de fornecedores~~ | A3 | 6 | ✅ Concluída | 07/10/2026 | `e6c031e` |
 | ~~B7~~ | ~~Ligar as telas à API e tratar os erros na tela~~ | B2, B3, B5, B6 | 5 | ✅ Concluída | 08/10/2026 | `71a8811` |
 
-## Bloco C — Entrada de mercadoria · 40 h  ·  34 de 40 h concluídas
+## Bloco C — Entrada de mercadoria · 40 h  ·  40 de 40 h concluídas ✅
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
@@ -67,7 +67,7 @@ Prazo de entrega: **27/11/2026**.
 | ~~C3~~ | ~~Regra: validade obrigatória e cálculo automático~~ | C2 | 4 | ✅ Concluída | 07/10/2026 | `43dc95d` |
 | ~~C4~~ | ~~Saldo derivado das movimentações~~ | C1 | 6 | ✅ Concluída | 06/10/2026 | `48451c5` |
 | ~~C5~~ | ~~Tela de entrada de mercadoria~~ | A3 | 10 | ✅ Concluída | 08/10/2026 | `30e51b1` |
-| C6 | Integração e teste do fluxo completo | C2, C5 | 6 | ⬜ A fazer | — | — |
+| ~~C6~~ | ~~Integração e teste do fluxo completo~~ | C2, C5 | 6 | ✅ Concluída | 08/10/2026 | `defb4a9` |
 
 ## Bloco D — Perdas e avarias · 18 h  ·  9 de 18 h concluídas
 
@@ -146,7 +146,7 @@ cronograma, a regra de negócio (quando houver) e o commit.
 
 ### 08/10/2026
 
-**Tarefas concluídas: B7 e C5** (15 h estimadas). **O bloco B está completo.**
+**Tarefas concluídas: B7, C5 e C6** (21 h estimadas). **Os blocos B e C estão completos.**
 
 - **B7 — Ligar as telas à API e tratar os erros na tela (inclui a tela de Login, L22).** As telas
   de Produtos e Fornecedores deixaram de usar dados de exemplo: agora leem e gravam no sistema de
@@ -210,7 +210,31 @@ API, regras e telas ligadas ao sistema.
   sem validade, quantidade zero, custo com letras, sem conexão, outro perfil sem acesso) e
   auditoria de acessibilidade (WCAG 2.2, nível AA) sem nenhuma falha.
 
-**Próxima tarefa:** C6 — integração e teste do fluxo completo da entrada de mercadoria.
+- **C6 — Integração e teste do fluxo completo da entrada de mercadoria.** O fluxo inteiro agora tem
+  **teste automático de ponta a ponta**: um navegador de verdade, controlado pelo teste, abre a
+  tela, digita como o sobrinho, clica em "Registrar entrada", e o teste confere o que apareceu na
+  tela **e** o que ficou gravado no banco — o lote, a movimentação que explica o saldo (RN01),
+  quem registrou e o saldo novo. Estão cobertas as **seis situações do fluxograma 02** (Apostila
+  II): cada losango — "é perecível?", "a validade foi informada?", "a validade é anterior a hoje?"
+  — pelo "sim" e pelo "não", como manda a Apostila IV. Mais: a lista do dia mostra o que entrou
+  hoje e não o de ontem; o fornecedor fica escolhido para o resto da carga; recusa não grava nada e
+  não apaga o que foi digitado; o caminho inteiro, do Login até a entrada registrada; e a esposa
+  não consegue abrir a tela (RN14). **Foi provado que os testes pegam erro:** quatro defeitos
+  introduzidos de propósito (a tela deixar de enviar a validade, a RN04 calcular um dia a menos, o
+  fornecedor não ficar escolhido, a validade de hoje ser recusada) — cada um derrubou os testes
+  certos, e o código voltou ao original.
+  **Decisão do grupo:** entrou a ferramenta **Playwright** (`pytest-playwright`), só para os
+  testes — ela não vai para o computador da loja. Até a C5, as verificações de tela eram feitas à
+  parte e relatadas aqui; agora ficam guardadas no projeto e qualquer pessoa do grupo as roda com o
+  `pytest`. Servem de base para as próximas telas (D4) e para a bateria final de testes (J1).
+  Ajuste técnico registrado: com o navegador aberto, o Django passava a guardar a conexão com o
+  banco num lugar diferente e o banco de teste não podia ser apagado ao fim; resolvido rodando os
+  testes de tela por último. 14 testes de tela — total do projeto: 439, todos passando.
+
+**Bloco C completo (C1 a C6):** a entrada de mercadoria funciona de ponta a ponta — banco, API,
+regras de validade e saldo, tela e teste do fluxo inteiro.
+
+**Próxima tarefa:** D3 — tela de avarias e quebras.
 
 ### 07/10/2026
 
