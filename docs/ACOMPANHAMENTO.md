@@ -21,13 +21,13 @@ O diário, no fim do arquivo, conta o que foi feito em cada dia.
 
 | | Concluído | Total | % |
 |---|---|---|---|
-| **Tarefas** | 26 | 51 | 51,0 % |
-| **Horas estimadas** | 176 h | 378 h | 46,6 % |
+| **Tarefas** | 27 | 51 | 52,9 % |
+| **Horas estimadas** | 184 h | 378 h | 48,7 % |
 
 | Etapa | Blocos | Horas concluídas | Total | % |
 |---|---|---|---|---|
 | 1 · Aviso de validade | A, B, C, D, F, J | 160 h | 212 h | 75,5 % |
-| 2 · Aviso de ruptura | E, G, H | 16 h | 136 h | 11,8 % |
+| 2 · Aviso de ruptura | E, G, H | 24 h | 136 h | 17,6 % |
 | 3 · Gestão | I | 0 h | 30 h | 0,0 % |
 
 As horas concluídas são as **estimadas** na apostila para cada tarefa entregue, não horas medidas.
@@ -106,14 +106,14 @@ Prazo de entrega: **27/11/2026**.
 | G4 | Regra: histórico mínimo antes de projetar | G2 | 4 | ⛔ Aguarda D01 | — | — |
 | G5 | Agendador das rotinas diárias | G3 | 6 | ⛔ Aguarda D01 | — | — |
 
-## Bloco H — Avisos · 52 h ⚠️ depende da decisão D01  ·  16 de 52 h concluídas
+## Bloco H — Avisos · 52 h ⚠️ depende da decisão D01  ·  24 de 52 h concluídas
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
 | ~~H1~~ | ~~Tabela de aviso e controle de estado~~ | A2 | 8 | ✅ Concluída | 08/10/2026 | `eae1d23` |
 | ~~H2~~ | ~~Gerador do aviso de validade~~ | H1, C3 | 8 | ✅ Concluída | 08/10/2026 | `a3627f3` |
 | H3 | Gerador do aviso de ruptura | H1, G3 | 10 | ⛔ Aguarda D01 | — | — |
-| H4 | Janela de silêncio e agrupamento | H1 | 8 | ⬜ A fazer | — | — |
+| ~~H4~~ | ~~Janela de silêncio e agrupamento~~ | H1 | 8 | ✅ Concluída | 08/10/2026 | `5a7be53` |
 | H5 | Integração com o serviço de mensagens | H1 | 10 | ⬜ A fazer | — | — |
 | H6 | Vincular o celular do dono ao usuário | H5, B1 | 4 | ⬜ A fazer | — | — |
 | H7 | Receber e registrar a resposta dele | H5 | 4 | ⬜ A fazer | — | — |
@@ -357,7 +357,30 @@ publicação (A5, aguarda D05) e o bloco J (qualidade e implantação).
   sessão foram 4 de 36. Medido que o banco não está travado e descartada a hipótese do servidor de
   testes; a causa ainda não foi encontrada. Fica para investigar à parte (e entra na J1).
 
-**Próxima tarefa:** H4 — janela de silêncio e agrupamento (RN12, RN13).
+- **H4 — Janela de silêncio e agrupamento (RN12, RN13).** O sistema já sabe **quando** pode
+  mandar aviso e **como** juntar tudo numa mensagem só. Nos horários de movimento (10h30 às 13h e
+  16h30 às 18h, lidos da tabela de parâmetros, no horário da loja) nada é enviado: os avisos ficam
+  **segurados** e saem na primeira rodada depois do pico. Fora disso, todos os avisos do Sr. João
+  saem numa **única mensagem**, numerada do mais urgente para o menos urgente, e ficam marcados
+  como enviados com a mesma hora. Testado com os exemplos da Apostila I: aviso das 11h15 fica
+  retido e sai às 13h05; seis avisos às 13h05 viram uma mensagem com seis itens, não seis
+  mensagens. **Decisões de implementação:** (1) a faixa inclui o começo e não o fim — às 10h30 já
+  é silêncio, às 13h00 o aviso já pode sair ("entre 10h30 e 13h"); (2) se o envio falhar (sem
+  internet), nada é marcado como enviado e a próxima rodada tenta de novo; (3) aviso sem
+  destinatário (sem dono cadastrado) fica esperando, não some; (4) cada pessoa recebe só os seus
+  avisos, uma mensagem por pessoa. O envio é feito por uma "porta" (`CanalDeAviso`, decisão D04):
+  o Telegram de verdade entra na H5 sem mudar esta parte. **Foi provado que os testes pegam erro:**
+  quatro defeitos de propósito (fim da janela incluído, relógio em UTC, ordem sem urgência, um
+  envio por aviso) — todos pegos. 27 testes automáticos — total do projeto: 580, todos passando.
+
+- **Projeto pronto para rodar em outro computador (fora do cronograma, a pedido do grupo).** O
+  código foi para um repositório privado no GitHub (`MatheusLoureiro7/mercadinho`), com um passo a
+  passo para Windows (`COMO-RODAR.md`): instalar, baixar, configurar, ligar e ver as tabelas do
+  banco para a apresentação. Junto vai uma cópia dos dados de desenvolvimento (produtos, lotes,
+  movimentações) que se carrega com um comando — testada num banco vazio. Os usuários vão **sem
+  senha** (senha não vai para o GitHub); cada integrante define a sua no próprio computador.
+
+**Próxima tarefa:** H5 — integração com o serviço de mensagens (Telegram).
 
 ### 07/10/2026
 
