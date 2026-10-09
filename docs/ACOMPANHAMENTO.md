@@ -17,17 +17,17 @@ O diário, no fim do arquivo, conta o que foi feito em cada dia.
 
 ## Resumo
 
-*Atualizado em 08/10/2026.*
+*Atualizado em 09/10/2026.*
 
 | | Concluído | Total | % |
 |---|---|---|---|
-| **Tarefas** | 28 | 51 | 54,9 % |
-| **Horas estimadas** | 194 h | 378 h | 51,3 % |
+| **Tarefas** | 29 | 51 | 56,9 % |
+| **Horas estimadas** | 198 h | 378 h | 52,4 % |
 
 | Etapa | Blocos | Horas concluídas | Total | % |
 |---|---|---|---|---|
 | 1 · Aviso de validade | A, B, C, D, F, J | 160 h | 212 h | 75,5 % |
-| 2 · Aviso de ruptura | E, G, H | 34 h | 136 h | 25,0 % |
+| 2 · Aviso de ruptura | E, G, H | 38 h | 136 h | 27,9 % |
 | 3 · Gestão | I | 0 h | 30 h | 0,0 % |
 
 As horas concluídas são as **estimadas** na apostila para cada tarefa entregue, não horas medidas.
@@ -106,7 +106,7 @@ Prazo de entrega: **27/11/2026**.
 | G4 | Regra: histórico mínimo antes de projetar | G2 | 4 | ⛔ Aguarda D01 | — | — |
 | G5 | Agendador das rotinas diárias | G3 | 6 | ⛔ Aguarda D01 | — | — |
 
-## Bloco H — Avisos · 52 h ⚠️ depende da decisão D01  ·  34 de 52 h concluídas
+## Bloco H — Avisos · 52 h ⚠️ depende da decisão D01  ·  38 de 52 h concluídas
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
@@ -115,7 +115,7 @@ Prazo de entrega: **27/11/2026**.
 | H3 | Gerador do aviso de ruptura | H1, G3 | 10 | ⛔ Aguarda D01 | — | — |
 | ~~H4~~ | ~~Janela de silêncio e agrupamento~~ | H1 | 8 | ✅ Concluída | 08/10/2026 | `5a7be53` |
 | ~~H5~~ | ~~Integração com o serviço de mensagens~~ | H1 | 10 | ✅ Concluída | 08/10/2026 | `075a5de` |
-| H6 | Vincular o celular do dono ao usuário | H5, B1 | 4 | ⬜ A fazer | — | — |
+| ~~H6~~ | ~~Vincular o celular do dono ao usuário~~ | H5, B1 | 4 | ✅ Concluída | 09/10/2026 | `094a2ee` |
 | H7 | Receber e registrar a resposta dele | H5 | 4 | ⬜ A fazer | — | — |
 
 ## Bloco I — Fechamento e relatórios · 30 h  ·  0 de 30 h concluídas
@@ -143,6 +143,32 @@ Prazo de entrega: **27/11/2026**.
 
 O que foi feito em cada dia, do mais recente para o mais antigo. Cada linha aponta a tarefa do
 cronograma, a regra de negócio (quando houver) e o commit.
+
+### 09/10/2026
+
+- **H6 — Vincular o celular do dono ao usuário.** O sistema já sabe **para qual celular** mandar os
+  avisos do Sr. João. O Telegram não deixa mandar mensagem pelo número de telefone — só para quem
+  já conversou com o bot —, então a ligação é feita uma vez, na instalação, como a criação dos
+  usuários: a equipe roda `vincular_telegram --login joao`, o sistema mostra um **código de 6
+  números** (vale 5 minutos) e um link; o Sr. João abre o link no celular e toca em "Iniciar"; o
+  sistema reconhece o código, guarda o celular dele e responde no Telegram: "Pronto, Sr. João! Os
+  avisos do mercado vão chegar aqui". Trocou de celular, é só repetir.
+  **Decisão do grupo:** comando com código (entre três opções: comando com código, número
+  digitado à mão, ou pelo próprio bot depois da H7 — esta dependeria de o sistema estar publicado
+  na internet, D05, ainda aberta). Sem tela nova e sem endereço novo na API.
+  **Cuidados:** só o usuário **dono** pode ser ligado (o banco entregue diz "só o DONO recebe
+  aviso"); só vale o código exato, numa conversa particular com o bot (mensagem de grupo ou com
+  outro número é ignorada); o código é sorteado de forma imprevisível; se a confirmação não chegar
+  ao celular, nada é gravado — assim o sistema nunca guarda um celular errado. Testado de ponta a
+  ponta: liga o celular e, em seguida, o aviso de validade chega naquele mesmo chat.
+  **Foi provado que os testes pegam erro:** sete defeitos de propósito; seis pegos de primeira (um
+  deles — aceitar "1482913" no lugar de "482913" — só depois de um teste novo); o sétimo mostrou
+  um trecho de código que não servia para nada, e ele foi retirado. 24 testes automáticos — total
+  do projeto: 623, todos passando.
+  **Para o aviso chegar de verdade falta só:** criar o bot no @BotFather e pôr o token no `.env`;
+  depois, rodar o comando com o Sr. João do lado, com o celular na mão.
+
+**Próxima tarefa:** H7 — receber e registrar a resposta dele.
 
 ### 08/10/2026
 
@@ -401,7 +427,7 @@ publicação (A5, aguarda D05) e o bloco J (qualidade e implantação).
   **Para o aviso chegar ao celular do Sr. João falta:** criar o bot no @BotFather e pôr o token
   no `.env`, e a H6 (ligar o celular dele ao usuário).
 
-**Próxima tarefa:** H6 — vincular o celular do dono ao usuário.
+**Próxima tarefa:** H6 — vincular o celular do dono ao usuário (feita em 09/10).
 
 ### 07/10/2026
 
