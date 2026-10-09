@@ -10,6 +10,7 @@
  */
 
 import { api } from "./api.js";
+import "./tabela-cartoes.js"; // no celular, cada linha de tabela vira um cartão (toda tela com login)
 
 // Chaves = ACESSO_POR_TELA (backend/comum/permissoes.py). Um teste confere que são as mesmas.
 // `endereco: null` = tela que ainda não foi feita (a tarefa do cronograma está ao lado).

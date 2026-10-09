@@ -19,6 +19,7 @@ seção 3). Sem framework, sem biblioteca, sem fonte externa — o computador da
 | `js/formulario.js` | Erros embaixo do campo, resumo com foco, confirmação no formulário (telas de registro) |
 | `js/procurar-produto.js` | "Procurar o produto" sem acento numa lista nativa (Entrada, Avarias) |
 | `consulta-estoque.html` · `js/consulta-estoque.js` | Tela de Consulta de estoque (F3, RF07, RN16) — os três perfis |
+| `js/tabela-cartoes.js` | Até 860 px (celular e tablet), cada linha de tabela vira um cartão "rótulo: valor"; põe o nome da coluna em cada célula e os papéis de tabela para o leitor de tela |
 | `js/situacao.js` | Situação do lote em palavra e cor: vencido, vence em N dias… (Avarias, Consulta) |
 | `servir.py` | Servidor de desenvolvimento: painel + `/api/` repassado ao Django, mesma origem (L25) |
 

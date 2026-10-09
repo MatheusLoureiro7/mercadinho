@@ -175,7 +175,7 @@ cronograma, a regra de negócio (quando houver) e o commit.
   tabelas — na Consulta de estoque, no celular só aparece o nome do produto (quantidade, validade
   e "Ver lotes" ficam escondidos à direita); o "Editar" de Produtos e Fornecedores também; o
   cabeçalho ocupa duas linhas. **Proposta:** no celular, cada linha de tabela vira um cartão, sem
-  mudar dado, regra ou API. **Situação:** aguardando o grupo pedir a correção. Observação: a
+  mudar dado, regra ou API. **Situação:** corrigido no mesmo dia (abaixo). Observação: a
   especificação pensa o painel para o computador da loja (R04); o celular é do Sr. João, pelo
   Telegram — por isso é melhoria, não requisito.
 
@@ -208,10 +208,23 @@ cronograma, a regra de negócio (quando houver) e o commit.
   rodar os testes e mais erros comuns com a solução. Testado de novo num banco vazio: carga dos
   dados, troca de senha e login funcionando.
 
+- **Telas no celular corrigidas (a pedido do grupo, fora do cronograma).** O que a análise do dia
+  achou foi resolvido: no celular e no tablet, cada linha das tabelas virou um **cartão** com o nome
+  de cada informação ao lado do valor ("Em estoque: 5,5 KG", "Validade: Perto de vencer"), e os
+  botões "Editar" e "Ver lotes" ficam embaixo, em largura inteira e na altura certa para o dedo
+  (44 px). Na Consulta de estoque, os lotes abrem grudados no cartão do produto; o nome da
+  categoria aparece como título entre os cartões; a faixa colorida de vencido e de atenção
+  continua. O cabeçalho cabe numa linha só. **No computador da loja (1024 px) nada mudou** — há
+  teste conferindo isso nas cinco telas. **Nenhuma mudança de dado, regra ou API.** Para quem usa
+  leitor de tela, a tabela continua sendo anunciada como tabela. Conferido: 25 testes novos em
+  celular (360 px), tablet (768 px) e computador; sem a correção, 12 deles falham. Auditoria de
+  acessibilidade (WCAG 2.2 AA) nas 6 telas, no celular e no computador: nenhuma falha. Total do
+  projeto: 687 testes, todos passando.
+
 **Bloco H:** feitas H1, H2, H4, H5, H6 e H7; falta só a H3, que espera a decisão D01.
 
-**Próxima tarefa:** I2 — tela de fechamento de caixa (não depende de decisão pendente). A correção
-das telas no celular fica à espera do grupo.
+**Próxima tarefa:** I2 — tela de fechamento de caixa (não depende de decisão pendente). As telas no
+celular já foram corrigidas (acima).
 
 ### 08/10/2026
 

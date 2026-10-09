@@ -1003,6 +1003,165 @@ section + .cartao {
   .login__conteudo {
     padding: var(--esp-5) var(--esp-4);
   }
+
+  /* Cabeçalho: marca, pessoa e "Sair" numa linha só; o menu desliza embaixo. */
+  .cabecalho__interno {
+    flex-wrap: nowrap;
+    gap: var(--esp-2) var(--esp-3);
+  }
+  .cabecalho__interno:has(nav) {
+    flex-wrap: wrap;
+  }
+  .cabecalho__marca {
+    min-width: 0;
+    flex: 1 1 0;
+    gap: var(--esp-2);
+  }
+  .marca__logo {
+    flex: none;
+    width: 36px;
+    height: 36px;
+  }
+  .marca__nome {
+    font-size: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .marca__texto {
+    min-width: 0;
+  }
+  .cabecalho__usuario {
+    flex: none;
+    gap: var(--esp-2);
+  }
+}
+
+/* Tabelas viram cartões até 860 px (celular e tablet). O computador da loja (1024 px, R04) continua
+   com a tabela. */
+@media (max-width: 860px) {
+  /*
+   * Tabelas viram cartões: cada linha é um cartão "rótulo: valor" (o rótulo vem de data-rotulo,
+   * posto por js/tabela-cartoes.js a partir do cabeçalho da coluna). O cabeçalho da tabela some
+   * da vista, mas continua para o leitor de tela (os papéis role="table" etc. ficam no HTML).
+   */
+  .tabela-rolavel {
+    overflow-x: visible;
+    border: none;
+    background: none;
+    border-radius: 0;
+  }
+  .tabela,
+  .tabela tbody,
+  .tabela tr,
+  .tabela th,
+  .tabela td {
+    display: block;
+    width: auto;
+  }
+  .tabela thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+  .tabela tbody tr {
+    border: 1px solid var(--cor-divisoria);
+    border-radius: var(--raio);
+    background: var(--cor-superficie);
+    padding: var(--esp-3) var(--esp-4);
+    margin-bottom: var(--esp-3);
+  }
+  .tabela tbody tr:hover {
+    background: var(--cor-superficie);
+  }
+  .tabela th,
+  .tabela td {
+    border-top: none;
+    padding: var(--esp-1) 0;
+  }
+  .tabela tbody > tr > :first-child {
+    font-size: 1.0625rem;
+    padding-bottom: var(--esp-2);
+  }
+  .tabela td[data-rotulo] {
+    display: flow-root;
+    text-align: right;
+    border-top: 1px solid var(--cor-divisoria);
+    padding: var(--esp-2) 0;
+  }
+  .tabela td[data-rotulo]::before {
+    content: attr(data-rotulo);
+    float: left;
+    margin-right: var(--esp-3);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--cor-texto-suave);
+    text-align: left;
+  }
+  .tabela .numero,
+  .validade-proxima {
+    white-space: normal;
+  }
+  .tabela td.celula--acoes {
+    padding-top: var(--esp-3);
+  }
+  .tabela td.celula--acoes:empty {
+    display: none;
+  }
+  .tabela td.celula--acoes .botao {
+    width: 100%;
+    min-height: var(--alvo-minimo);
+    justify-content: center;
+  }
+  /* Faixa de atenção (vencido, abaixo do mínimo): passa para a borda do cartão (WCAG 1.4.1: a
+     etiqueta com palavra continua lá). */
+  .linha--vencido > :first-child,
+  .linha--atencao > :first-child {
+    box-shadow: none;
+  }
+  .tabela tbody tr.linha--vencido {
+    border-left: 4px solid var(--cor-erro);
+  }
+  .tabela tbody tr.linha--atencao {
+    border-left: 4px solid var(--cor-aviso-borda);
+  }
+  /* Nome da categoria (Consulta): título solto entre os cartões, não um cartão. */
+  .tabela tbody tr:has(> .tabela__grupo) {
+    border: none;
+    background: none;
+    padding: var(--esp-3) 0 var(--esp-2);
+    margin: 0;
+  }
+  .tabela .tabela__grupo {
+    background: none;
+    padding: 0;
+    font-size: 0.9375rem;
+  }
+  /* Lotes abertos (Consulta): grudados embaixo do cartão do produto. */
+  .tabela tbody tr.linha-lotes {
+    margin-top: calc(-1 * var(--esp-3) - 1px);
+    border-top: none;
+    border-radius: 0 0 var(--raio) var(--raio);
+    background: var(--cor-superficie-2);
+    padding-top: 0;
+  }
+  .tabela tbody tr:has(+ tr.linha-lotes) {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  .linha-lotes td {
+    padding: 0;
+  }
+  .lotes-do-produto {
+    padding: var(--esp-2) 0;
+  }
+  /* "Nenhum registro hoje" e falha ao carregar: cartão simples, centralizado. */
+  .tabela td.vazio {
+    padding: var(--esp-5) 0;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
