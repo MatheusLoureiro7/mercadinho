@@ -21,13 +21,13 @@ O diário, no fim do arquivo, conta o que foi feito em cada dia.
 
 | | Concluído | Total | % |
 |---|---|---|---|
-| **Tarefas** | 27 | 51 | 52,9 % |
-| **Horas estimadas** | 184 h | 378 h | 48,7 % |
+| **Tarefas** | 28 | 51 | 54,9 % |
+| **Horas estimadas** | 194 h | 378 h | 51,3 % |
 
 | Etapa | Blocos | Horas concluídas | Total | % |
 |---|---|---|---|---|
 | 1 · Aviso de validade | A, B, C, D, F, J | 160 h | 212 h | 75,5 % |
-| 2 · Aviso de ruptura | E, G, H | 24 h | 136 h | 17,6 % |
+| 2 · Aviso de ruptura | E, G, H | 34 h | 136 h | 25,0 % |
 | 3 · Gestão | I | 0 h | 30 h | 0,0 % |
 
 As horas concluídas são as **estimadas** na apostila para cada tarefa entregue, não horas medidas.
@@ -106,7 +106,7 @@ Prazo de entrega: **27/11/2026**.
 | G4 | Regra: histórico mínimo antes de projetar | G2 | 4 | ⛔ Aguarda D01 | — | — |
 | G5 | Agendador das rotinas diárias | G3 | 6 | ⛔ Aguarda D01 | — | — |
 
-## Bloco H — Avisos · 52 h ⚠️ depende da decisão D01  ·  24 de 52 h concluídas
+## Bloco H — Avisos · 52 h ⚠️ depende da decisão D01  ·  34 de 52 h concluídas
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
@@ -114,7 +114,7 @@ Prazo de entrega: **27/11/2026**.
 | ~~H2~~ | ~~Gerador do aviso de validade~~ | H1, C3 | 8 | ✅ Concluída | 08/10/2026 | `a3627f3` |
 | H3 | Gerador do aviso de ruptura | H1, G3 | 10 | ⛔ Aguarda D01 | — | — |
 | ~~H4~~ | ~~Janela de silêncio e agrupamento~~ | H1 | 8 | ✅ Concluída | 08/10/2026 | `5a7be53` |
-| H5 | Integração com o serviço de mensagens | H1 | 10 | ⬜ A fazer | — | — |
+| ~~H5~~ | ~~Integração com o serviço de mensagens~~ | H1 | 10 | ✅ Concluída | 08/10/2026 | `075a5de` |
 | H6 | Vincular o celular do dono ao usuário | H5, B1 | 4 | ⬜ A fazer | — | — |
 | H7 | Receber e registrar a resposta dele | H5 | 4 | ⬜ A fazer | — | — |
 
@@ -380,7 +380,28 @@ publicação (A5, aguarda D05) e o bloco J (qualidade e implantação).
   movimentações) que se carrega com um comando — testada num banco vazio. Os usuários vão **sem
   senha** (senha não vai para o GitHub); cada integrante define a sua no próprio computador.
 
-**Próxima tarefa:** H5 — integração com o serviço de mensagens (Telegram).
+- **H5 — Integração com o serviço de mensagens (Telegram).** O sistema já **manda a mensagem de
+  verdade** para o Telegram. Um comando (`enviar_avisos`) faz a rodada inteira: respeita o horário
+  de movimento (H4), junta os avisos de cada pessoa numa mensagem só e envia pelo bot. É esse
+  comando que o agendador vai chamar (G5). Usa só o que já vem com o Python, sem programa novo.
+  **O que acontece quando algo dá errado:** sem internet, bot sem configurar, celular da pessoa
+  ainda não ligado ao sistema (H6) ou Telegram recusando — os avisos daquela pessoa **ficam
+  guardados** para a próxima rodada, as outras pessoas recebem normalmente, e o comando termina
+  avisando que houve falha, com o motivo no registro (log). **Segurança (RNF12):** a "senha" do
+  bot (token) fica só no arquivo de configuração e nunca aparece em mensagem de erro nem no log —
+  há um teste só para isso. **Decisões de implementação:** (1) a mensagem vai em texto simples,
+  sem negrito, para que um símbolo no nome de um produto não faça o Telegram recusar; (2) se a
+  lista de avisos passar do limite do Telegram (4096 letras), ela é dividida em mais de uma
+  mensagem, sem cortar nenhuma linha e na mesma ordem — é o único caso em que a RN13 vira mais de
+  uma mensagem, porque o Telegram não aceita maior. Testado contra um "Telegram de mentira" na
+  própria máquina (a conversa pela internet é de verdade, só o endereço muda). **Foi provado que
+  os testes pegam erro:** cinco defeitos de propósito, todos pegos — e um sexto (o token vazando
+  pela exceção original) passou na primeira versão do teste, que foi reforçada até pegá-lo.
+  19 testes automáticos — total do projeto: 599, todos passando.
+  **Para o aviso chegar ao celular do Sr. João falta:** criar o bot no @BotFather e pôr o token
+  no `.env`, e a H6 (ligar o celular dele ao usuário).
+
+**Próxima tarefa:** H6 — vincular o celular do dono ao usuário.
 
 ### 07/10/2026
 
