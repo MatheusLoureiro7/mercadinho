@@ -16,6 +16,7 @@ exporta.
 | `docs/ARQUITETURA.md` | Camadas, operações, as 10 telas |
 | `schema.sql` | As 14 tabelas — nenhuma coluna a mais |
 | `docs/DECISOES-PENDENTES.md` · `docs/LACUNAS.md` | O que ainda não foi decidido |
+| `REUNIAO-CLIENTE.md` | Roteiro de perguntas para o Sr. João, a esposa e o sobrinho (destrava D01, L12…) |
 | `openspec/` | Especificação no formato OpenSpec (specs por capacidade e propostas de mudança) |
 
 ---

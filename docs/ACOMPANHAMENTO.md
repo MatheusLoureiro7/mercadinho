@@ -277,6 +277,14 @@ cronograma, a regra de negócio (quando houver) e o commit.
   falhas em cerca de 9 rodadas no dia; depois da correção, 9 rodadas seguidas sem nenhuma falha.
   Total do projeto: 726 testes, todos passando.
 
+- **Roteiro da reunião com o cliente (fora do cronograma).** Preparado o `REUNIAO-CLIENTE.md`: 24
+  perguntas em linguagem da loja, em cinco blocos — o caixa (D01, a que mais trava), a validade
+  (D02), o fechamento e o balanço com a esposa (L12, L16, D06), os avisos no celular do Sr. João
+  (D04, L01, L03, L15, L24) e a rotina e onde o sistema vai ficar (D03, D05, D07, D08) —, o que
+  pedir para separarem antes, o que muda no projeto com cada resposta, o que não prometer e uma
+  folha para anotar as respostas. Também marca na agenda o cadastro dos produtos (J2) e a contagem
+  do estoque de partida (J3).
+
 **Próxima tarefa:** o que sobra depende de decisão do cliente (D01: blocos E e G, H3, I1, I3 e o
 fim da J1; D05: A5, J6) ou da presença dele (J2 carga dos produtos, J3 contagem física). **É hora de
 levar ao Sr. João e à esposa as decisões D01 (o caixa exporta as vendas? em que formato?), D02 e a
