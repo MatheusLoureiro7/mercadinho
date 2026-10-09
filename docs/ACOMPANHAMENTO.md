@@ -21,14 +21,14 @@ O diário, no fim do arquivo, conta o que foi feito em cada dia.
 
 | | Concluído | Total | % |
 |---|---|---|---|
-| **Tarefas** | 30 | 51 | 58,8 % |
-| **Horas estimadas** | 202 h | 378 h | 53,4 % |
+| **Tarefas** | 31 | 51 | 60,8 % |
+| **Horas estimadas** | 212 h | 378 h | 56,1 % |
 
 | Etapa | Blocos | Horas concluídas | Total | % |
 |---|---|---|---|---|
 | 1 · Aviso de validade | A, B, C, D, F, J | 160 h | 212 h | 75,5 % |
 | 2 · Aviso de ruptura | E, G, H | 42 h | 136 h | 30,9 % |
-| 3 · Gestão | I | 0 h | 30 h | 0,0 % |
+| 3 · Gestão | I | 10 h | 30 h | 33,3 % |
 
 As horas concluídas são as **estimadas** na apostila para cada tarefa entregue, não horas medidas.
 
@@ -118,12 +118,12 @@ Prazo de entrega: **27/11/2026**.
 | ~~H6~~ | ~~Vincular o celular do dono ao usuário~~ | H5, B1 | 4 | ✅ Concluída | 09/10/2026 | `094a2ee` |
 | ~~H7~~ | ~~Receber e registrar a resposta dele~~ | H5 | 4 | ✅ Concluída | 09/10/2026 | `606e94f` |
 
-## Bloco I — Fechamento e relatórios · 30 h  ·  0 de 30 h concluídas
+## Bloco I — Fechamento e relatórios · 30 h  ·  10 de 30 h concluídas
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
 | I1 | Tabela de fechamento e cálculo da diferença | E2 | 8 | ⬜ A fazer | — | — |
-| I2 | Tela de fechamento de caixa | A3 | 10 | ⬜ A fazer | — | — |
+| ~~I2~~ | ~~Tela de fechamento de caixa~~ | A3 | 10 | ✅ Concluída (API na I1) | 09/10/2026 | `4184da1` |
 | I3 | Relatório de balanço semanal | E2, D1 | 12 | ⬜ A fazer | — | — |
 
 ## Bloco J — Qualidade e implantação · 46 h  ·  0 de 46 h concluídas
@@ -223,8 +223,34 @@ cronograma, a regra de negócio (quando houver) e o commit.
 
 **Bloco H:** feitas H1, H2, H4, H5, H6 e H7; falta só a H3, que espera a decisão D01.
 
-**Próxima tarefa:** I2 — tela de fechamento de caixa (não depende de decisão pendente). As telas no
-celular já foram corrigidas (acima).
+- **I2 — Tela de fechamento de caixa.** A esposa já tem a tela onde, no fim do dia, confere o
+  dinheiro contado na gaveta contra o que o sistema apurou (RF12). Ela digita **só o dinheiro
+  contado**; o valor apurado vem do sistema e a diferença aparece **antes de confirmar**, com palavra
+  e cor: "Faltam R$ 25,00 no caixa", "Sobram R$ 10,00 no caixa" ou "O caixa bateu" — o exemplo da
+  Apostila I (apurado R$ 3.240,00, contado R$ 3.215,00 → −R$ 25,00) está nos testes. Ao registrar, o
+  fechamento entra na lista do dia com hora, valores, diferença e quem registrou. Contou de novo?
+  Registra outra vez: aparece um registro novo e **o anterior continua lá** (RN15) — a tela não tem
+  como alterar nem apagar. Só o perfil da esposa abre a tela (RN14); funciona no celular.
+  **Decisão do grupo:** a tela foi feita agora e será **ligada à API na I1**, como aconteceu com
+  Produtos e Fornecedores (B5 e B6, ligadas na B7). A I1 (tabela e cálculo) espera as vendas do caixa
+  (E2, decisão D01), e a origem exata do "valor apurado" continua aberta (lacuna L12: soma de todas as
+  vendas do dia ou só do que foi pago em dinheiro?). Até a I1, a tela avisa: "O fechamento de caixa
+  ainda não está disponível… continue conferindo no caderno", e não deixa registrar.
+  **Contrato proposto para a I1** (a confirmar quando ela for feita): `GET
+  /api/fechamentos/apurado/?data=` (o valor apurado do dia), `GET /api/fechamentos/?data=` (os
+  registros do dia, o mais novo primeiro) e `POST /api/fechamentos/` só com `valor_contado` — a data
+  e o apurado quem define é o servidor, e a diferença é o banco que calcula (coluna gerada).
+  **Achado:** depois de registrar, a tela apagava o campo — e com isso apagava a contagem que a
+  pessoa já tivesse começado a digitar enquanto o registro era gravado. Corrigido, com teste.
+  **Foi provado que os testes pegam erro:** sete defeitos de propósito (diferença com sinal
+  trocado, aceitar três casas de centavo, aceitar valor negativo, mandar o apurado junto, não travar
+  sem a API, ler "3.215" como centavos, apagar o que foi digitado) — todos pegos. Auditoria de
+  acessibilidade sem nenhuma falha, no celular e no computador. 19 testes — total do projeto: 706,
+  todos passando.
+
+**Próxima tarefa:** as tarefas que sobram dependem de decisão do cliente (D01: E, G, H3, I1, I3;
+D05: A5, J6) ou da presença dele (J2, J3). A que dá para adiantar agora é a **J1** (fechar a
+cobertura de testes das regras), incluindo a falha intermitente dos testes de tela.
 
 ### 08/10/2026
 
