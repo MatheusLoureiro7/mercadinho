@@ -21,13 +21,13 @@ O diário, no fim do arquivo, conta o que foi feito em cada dia.
 
 | | Concluído | Total | % |
 |---|---|---|---|
-| **Tarefas** | 29 | 51 | 56,9 % |
-| **Horas estimadas** | 198 h | 378 h | 52,4 % |
+| **Tarefas** | 30 | 51 | 58,8 % |
+| **Horas estimadas** | 202 h | 378 h | 53,4 % |
 
 | Etapa | Blocos | Horas concluídas | Total | % |
 |---|---|---|---|---|
 | 1 · Aviso de validade | A, B, C, D, F, J | 160 h | 212 h | 75,5 % |
-| 2 · Aviso de ruptura | E, G, H | 38 h | 136 h | 27,9 % |
+| 2 · Aviso de ruptura | E, G, H | 42 h | 136 h | 30,9 % |
 | 3 · Gestão | I | 0 h | 30 h | 0,0 % |
 
 As horas concluídas são as **estimadas** na apostila para cada tarefa entregue, não horas medidas.
@@ -106,7 +106,7 @@ Prazo de entrega: **27/11/2026**.
 | G4 | Regra: histórico mínimo antes de projetar | G2 | 4 | ⛔ Aguarda D01 | — | — |
 | G5 | Agendador das rotinas diárias | G3 | 6 | ⛔ Aguarda D01 | — | — |
 
-## Bloco H — Avisos · 52 h ⚠️ depende da decisão D01  ·  38 de 52 h concluídas
+## Bloco H — Avisos · 52 h ⚠️ depende da decisão D01  ·  42 de 52 h concluídas
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
@@ -116,7 +116,7 @@ Prazo de entrega: **27/11/2026**.
 | ~~H4~~ | ~~Janela de silêncio e agrupamento~~ | H1 | 8 | ✅ Concluída | 08/10/2026 | `5a7be53` |
 | ~~H5~~ | ~~Integração com o serviço de mensagens~~ | H1 | 10 | ✅ Concluída | 08/10/2026 | `075a5de` |
 | ~~H6~~ | ~~Vincular o celular do dono ao usuário~~ | H5, B1 | 4 | ✅ Concluída | 09/10/2026 | `094a2ee` |
-| H7 | Receber e registrar a resposta dele | H5 | 4 | ⬜ A fazer | — | — |
+| ~~H7~~ | ~~Receber e registrar a resposta dele~~ | H5 | 4 | ✅ Concluída | 09/10/2026 | `606e94f` |
 
 ## Bloco I — Fechamento e relatórios · 30 h  ·  0 de 30 h concluídas
 
@@ -168,7 +168,44 @@ cronograma, a regra de negócio (quando houver) e o commit.
   **Para o aviso chegar de verdade falta só:** criar o bot no @BotFather e pôr o token no `.env`;
   depois, rodar o comando com o Sr. João do lado, com o celular na mão.
 
-**Próxima tarefa:** H7 — receber e registrar a resposta dele.
+- **Análise das telas no celular (a pedido do grupo, fora do cronograma).** Conferidas as 6 telas
+  em celular pequeno (360 px), médio (390 px) e tablet (768 px). **Bom:** nenhuma tela "escapa"
+  para o lado, Login e formulários funcionam bem, letra dos campos no tamanho que evita o zoom
+  automático do iPhone, nenhum botão abaixo do mínimo da norma de acessibilidade. **Ruim:** as
+  tabelas — na Consulta de estoque, no celular só aparece o nome do produto (quantidade, validade
+  e "Ver lotes" ficam escondidos à direita); o "Editar" de Produtos e Fornecedores também; o
+  cabeçalho ocupa duas linhas. **Proposta:** no celular, cada linha de tabela vira um cartão, sem
+  mudar dado, regra ou API. **Situação:** aguardando o grupo pedir a correção. Observação: a
+  especificação pensa o painel para o computador da loja (R04); o celular é do Sr. João, pelo
+  Telegram — por isso é melhoria, não requisito.
+
+- **H7 — Receber e registrar a resposta dele.** Fecha a parte de avisos que não depende do caixa.
+  Agora cada aviso de "vai acabar" chega no Telegram com um botão **"Sim, pedir: Frango
+  resfriado"**; quando o Sr. João toca, o sistema anota no aviso que ele quer pedir e mostra
+  "Anotado: pedir Frango resfriado". Vários avisos continuam numa mensagem só (RN13), cada um com
+  o seu botão. Aviso de validade vai sem botão: o que se faz com ele é registrar a perda no painel.
+  **Decisões do grupo:** (1) o Telegram entrega a resposta chamando um endereço do sistema
+  (*webhook*), como está na Apostila IV; (2) só o botão "Sim, pedir", que é o que a especificação
+  cita. **Segurança:** esse endereço é o único, além do login, que não pede usuário e senha —
+  quem chama é o Telegram. Por isso ele exige uma senha combinada com o Telegram (sem ela, recusa
+  tudo, até quem está logado no painel) e só aceita a resposta vinda do celular do dono que
+  recebeu aquele aviso; clicar de novo não muda nada; aviso que já não vale (cancelado porque a
+  mercadoria chegou) responde "Este aviso não vale mais". A exceção à regra de que toda parte do
+  sistema pertence a uma tela foi aprovada pelo grupo e anotada nas regras do repositório.
+  **Para funcionar de verdade** falta publicar o sistema na internet com endereço seguro (decisão
+  D05) e rodar `configurar_webhook`. Os avisos de "vai acabar" em si vêm da H3, que espera o
+  formato do arquivo do caixa (D01) — até lá, testado com avisos criados nos testes.
+  **Foi provado que os testes pegam erro:** dez defeitos de propósito, todos pegos — dois deles
+  só depois de dois testes novos (pessoa que não é dono com celular ligado; botão com número a
+  mais no fim). 39 testes automáticos — total do projeto: 662, todos passando.
+  **Pendência que voltou:** em 2 de 5 rodadas completas, um teste de tela (cada vez um diferente,
+  de telas que a H7 não toca) falhou por demora; sozinhos, passam sempre. É a mesma falha
+  intermitente registrada em 08/10, que continua sem causa encontrada e entra na J1.
+
+**Bloco H:** feitas H1, H2, H4, H5, H6 e H7; falta só a H3, que espera a decisão D01.
+
+**Próxima tarefa:** I2 — tela de fechamento de caixa (não depende de decisão pendente). A correção
+das telas no celular fica à espera do grupo.
 
 ### 08/10/2026
 
