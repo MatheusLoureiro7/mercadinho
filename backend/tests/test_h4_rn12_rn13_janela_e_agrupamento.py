@@ -40,7 +40,7 @@ class CanalDeMentira:
         self.enviadas: list[tuple[Usuario, str]] = []
         self.falha = falha
 
-    def enviar(self, destinatario, mensagem):
+    def enviar(self, destinatario, mensagem, botoes=()):
         if self.falha:
             raise self.falha
         self.enviadas.append((destinatario, mensagem))

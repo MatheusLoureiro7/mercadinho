@@ -10,6 +10,7 @@ tarefas que os criam. Exemplo, quando a B3 chegar:
 from django.urls import include, path
 from rest_framework.routers import APIRootView, DefaultRouter
 
+from alertas.views import TelegramWebhookView
 from cadastro.views import CategoriaViewSet, FornecedorViewSet, ProdutoViewSet
 from comum.views import SessaoAtualView, SessaoView
 from estoque.views import EstoquePorLoteView, EstoquePorProdutoView, LoteViewSet, PerdaViewSet
@@ -35,6 +36,7 @@ urlpatterns = [
     path("api/sessoes/atual/", SessaoAtualView.as_view(), name="sessao-atual"),
     path("api/estoque/", EstoquePorProdutoView.as_view(), name="estoque-produtos"),  # F2
     path("api/estoque/lotes/", EstoquePorLoteView.as_view(), name="estoque-lotes"),  # F2
+    path("api/telegram/", TelegramWebhookView.as_view(), name="telegram-webhook"),  # H7
     path("api/", include(roteador.urls)),
 ]
 

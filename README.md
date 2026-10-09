@@ -115,6 +115,7 @@ variáveis `POSTGRES_*` do `.env` para ele.
 | `DJANGO_DEBUG` | `true` só na máquina de desenvolvimento |
 | `POSTGRES_*` | Conexão com o banco — o `docker compose` usa as mesmas variáveis para criar o banco |
 | `TELEGRAM_BOT_TOKEN` | Bot de avisos (H5). Vazio: os avisos ficam guardados e não saem |
+| `TELEGRAM_WEBHOOK_SEGREDO` | Segredo do webhook que recebe a resposta do dono (H7). Vazio: nada é aceito |
 
 O `.env` nunca vai para o git (RNF12).
 
@@ -163,6 +164,17 @@ python backend/manage.py vincular_telegram --login joao
 O comando mostra um código de 6 dígitos (vale 5 minutos) e um link `t.me/...`. No celular dele,
 abra o link e toque em **Iniciar** — ou mande `/start <código>` ao bot. O sistema grava o chat e
 manda "Pronto, Sr. João! Os avisos do mercado vão chegar aqui". Só o usuário `DONO` recebe aviso.
+
+**A resposta dele (H7):** cada aviso de "vai acabar" chega com o botão **"Sim, pedir: <produto>"**.
+O toque vai para `POST /api/telegram/` (webhook), que grava `alerta.resposta_usuario`. Esse endereço
+não usa login: só aceita quem traz o segredo `TELEGRAM_WEBHOOK_SEGREDO` (o Telegram o manda em todo
+chamado), e só grava resposta vinda do chat do DONO que recebeu o aviso. Para ligar — só com o
+sistema publicado em `https://` (decisão D05):
+
+```bash
+python backend/manage.py configurar_webhook --url https://<endereço do sistema>/api/telegram/
+python backend/manage.py configurar_webhook --remover      # para vincular outro celular (H6)
+```
 
 ---
 
@@ -214,6 +226,7 @@ Endpoint sem `tela` é recusado para todos.
 | `/api/perdas/` · `/api/perdas/{id}/` | GET, POST (sem editar) | OPERACAO (Avarias e quebras) | D1 |
 | `/api/estoque/` | GET | os três perfis (Consulta de estoque) | F2 |
 | `/api/estoque/lotes/` | GET | os três perfis (Consulta de estoque) | F2 |
+| `/api/telegram/` | POST | o Telegram (segredo do webhook, sem login) — resposta do DONO | H7 |
 
 `POST /api/lotes/` registra a carga que chegou: grava o lote e a movimentação de ENTRADA numa
 transação só (operação 02) e devolve o `saldo_produto` novo. A data de entrada é sempre hoje, no

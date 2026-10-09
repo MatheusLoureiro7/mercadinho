@@ -15,10 +15,11 @@ bots do Telegram. Só biblioteca padrão (urllib): nenhuma dependência nova (CL
 import json
 import urllib.error
 import urllib.request
+from collections.abc import Sequence
 
 from django.conf import settings
 
-from alertas.notificacao import FalhaNoEnvio
+from alertas.canal import FalhaNoEnvio
 from cadastro.models import Usuario
 
 LIMITE_DA_MENSAGEM = 4096  # caracteres por mensagem, limite da API do Telegram
@@ -58,12 +59,30 @@ class CanalTelegram:
         """O canal com o token e o endereço do .env (core/settings.py)."""
         return cls(token=settings.TELEGRAM_BOT_TOKEN, endereco=settings.TELEGRAM_API_ENDERECO)
 
-    def enviar(self, destinatario: Usuario, mensagem: str) -> None:
+    def enviar(self, destinatario: Usuario, mensagem: str, botoes: Sequence[tuple[str, str]] = ()) -> None:
         chat = (destinatario.telegram_chat_id or "").strip()
         if not chat:
             raise FalhaNoEnvio(f"{destinatario.login} ainda não ligou o celular ao sistema (tarefa H6).")
-        for parte in dividir(mensagem):
-            self._chamar("sendMessage", {"chat_id": chat, "text": parte})
+        partes = dividir(mensagem)
+        for numero, parte in enumerate(partes, start=1):
+            dados = {"chat_id": chat, "text": parte}
+            if botoes and numero == len(partes):  # H7: os botões vão embaixo do fim da mensagem
+                teclado = [[{"text": texto, "callback_data": dado}] for texto, dado in botoes]
+                dados["reply_markup"] = {"inline_keyboard": teclado}
+            self._chamar("sendMessage", dados)
+
+    def responder_botao(self, id_do_clique: str, texto: str) -> None:
+        """H7: a confirmação curta que aparece quando a pessoa toca no botão (answerCallbackQuery)."""
+        self._chamar("answerCallbackQuery", {"callback_query_id": id_do_clique, "text": texto})
+
+    def ligar_webhook(self, url: str, segredo: str) -> None:
+        """H7: diz ao Telegram para onde mandar os cliques nos botões (setWebhook)."""
+        self._chamar(
+            "setWebhook", {"url": url, "secret_token": segredo, "allowed_updates": ["callback_query"]}
+        )
+
+    def desligar_webhook(self) -> None:
+        self._chamar("deleteWebhook", {})
 
     def nome_do_bot(self) -> str:
         """O usuário do bot (@...), para o link t.me que leva o código (H6)."""

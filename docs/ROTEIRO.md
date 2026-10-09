@@ -134,7 +134,7 @@ depois acrescente a média por dia da semana (RN07).
 | [x] | **H4** | Janela de silêncio e agrupamento | Regra | H1 | 8 |
 | [x] | **H5** | Integração com o serviço de mensagens | API | H1 | 10 |
 | [x] | **H6** | Vincular o celular do dono ao usuário | API | H5, B1 | 4 |
-| [ ] | **H7** | Receber e registrar a resposta dele | API | H5 | 4 |
+| [x] | **H7** | Receber e registrar a resposta dele | API | H5 | 4 |
 
 **H2 = RN05** · **H3 = RN08 e RN10** · **H4 = RN12 e RN13**.
 

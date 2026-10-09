@@ -17,30 +17,20 @@ recebem normalmente. Qualquer outro erro é defeito e não é engolido.
 import logging
 from dataclasses import dataclass
 from datetime import datetime, time
-from typing import Protocol
 
 from django.db import transaction
 from django.utils import timezone
 
 from alertas import estados
+from alertas.canal import CanalDeAviso, FalhaNoEnvio  # noqa: F401 — reexportados (H4, H5)
 from alertas.models import Alerta
-from cadastro.models import Usuario
+from alertas.respostas import botoes_da_mensagem
 from comum.parametros import parametro
 
 logger = logging.getLogger("mercadinho.avisos")
 
 # Chaves da tabela parametro (schema.sql), no formato "HH:MM-HH:MM".
 JANELAS_DE_SILENCIO = ("janela_silencio_manha", "janela_silencio_tarde")
-
-
-class FalhaNoEnvio(Exception):
-    """O canal não conseguiu entregar (sem internet, sem celular ligado, canal recusou). Texto para o log."""
-
-
-class CanalDeAviso(Protocol):
-    """D04: por onde o aviso chega. Trocar Telegram por e-mail é uma classe nova, não uma reescrita."""
-
-    def enviar(self, destinatario: Usuario, mensagem: str) -> None: ...
 
 
 @dataclass(frozen=True)
@@ -90,11 +80,18 @@ def enviar_avisos(canal: CanalDeAviso) -> ResultadoDoEnvio:
                 # Trava os avisos desta pessoa: uma entrada de mercadoria que queira cancelar um deles
                 # espera o envio terminar, e nada sai pela metade.
                 avisos = list(
-                    abertos.filter(destinatario_id=destinatario_id).select_for_update().por_urgencia()
+                    abertos.filter(destinatario_id=destinatario_id)
+                    .select_related("produto", "destinatario")
+                    .select_for_update(of=("self",))  # trava só os avisos, não o produto nem a pessoa
+                    .por_urgencia()
                 )
                 if not avisos:
                     continue
-                canal.enviar(avisos[0].destinatario, montar_mensagem([aviso.mensagem for aviso in avisos]))
+                canal.enviar(
+                    avisos[0].destinatario,
+                    montar_mensagem([aviso.mensagem for aviso in avisos]),
+                    botoes=botoes_da_mensagem(avisos),  # H7: "Sim, pedir" nos avisos de ruptura
+                )
                 enviados += estados.enviar(avisos, quando=agora)
                 mensagens += 1
         except FalhaNoEnvio as erro:

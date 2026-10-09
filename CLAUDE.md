@@ -168,7 +168,8 @@ tocarem.
 operação, na camada de autenticação da API, não dentro da regra de negócio. Os dois funcionários da
 loja não têm acesso. **No código:** toda view declara `tela = "..."` (uma das chaves de
 `ACESSO_POR_TELA` em `backend/comum/permissoes.py`); view sem `tela` é recusada para todos. Nunca
-use `AllowAny` fora do login.
+use `AllowAny` fora do login. Única outra exceção, decidida pelo grupo em 09/10/2026 (H7): o webhook
+do Telegram (`POST /api/telegram/`), protegido pelo segredo do Telegram (`SoOTelegram`), não por login.
 
 As 16 regras completas, com condição testável e mensagem de erro, estão em
 `docs/REGRAS-NEGOCIO.md`. Leia a regra antes de implementar o trecho que ela governa.

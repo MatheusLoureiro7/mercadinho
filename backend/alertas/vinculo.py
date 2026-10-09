@@ -16,7 +16,7 @@ import time
 
 from django.db import transaction
 
-from alertas.notificacao import CanalDeAviso
+from alertas.canal import CanalDeAviso
 from cadastro.models import Usuario
 
 ESPERA_MAXIMA_SEGUNDOS = 25  # cada pergunta ao Telegram espera no máximo isto por mensagem nova

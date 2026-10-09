@@ -251,7 +251,7 @@ def test_h5_erro_que_nao_e_de_envio_nao_e_engolido(dono, presunto):
     """Defeito no código não pode virar 'tenta de novo amanhã' em silêncio."""
 
     class CanalComDefeito:
-        def enviar(self, destinatario, mensagem):
+        def enviar(self, destinatario, mensagem, botoes=()):
             raise ZeroDivisionError
 
     _aviso(presunto, dono)

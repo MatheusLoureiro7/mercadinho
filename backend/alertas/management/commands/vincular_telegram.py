@@ -11,7 +11,7 @@ chat dele e manda uma confirmação. Precisa do TELEGRAM_BOT_TOKEN no .env (H5).
 from django.core.management.base import BaseCommand, CommandError
 
 from alertas import vinculo
-from alertas.notificacao import FalhaNoEnvio
+from alertas.canal import FalhaNoEnvio
 from alertas.telegram import CanalTelegram
 from cadastro.models import Usuario
 
@@ -52,6 +52,11 @@ class Command(BaseCommand):
                 )
             vinculo.vincular(usuario, chat, canal)
         except FalhaNoEnvio as erro:
+            if "webhook" in str(erro).lower():  # 409: com o webhook da H7 ligado não há getUpdates
+                raise CommandError(
+                    "O webhook do Telegram está ligado e impede a leitura do código. Rode "
+                    "`configurar_webhook --remover`, vincule de novo e depois ligue o webhook outra vez."
+                ) from None
             raise CommandError(str(erro)) from None
         self.stdout.write(
             f"Pronto: o celular de {usuario.nome} está ligado. A confirmação foi enviada para ele."
