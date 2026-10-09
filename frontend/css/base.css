@@ -911,6 +911,60 @@ section + .cartao {
   gap: var(--esp-2);
 }
 
+/* ---------------------------------------------------------------- Fechamento de caixa (I2) */
+
+.conferencia {
+  margin: 0 0 var(--esp-4);
+}
+.conferencia__item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--esp-2) var(--esp-4);
+  padding: var(--esp-3) var(--esp-4);
+  border: 1px solid var(--cor-divisoria);
+  border-radius: var(--raio);
+  background: var(--cor-superficie-2);
+}
+.conferencia dt {
+  font-weight: 600;
+  color: var(--cor-texto-suave);
+}
+.conferencia dd {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+/* Diferença antes de confirmar: palavra e cor juntas (WCAG 1.4.1). */
+.diferenca {
+  margin: var(--esp-3) 0 0;
+  font-weight: 700;
+  font-size: 1.0625rem;
+}
+.diferenca:empty {
+  display: none;
+}
+.diferenca--erro,
+.diferenca--aviso,
+.diferenca--ok {
+  padding: var(--esp-3) var(--esp-4);
+  border-radius: var(--raio);
+}
+.diferenca--erro {
+  background: var(--cor-erro-fundo);
+  color: var(--cor-erro-texto);
+}
+.diferenca--aviso {
+  background: var(--cor-aviso-fundo);
+  color: var(--cor-aviso-texto);
+}
+.diferenca--ok {
+  background: var(--cor-ok-fundo);
+  color: var(--cor-ok-texto);
+}
+
 /* ---------------------------------------------------------------- Telas estreitas */
 
 @media (max-width: 860px) {

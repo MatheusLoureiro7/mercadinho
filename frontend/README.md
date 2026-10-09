@@ -20,11 +20,12 @@ seção 3). Sem framework, sem biblioteca, sem fonte externa — o computador da
 | `js/procurar-produto.js` | "Procurar o produto" sem acento numa lista nativa (Entrada, Avarias) |
 | `consulta-estoque.html` · `js/consulta-estoque.js` | Tela de Consulta de estoque (F3, RF07, RN16) — os três perfis |
 | `js/tabela-cartoes.js` | Até 860 px (celular e tablet), cada linha de tabela vira um cartão "rótulo: valor"; põe o nome da coluna em cada célula e os papéis de tabela para o leitor de tela |
+| `fechamento-caixa.html` · `js/fechamento-caixa.js` | Tela de Fechamento de caixa (I2, RF12, RN15, fluxograma 06) — da esposa. Ligada à API na I1: até lá avisa que não está disponível |
 | `js/situacao.js` | Situação do lote em palavra e cor: vencido, vence em N dias… (Avarias, Consulta) |
 | `servir.py` | Servidor de desenvolvimento: painel + `/api/` repassado ao Django, mesma origem (L25) |
 
 Telas por tarefa: B5 Produtos · B6 Fornecedores · C5 Entrada de mercadoria · D3 Avarias e
-quebras · E5 Importação de vendas · F3 Consulta de estoque · I2 Fechamento de caixa. Toda tela é
+quebras · E5 Importação de vendas · F3 Consulta de estoque · I2 Fechamento de caixa (feita; API na I1). Toda tela é
 feita com a skill **UI UX Pro Max** e conferida com a skill **accessibility** (CLAUDE.md).
 
 ## Ver as telas
