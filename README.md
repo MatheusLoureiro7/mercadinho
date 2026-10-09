@@ -43,13 +43,16 @@ schema.sql     modelo de dados de referência
 
 ## Subir o ambiente
 
+> **Primeira vez, no Windows, sozinho?** Siga o [COMO-RODAR.md](COMO-RODAR.md): passo a passo
+> do zero até as telas abertas com os dados da apresentação.
+
 Pré-requisitos: **Python 3.11 ou mais novo**, **Git** e **Docker** (Docker Desktop no Windows e no
 macOS). O Docker só serve para rodar o PostgreSQL na máquina de desenvolvimento.
 
 ### Linux e macOS
 
 ```bash
-git clone <url-do-repositorio> mercadinho
+git clone https://github.com/MatheusLoureiro7/mercadinho.git mercadinho
 cd mercadinho
 
 python3 -m venv .venv
@@ -66,7 +69,7 @@ pytest
 ### Windows (PowerShell)
 
 ```powershell
-git clone <url-do-repositorio> mercadinho
+git clone https://github.com/MatheusLoureiro7/mercadinho.git mercadinho
 cd mercadinho
 
 py -3.11 -m venv .venv

@@ -1,0 +1,618 @@
+[
+  {
+    "model": "comum.parametro",
+    "pk": "dias_aviso_validade",
+    "fields": {
+      "valor": "3",
+      "descricao": "Antecedência do aviso de vencimento, em dias (RN05)",
+      "atualizado_em": "2026-10-07T19:00:18.932Z"
+    }
+  },
+  {
+    "model": "comum.parametro",
+    "pk": "estoque_seguranca_pct",
+    "fields": {
+      "valor": "20",
+      "descricao": "Folga percentual somada ao ponto de pedido (RN08)",
+      "atualizado_em": "2026-10-07T19:00:18.932Z"
+    }
+  },
+  {
+    "model": "comum.parametro",
+    "pk": "folga_fim_semana_pct",
+    "fields": {
+      "valor": "40",
+      "descricao": "Acréscimo nos itens críticos de fim de semana (RN10)",
+      "atualizado_em": "2026-10-07T19:00:18.932Z"
+    }
+  },
+  {
+    "model": "comum.parametro",
+    "pk": "historico_minimo_dias",
+    "fields": {
+      "valor": "14",
+      "descricao": "Mínimo de histórico para o sistema projetar (RN09)",
+      "atualizado_em": "2026-10-07T19:00:18.932Z"
+    }
+  },
+  {
+    "model": "comum.parametro",
+    "pk": "hora_rodada_diaria",
+    "fields": {
+      "valor": "03:00",
+      "descricao": "Horário em que os cálculos rodam",
+      "atualizado_em": "2026-10-07T19:00:18.932Z"
+    }
+  },
+  {
+    "model": "comum.parametro",
+    "pk": "janela_silencio_manha",
+    "fields": {
+      "valor": "10:30-13:00",
+      "descricao": "Primeiro pico de venda — nada é enviado (RN12)",
+      "atualizado_em": "2026-10-07T19:00:18.932Z"
+    }
+  },
+  {
+    "model": "comum.parametro",
+    "pk": "janela_silencio_tarde",
+    "fields": {
+      "valor": "16:30-18:00",
+      "descricao": "Segundo pico de venda — nada é enviado (RN12)",
+      "atualizado_em": "2026-10-07T19:00:18.932Z"
+    }
+  },
+  {
+    "model": "cadastro.categoria",
+    "pk": 2,
+    "fields": {
+      "nome": "Açougue",
+      "perecivel_padrao": true
+    }
+  },
+  {
+    "model": "cadastro.categoria",
+    "pk": 3,
+    "fields": {
+      "nome": "Frios",
+      "perecivel_padrao": true
+    }
+  },
+  {
+    "model": "cadastro.categoria",
+    "pk": 4,
+    "fields": {
+      "nome": "Secos e molhados",
+      "perecivel_padrao": false
+    }
+  },
+  {
+    "model": "cadastro.categoria",
+    "pk": 5,
+    "fields": {
+      "nome": "Bebidas",
+      "perecivel_padrao": false
+    }
+  },
+  {
+    "model": "cadastro.fornecedor",
+    "pk": 1,
+    "fields": {
+      "nome": "Frigorífico Boi Bom",
+      "prazo_entrega_dias": 3,
+      "pedido_minimo": "800.00",
+      "contato": "(11) 3333-4444"
+    }
+  },
+  {
+    "model": "cadastro.fornecedor",
+    "pk": 2,
+    "fields": {
+      "nome": "Atacadão Central",
+      "prazo_entrega_dias": 2,
+      "pedido_minimo": "500.00",
+      "contato": null
+    }
+  },
+  {
+    "model": "cadastro.fornecedor",
+    "pk": 3,
+    "fields": {
+      "nome": "Distribuidora Sol",
+      "prazo_entrega_dias": 1,
+      "pedido_minimo": null,
+      "contato": null
+    }
+  },
+  {
+    "model": "cadastro.usuario",
+    "pk": 5,
+    "fields": {
+      "nome": "Sr. João",
+      "papel": "DONO",
+      "login": "joao",
+      "password": "!",
+      "telegram_chat_id": null,
+      "ativo": true
+    }
+  },
+  {
+    "model": "cadastro.usuario",
+    "pk": 4,
+    "fields": {
+      "nome": "Esposa",
+      "papel": "GESTAO",
+      "login": "esposa",
+      "password": "!",
+      "telegram_chat_id": null,
+      "ativo": true
+    }
+  },
+  {
+    "model": "cadastro.usuario",
+    "pk": 3,
+    "fields": {
+      "nome": "Sobrinho",
+      "papel": "OPERACAO",
+      "login": "sobrinho",
+      "password": "!",
+      "telegram_chat_id": null,
+      "ativo": true
+    }
+  },
+  {
+    "model": "cadastro.produto",
+    "pk": 2,
+    "fields": {
+      "categoria": 2,
+      "fornecedor_padrao": 1,
+      "nome": "Frango resfriado 1 kg",
+      "unidade_medida": "KG",
+      "perecivel": true,
+      "durabilidade_dias": 4,
+      "preco_custo": "14.50",
+      "preco_venda": "21.90",
+      "estoque_minimo": "8.000",
+      "critico_fim_semana": true
+    }
+  },
+  {
+    "model": "cadastro.produto",
+    "pk": 3,
+    "fields": {
+      "categoria": 2,
+      "fornecedor_padrao": 1,
+      "nome": "Alcatra",
+      "unidade_medida": "KG",
+      "perecivel": true,
+      "durabilidade_dias": 3,
+      "preco_custo": "39.90",
+      "preco_venda": "54.90",
+      "estoque_minimo": "3.000",
+      "critico_fim_semana": false
+    }
+  },
+  {
+    "model": "cadastro.produto",
+    "pk": 4,
+    "fields": {
+      "categoria": 2,
+      "fornecedor_padrao": 1,
+      "nome": "Linguiça toscana",
+      "unidade_medida": "KG",
+      "perecivel": true,
+      "durabilidade_dias": 5,
+      "preco_custo": "18.00",
+      "preco_venda": "26.90",
+      "estoque_minimo": "3.000",
+      "critico_fim_semana": true
+    }
+  },
+  {
+    "model": "cadastro.produto",
+    "pk": 5,
+    "fields": {
+      "categoria": 3,
+      "fornecedor_padrao": 3,
+      "nome": "Iogurte natural",
+      "unidade_medida": "UN",
+      "perecivel": true,
+      "durabilidade_dias": 15,
+      "preco_custo": "2.10",
+      "preco_venda": "3.79",
+      "estoque_minimo": "6.000",
+      "critico_fim_semana": false
+    }
+  },
+  {
+    "model": "cadastro.produto",
+    "pk": 6,
+    "fields": {
+      "categoria": 3,
+      "fornecedor_padrao": 3,
+      "nome": "Presunto",
+      "unidade_medida": "KG",
+      "perecivel": true,
+      "durabilidade_dias": 7,
+      "preco_custo": "28.00",
+      "preco_venda": "42.90",
+      "estoque_minimo": "1.000",
+      "critico_fim_semana": false
+    }
+  },
+  {
+    "model": "cadastro.produto",
+    "pk": 7,
+    "fields": {
+      "categoria": 4,
+      "fornecedor_padrao": 2,
+      "nome": "Arroz 5 kg",
+      "unidade_medida": "PCT",
+      "perecivel": false,
+      "durabilidade_dias": null,
+      "preco_custo": "21.00",
+      "preco_venda": "27.90",
+      "estoque_minimo": "10.000",
+      "critico_fim_semana": false
+    }
+  },
+  {
+    "model": "cadastro.produto",
+    "pk": 8,
+    "fields": {
+      "categoria": 4,
+      "fornecedor_padrao": 2,
+      "nome": "Feijão carioca 1 kg",
+      "unidade_medida": "PCT",
+      "perecivel": false,
+      "durabilidade_dias": null,
+      "preco_custo": "6.50",
+      "preco_venda": "8.99",
+      "estoque_minimo": "10.000",
+      "critico_fim_semana": false
+    }
+  },
+  {
+    "model": "cadastro.produto",
+    "pk": 9,
+    "fields": {
+      "categoria": 4,
+      "fornecedor_padrao": 2,
+      "nome": "Carvão 3 kg",
+      "unidade_medida": "PCT",
+      "perecivel": false,
+      "durabilidade_dias": null,
+      "preco_custo": "11.00",
+      "preco_venda": "18.90",
+      "estoque_minimo": "8.000",
+      "critico_fim_semana": true
+    }
+  },
+  {
+    "model": "cadastro.produto",
+    "pk": 10,
+    "fields": {
+      "categoria": 5,
+      "fornecedor_padrao": 3,
+      "nome": "Cerveja lata 350 ml",
+      "unidade_medida": "UN",
+      "perecivel": false,
+      "durabilidade_dias": null,
+      "preco_custo": "2.90",
+      "preco_venda": "4.49",
+      "estoque_minimo": "48.000",
+      "critico_fim_semana": true
+    }
+  },
+  {
+    "model": "cadastro.produto",
+    "pk": 11,
+    "fields": {
+      "categoria": 5,
+      "fornecedor_padrao": 3,
+      "nome": "Refrigerante 2 L",
+      "unidade_medida": "UN",
+      "perecivel": false,
+      "durabilidade_dias": null,
+      "preco_custo": "6.20",
+      "preco_venda": "9.99",
+      "estoque_minimo": "12.000",
+      "critico_fim_semana": false
+    }
+  },
+  {
+    "model": "estoque.lote",
+    "pk": 1,
+    "fields": {
+      "produto": 2,
+      "fornecedor": null,
+      "quantidade_inicial": "5.500",
+      "quantidade_atual": "5.500",
+      "custo_unitario": "14.50",
+      "data_entrada": "2026-10-08",
+      "data_validade": "2026-10-12"
+    }
+  },
+  {
+    "model": "estoque.lote",
+    "pk": 2,
+    "fields": {
+      "produto": 3,
+      "fornecedor": null,
+      "quantidade_inicial": "6.000",
+      "quantidade_atual": "6.000",
+      "custo_unitario": "39.90",
+      "data_entrada": "2026-10-08",
+      "data_validade": "2026-10-09"
+    }
+  },
+  {
+    "model": "estoque.lote",
+    "pk": 3,
+    "fields": {
+      "produto": 4,
+      "fornecedor": null,
+      "quantidade_inicial": "4.000",
+      "quantidade_atual": "4.000",
+      "custo_unitario": "18.00",
+      "data_entrada": "2026-10-08",
+      "data_validade": "2026-10-13"
+    }
+  },
+  {
+    "model": "estoque.lote",
+    "pk": 4,
+    "fields": {
+      "produto": 5,
+      "fornecedor": null,
+      "quantidade_inicial": "10.000",
+      "quantidade_atual": "10.000",
+      "custo_unitario": "2.10",
+      "data_entrada": "2026-10-08",
+      "data_validade": "2026-10-23"
+    }
+  },
+  {
+    "model": "estoque.lote",
+    "pk": 5,
+    "fields": {
+      "produto": 5,
+      "fornecedor": null,
+      "quantidade_inicial": "3.000",
+      "quantidade_atual": "3.000",
+      "custo_unitario": "2.10",
+      "data_entrada": "2026-10-08",
+      "data_validade": "2026-10-06"
+    }
+  },
+  {
+    "model": "estoque.lote",
+    "pk": 6,
+    "fields": {
+      "produto": 6,
+      "fornecedor": null,
+      "quantidade_inicial": "2.500",
+      "quantidade_atual": "2.500",
+      "custo_unitario": "28.00",
+      "data_entrada": "2026-10-08",
+      "data_validade": "2026-10-10"
+    }
+  },
+  {
+    "model": "estoque.lote",
+    "pk": 7,
+    "fields": {
+      "produto": 7,
+      "fornecedor": null,
+      "quantidade_inicial": "5.000",
+      "quantidade_atual": "3.000",
+      "custo_unitario": "21.00",
+      "data_entrada": "2026-10-08",
+      "data_validade": null
+    }
+  },
+  {
+    "model": "estoque.lote",
+    "pk": 8,
+    "fields": {
+      "produto": 8,
+      "fornecedor": null,
+      "quantidade_inicial": "20.000",
+      "quantidade_atual": "20.000",
+      "custo_unitario": "6.50",
+      "data_entrada": "2026-10-08",
+      "data_validade": null
+    }
+  },
+  {
+    "model": "estoque.lote",
+    "pk": 9,
+    "fields": {
+      "produto": 10,
+      "fornecedor": null,
+      "quantidade_inicial": "120.000",
+      "quantidade_atual": "120.000",
+      "custo_unitario": "2.90",
+      "data_entrada": "2026-10-08",
+      "data_validade": null
+    }
+  },
+  {
+    "model": "estoque.lote",
+    "pk": 10,
+    "fields": {
+      "produto": 11,
+      "fornecedor": null,
+      "quantidade_inicial": "24.000",
+      "quantidade_atual": "24.000",
+      "custo_unitario": "6.20",
+      "data_entrada": "2026-10-08",
+      "data_validade": null
+    }
+  },
+  {
+    "model": "estoque.movimentacao",
+    "pk": 1,
+    "fields": {
+      "produto": 2,
+      "lote": 1,
+      "usuario": 3,
+      "tipo": "ENTRADA",
+      "quantidade": "5.500",
+      "preco_unitario": "14.50",
+      "data_hora": "2026-10-08T22:49:12.248Z",
+      "motivo": null,
+      "origem": "TELA"
+    }
+  },
+  {
+    "model": "estoque.movimentacao",
+    "pk": 2,
+    "fields": {
+      "produto": 3,
+      "lote": 2,
+      "usuario": 3,
+      "tipo": "ENTRADA",
+      "quantidade": "6.000",
+      "preco_unitario": "39.90",
+      "data_hora": "2026-10-08T22:49:12.273Z",
+      "motivo": null,
+      "origem": "TELA"
+    }
+  },
+  {
+    "model": "estoque.movimentacao",
+    "pk": 3,
+    "fields": {
+      "produto": 4,
+      "lote": 3,
+      "usuario": 3,
+      "tipo": "ENTRADA",
+      "quantidade": "4.000",
+      "preco_unitario": "18.00",
+      "data_hora": "2026-10-08T22:49:12.290Z",
+      "motivo": null,
+      "origem": "TELA"
+    }
+  },
+  {
+    "model": "estoque.movimentacao",
+    "pk": 4,
+    "fields": {
+      "produto": 5,
+      "lote": 4,
+      "usuario": 3,
+      "tipo": "ENTRADA",
+      "quantidade": "10.000",
+      "preco_unitario": "2.10",
+      "data_hora": "2026-10-08T22:49:12.309Z",
+      "motivo": null,
+      "origem": "TELA"
+    }
+  },
+  {
+    "model": "estoque.movimentacao",
+    "pk": 5,
+    "fields": {
+      "produto": 5,
+      "lote": 5,
+      "usuario": 3,
+      "tipo": "ENTRADA",
+      "quantidade": "3.000",
+      "preco_unitario": "2.10",
+      "data_hora": "2026-10-08T22:49:12.326Z",
+      "motivo": null,
+      "origem": "TELA"
+    }
+  },
+  {
+    "model": "estoque.movimentacao",
+    "pk": 6,
+    "fields": {
+      "produto": 6,
+      "lote": 6,
+      "usuario": 3,
+      "tipo": "ENTRADA",
+      "quantidade": "2.500",
+      "preco_unitario": "28.00",
+      "data_hora": "2026-10-08T22:49:12.345Z",
+      "motivo": null,
+      "origem": "TELA"
+    }
+  },
+  {
+    "model": "estoque.movimentacao",
+    "pk": 7,
+    "fields": {
+      "produto": 7,
+      "lote": 7,
+      "usuario": 3,
+      "tipo": "ENTRADA",
+      "quantidade": "5.000",
+      "preco_unitario": "21.00",
+      "data_hora": "2026-10-08T22:49:12.362Z",
+      "motivo": null,
+      "origem": "TELA"
+    }
+  },
+  {
+    "model": "estoque.movimentacao",
+    "pk": 8,
+    "fields": {
+      "produto": 8,
+      "lote": 8,
+      "usuario": 3,
+      "tipo": "ENTRADA",
+      "quantidade": "20.000",
+      "preco_unitario": "6.50",
+      "data_hora": "2026-10-08T22:49:12.378Z",
+      "motivo": null,
+      "origem": "TELA"
+    }
+  },
+  {
+    "model": "estoque.movimentacao",
+    "pk": 9,
+    "fields": {
+      "produto": 10,
+      "lote": 9,
+      "usuario": 3,
+      "tipo": "ENTRADA",
+      "quantidade": "120.000",
+      "preco_unitario": "2.90",
+      "data_hora": "2026-10-08T22:49:12.395Z",
+      "motivo": null,
+      "origem": "TELA"
+    }
+  },
+  {
+    "model": "estoque.movimentacao",
+    "pk": 10,
+    "fields": {
+      "produto": 11,
+      "lote": 10,
+      "usuario": 3,
+      "tipo": "ENTRADA",
+      "quantidade": "24.000",
+      "preco_unitario": "6.20",
+      "data_hora": "2026-10-08T22:49:12.411Z",
+      "motivo": null,
+      "origem": "TELA"
+    }
+  },
+  {
+    "model": "estoque.movimentacao",
+    "pk": 11,
+    "fields": {
+      "produto": 7,
+      "lote": 7,
+      "usuario": 3,
+      "tipo": "PERDA",
+      "quantidade": "2.000",
+      "preco_unitario": null,
+      "data_hora": "2026-10-08T22:49:12.429Z",
+      "motivo": "Pacote rasgou",
+      "origem": "TELA"
+    }
+  }
+]
