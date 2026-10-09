@@ -202,6 +202,12 @@ cronograma, a regra de negócio (quando houver) e o commit.
   de telas que a H7 não toca) falhou por demora; sozinhos, passam sempre. É a mesma falha
   intermitente registrada em 08/10, que continua sem causa encontrada e entra na J1.
 
+- **Passo a passo para Windows revisado (fora do cronograma).** O `COMO-RODAR.md` ganhou o que
+  faltava para um integrante abrir o sistema sozinho: o que repetir da segunda vez em diante, como
+  pegar a versão nova do grupo, o aviso do WSL 2 na instalação do Docker, regras de senha, como
+  rodar os testes e mais erros comuns com a solução. Testado de novo num banco vazio: carga dos
+  dados, troca de senha e login funcionando.
+
 **Bloco H:** feitas H1, H2, H4, H5, H6 e H7; falta só a H3, que espera a decisão D01.
 
 **Próxima tarefa:** I2 — tela de fechamento de caixa (não depende de decisão pendente). A correção
