@@ -130,7 +130,7 @@ Prazo de entrega: **27/11/2026**.
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
-| J1 | Testes automatizados de todas as regras | todas as regras | 16 | ⬜ A fazer | — | — |
+| J1 | Testes automatizados de todas as regras | todas as regras | 16 | 🔄 Em andamento (faltam RN06–RN10, I1, E2) | — | `ab6424c` |
 | J2 | Carga inicial dos produtos, junto com o cliente | B3 | 8 | ⬜ A fazer | — | — |
 | J3 | Inventário de partida: contagem física | J2 | 6 | ⬜ A fazer | — | — |
 | J4 | Teste em movimento real, num sábado cheio | todos | 6 | ⬜ A fazer | — | — |
@@ -200,7 +200,7 @@ cronograma, a regra de negócio (quando houver) e o commit.
   mais no fim). 39 testes automáticos — total do projeto: 662, todos passando.
   **Pendência que voltou:** em 2 de 5 rodadas completas, um teste de tela (cada vez um diferente,
   de telas que a H7 não toca) falhou por demora; sozinhos, passam sempre. É a mesma falha
-  intermitente registrada em 08/10, que continua sem causa encontrada e entra na J1.
+  intermitente registrada em 08/10 — **causa achada e corrigida na J1, no mesmo dia** (abaixo).
 
 - **Passo a passo para Windows revisado (fora do cronograma).** O `COMO-RODAR.md` ganhou o que
   faltava para um integrante abrir o sistema sozinho: o que repetir da segunda vez em diante, como
@@ -248,9 +248,39 @@ cronograma, a regra de negócio (quando houver) e o commit.
   acessibilidade sem nenhuma falha, no celular e no computador. 19 testes — total do projeto: 706,
   todos passando.
 
-**Próxima tarefa:** as tarefas que sobram dependem de decisão do cliente (D01: E, G, H3, I1, I3;
-D05: A5, J6) ou da presença dele (J2, J3). A que dá para adiantar agora é a **J1** (fechar a
-cobertura de testes das regras), incluindo a falha intermitente dos testes de tela.
+- **J1 — Testes automatizados de todas as regras (em andamento).** Duas frentes:
+  **(1) Cobertura das regras.** Conferido, regra por regra, que o exemplo de teste escrito na
+  Apostila I para cada uma existe como teste automático: RN01 (40 kg − 12 − 3 = 25), RN03, RN04
+  (21/09 + 4 dias = 25/09), RN05, RN11, RN12 (11h15 retido, sai 13h05), RN13 (6 avisos, uma
+  mensagem), RN14 (a tabela inteira de perfis), RN15 (na tela) e RN16 — todos já estavam. Faltava o
+  da **RN02**: "lote que vence 28/09 sai antes do de 05/10, mesmo que o de 05/10 esteja mais à mão";
+  foi escrito, e foi provado que ele pega o erro de ordenar pela ordem de chegada. Também foi criado
+  um **teste-guarda**: ele lê a lista das 16 regras na especificação e exige que toda regra que já
+  existe no código tenha teste com o nome dela. As que ainda não existem — RN06 a RN10, da previsão,
+  que esperam o arquivo do caixa (D01) — ficam numa lista com o motivo; quando alguém as programar,
+  o guarda passa a cobrar o teste. **Por que a J1 continua em andamento:** ela depende de "todas as
+  regras" (cronograma), e faltam a previsão (RN06–RN10), o fechamento no banco (RN15, tarefa I1) e a
+  baixa por venda (RN02, tarefa E2) — tudo esperando a D01. Fecha quando elas chegarem.
+  **(2) A falha intermitente dos testes de tela — causa achada e corrigida.** Desde 08/10, de vez
+  em quando um teste de tela falhava porque "a tela não terminava de carregar". Investigação, passo
+  a passo: os registros da API mostraram que ela respondia tudo em milissegundos (API descartada);
+  uma "fotografia" tirada no meio de um travamento mostrou os dois servidores parados, esperando
+  pedido (banco e servidor descartados — era o navegador que não pedia); o **rastro de rede do
+  navegador** mostrou o motivo: ao abrir a tela, o navegador pede uns dez arquivos de programa
+  (JavaScript) ao mesmo tempo, e **um deles teve a conexão recusada**; sem ele, nenhum roda, e a
+  tela aparece sem menu. **Causa:** o servidor que entrega o painel (`servir.py`) usa o padrão do
+  Python, que deixa **no máximo 5 conexões na fila**; com a máquina ocupada, a rajada passa disso.
+  Reproduzido de propósito: de 64 pedidos simultâneos, 55 a 59 recusados. **Correção:** fila de 128
+  no `servir.py` e no servidor da API dos testes, com teste que dispara a rajada. **Importante:**
+  isso não era só problema de teste — o `servir.py` é o que o grupo usa para abrir o painel, e num
+  computador mais lento uma tela poderia abrir "pela metade", sem menu. **Resultado:** antes, 4
+  falhas em cerca de 9 rodadas no dia; depois da correção, 9 rodadas seguidas sem nenhuma falha.
+  Total do projeto: 726 testes, todos passando.
+
+**Próxima tarefa:** o que sobra depende de decisão do cliente (D01: blocos E e G, H3, I1, I3 e o
+fim da J1; D05: A5, J6) ou da presença dele (J2 carga dos produtos, J3 contagem física). **É hora de
+levar ao Sr. João e à esposa as decisões D01 (o caixa exporta as vendas? em que formato?), D02 e a
+lacuna L12** — sem elas, o projeto não avança nas etapas 2 e 3.
 
 ### 08/10/2026
 
@@ -464,6 +494,7 @@ publicação (A5, aguarda D05) e o bloco J (qualidade e implantação).
   de carregar dentro do tempo do teste). Já tinha acontecido uma vez na F3; nas rodadas desta
   sessão foram 4 de 36. Medido que o banco não está travado e descartada a hipótese do servidor de
   testes; a causa ainda não foi encontrada. Fica para investigar à parte (e entra na J1).
+  **Resolvida em 09/10 na J1:** fila de conexões do servidor do painel (ver o diário de 09/10).
 
 - **H4 — Janela de silêncio e agrupamento (RN12, RN13).** O sistema já sabe **quando** pode
   mandar aviso e **como** juntar tudo numa mensagem só. Nos horários de movimento (10h30 às 13h e
