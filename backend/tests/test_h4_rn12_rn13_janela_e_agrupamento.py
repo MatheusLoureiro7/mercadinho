@@ -20,7 +20,7 @@ import pytest
 
 from alertas.estados import cancelar, enviar
 from alertas.models import Alerta
-from alertas.notificacao import enviar_avisos, montar_mensagem
+from alertas.notificacao import FalhaNoEnvio, enviar_avisos, montar_mensagem
 from alertas.servicos import criar_aviso
 from cadastro.models import Categoria, Produto, Usuario
 from comum.models import Parametro
@@ -289,10 +289,11 @@ def test_h4_se_o_envio_falha_os_avisos_esperam_a_proxima_rodada(frios, dono):
     segurado = _aviso(_produto(frios, "Mortadela"), dono)
     _rodar("11:15", CanalDeMentira())
     pendente = _aviso(_produto(frios, "Presunto"), dono, gerado="12:00")
-    sem_internet = CanalDeMentira(falha=OSError("sem internet"))
+    sem_internet = CanalDeMentira(falha=FalhaNoEnvio("sem internet"))
 
-    with pytest.raises(OSError):
-        _rodar("13:05", sem_internet)
+    resultado = _rodar("13:05", sem_internet)
+
+    assert resultado.falhas == 1 and resultado.enviados == 0
 
     assert _status(pendente) == Alerta.Status.PENDENTE
     assert _status(segurado) == Alerta.Status.SEGURADO

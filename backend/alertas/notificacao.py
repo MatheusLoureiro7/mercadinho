@@ -8,11 +8,13 @@ Serviço de notificação — tarefa H4. Operação 03, passos 9 a 12.
   por urgência (Alerta.objects.por_urgencia), com UMA chamada ao canal; todos ficam ENVIADO com o
   mesmo enviado_em.
 
-O canal é qualquer objeto com enviar(destinatario, mensagem) — a interface CanalDeAviso da D04. O
-Telegram de verdade entra na H5. Se o canal falhar, a transação é desfeita: nada fica marcado como
-enviado e a próxima rodada tenta de novo.
+O canal é qualquer objeto com enviar(destinatario, mensagem) — a interface CanalDeAviso da D04
+(Telegram: alertas/telegram.py, H5). Se o canal falhar com FalhaNoEnvio, a transação daquela pessoa
+é desfeita — nada fica marcado como enviado, a próxima rodada tenta de novo — e as outras pessoas
+recebem normalmente. Qualquer outro erro é defeito e não é engolido.
 """
 
+import logging
 from dataclasses import dataclass
 from datetime import datetime, time
 from typing import Protocol
@@ -25,8 +27,14 @@ from alertas.models import Alerta
 from cadastro.models import Usuario
 from comum.parametros import parametro
 
+logger = logging.getLogger("mercadinho.avisos")
+
 # Chaves da tabela parametro (schema.sql), no formato "HH:MM-HH:MM".
 JANELAS_DE_SILENCIO = ("janela_silencio_manha", "janela_silencio_tarde")
+
+
+class FalhaNoEnvio(Exception):
+    """O canal não conseguiu entregar (sem internet, sem celular ligado, canal recusou). Texto para o log."""
 
 
 class CanalDeAviso(Protocol):
@@ -40,6 +48,7 @@ class ResultadoDoEnvio:
     enviados: int = 0  # avisos marcados ENVIADO
     mensagens: int = 0  # chamadas ao canal (uma por pessoa — RN13)
     segurados: int = 0  # avisos retidos na janela de silêncio (RN12)
+    falhas: int = 0  # pessoas cuja mensagem não saiu (os avisos ficam para a próxima rodada)
 
 
 def _faixa(texto: str) -> tuple[time, time]:
@@ -74,15 +83,21 @@ def enviar_avisos(canal: CanalDeAviso) -> ResultadoDoEnvio:
             pendentes = list(abertos.filter(status=Alerta.Status.PENDENTE).select_for_update())
             return ResultadoDoEnvio(segurados=estados.segurar(pendentes))
 
-    enviados = mensagens = 0
+    enviados = mensagens = falhas = 0
     for destinatario_id in abertos.values_list("destinatario_id", flat=True).distinct().order_by():
-        with transaction.atomic():
-            # Trava os avisos desta pessoa: uma entrada de mercadoria que queira cancelar um deles
-            # espera o envio terminar, e nada sai pela metade.
-            avisos = list(abertos.filter(destinatario_id=destinatario_id).select_for_update().por_urgencia())
-            if not avisos:
-                continue
-            canal.enviar(avisos[0].destinatario, montar_mensagem([aviso.mensagem for aviso in avisos]))
-            enviados += estados.enviar(avisos, quando=agora)
-            mensagens += 1
-    return ResultadoDoEnvio(enviados=enviados, mensagens=mensagens)
+        try:
+            with transaction.atomic():
+                # Trava os avisos desta pessoa: uma entrada de mercadoria que queira cancelar um deles
+                # espera o envio terminar, e nada sai pela metade.
+                avisos = list(
+                    abertos.filter(destinatario_id=destinatario_id).select_for_update().por_urgencia()
+                )
+                if not avisos:
+                    continue
+                canal.enviar(avisos[0].destinatario, montar_mensagem([aviso.mensagem for aviso in avisos]))
+                enviados += estados.enviar(avisos, quando=agora)
+                mensagens += 1
+        except FalhaNoEnvio as erro:
+            falhas += 1
+            logger.warning("Avisos não enviados para o usuário %s: %s", destinatario_id, erro)
+    return ResultadoDoEnvio(enviados=enviados, mensagens=mensagens, falhas=falhas)

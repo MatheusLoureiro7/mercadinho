@@ -114,7 +114,7 @@ variáveis `POSTGRES_*` do `.env` para ele.
 | `DJANGO_SECRET_KEY` | Obrigatória quando `DJANGO_DEBUG=false` |
 | `DJANGO_DEBUG` | `true` só na máquina de desenvolvimento |
 | `POSTGRES_*` | Conexão com o banco — o `docker compose` usa as mesmas variáveis para criar o banco |
-| `TELEGRAM_BOT_TOKEN` | Bot de avisos (tarefa H5) — pode ficar vazio até lá |
+| `TELEGRAM_BOT_TOKEN` | Bot de avisos (H5). Vazio: os avisos ficam guardados e não saem |
 
 O `.env` nunca vai para o git (RNF12).
 
@@ -133,6 +133,26 @@ python frontend/servir.py               # terminal 2 — o painel, em http://127
 O `servir.py` entrega os arquivos do painel e repassa o que começa com `/api/` para a API. Usa só
 a biblioteca padrão do Python e aceita conexão só da própria máquina. Na publicação (D05), o
 servidor web faz o mesmo papel. Para entrar, crie os usuários (abaixo).
+
+---
+
+## Avisos no Telegram
+
+O Sr. João não usa o painel: os avisos chegam no celular dele (operação 03). Quem envia é o
+comando abaixo, que o agendador vai chamar (G5) — às 03h00 e de novo depois de cada horário de
+movimento, para soltar os avisos segurados (RN12):
+
+```bash
+python backend/manage.py enviar_avisos
+```
+
+Ele junta os avisos de cada pessoa numa mensagem só, do mais urgente para o menos (RN13). Se a
+mensagem de alguém não sair (sem internet, bot sem token, celular ainda não ligado — H6), os
+avisos ficam guardados para a próxima rodada e o comando termina com erro, com o motivo no log.
+
+**Criar o bot (uma vez):** no Telegram, abra o **@BotFather**, mande `/newbot`, escolha o nome e
+o usuário (termina em `bot`) e cole o token que ele devolve em `TELEGRAM_BOT_TOKEN` no `.env`.
+O token é segredo: nunca no git, nunca no log (RNF12).
 
 ---
 
