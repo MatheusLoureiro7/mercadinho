@@ -26,7 +26,7 @@ das 18h (o próprio sistema evita 10h30–13h e 16h30–18h).
 
 **Como conduzir:** falar a língua da loja ("o que vendeu no dia", "vai acabar", "o que venceu"),
 nunca termos técnicos — o Sr. João já disse: *"eu não sei o que é histórico de volante, o que você
-está falando"*. Uma pessoa pergunta, outra **anota as respostas na folha do fim**. Tirar **foto da
+está falando"*. Uma pessoa pergunta, outra **anota as respostas na folha de respostas (última página)**. Tirar **foto da
 tela do caixa** e das páginas dos cadernos (com permissão).
 
 ---
@@ -100,7 +100,7 @@ API. Com a 12, define a conta do balanço (I3).
 
 ## Bloco 4 — Os avisos no celular do Sr. João (7 min)
 
-> **Decisão D04**, **lacunas L01, L03 e L15**. O envio pelo Telegram (H4–H7) já está pronto.
+> **Decisão D04**, **lacunas L01, L03, L15 e L24**. O envio pelo Telegram (H4–H7) já está pronto.
 
 Com o **Sr. João**, com o celular dele na mão:
 
@@ -151,6 +151,16 @@ estoque por foto, controle financeiro. Resposta: *"Anotamos, mas não entra nest
 
 ---
 
+## Depois da reunião (no mesmo dia)
+
+1. Passar as respostas para `docs/DECISOES-PENDENTES.md` e `docs/LACUNAS.md` **como decisão do
+   grupo** (a especificação só muda com decisão do grupo — CLAUDE.md).
+2. Registrar no **Diário** de `docs/ACOMPANHAMENTO.md` o que foi decidido, em linguagem que o
+   professor entenda.
+3. Guardar o arquivo do caixa (se trouxemos) **fora do git** se tiver dado de cliente da loja; para
+   os testes, fazer uma cópia com produtos e valores trocados.
+4. Se a resposta do bloco 1 for "não sai arquivo": escrever ao professor **antes** de mudar o plano.
+
 ## Folha de respostas
 
 | # | Pergunta | Resposta | Quem respondeu |
@@ -179,13 +189,3 @@ estoque por foto, controle financeiro. Resposta: *"Anotamos, mas não entra nest
 | 22 | Começar pelos perecíveis | | |
 | 23 | Vende fiado? (só registrar) | | |
 | 24 | Datas da J2 (cadastro) e da J3 (contagem) | | |
-
-## Depois da reunião (no mesmo dia)
-
-1. Passar as respostas para `docs/DECISOES-PENDENTES.md` e `docs/LACUNAS.md` **como decisão do
-   grupo** (a especificação só muda com decisão do grupo — CLAUDE.md).
-2. Registrar no **Diário** de `docs/ACOMPANHAMENTO.md` o que foi decidido, em linguagem que o
-   professor entenda.
-3. Guardar o arquivo do caixa (se trouxemos) **fora do git** se tiver dado de cliente da loja; para
-   os testes, fazer uma cópia com produtos e valores trocados.
-4. Se a resposta do bloco 1 for "não sai arquivo": escrever ao professor **antes** de mudar o plano.
