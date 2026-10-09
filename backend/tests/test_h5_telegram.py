@@ -12,11 +12,8 @@ verdade, só o endereço muda.
 - Mensagem acima do limite do Telegram (4096 caracteres) é dividida entre linhas, na ordem.
 """
 
-import json
 import logging
-import threading
 from datetime import datetime
-from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from io import StringIO
 from unittest.mock import patch
 from zoneinfo import ZoneInfo
@@ -34,42 +31,6 @@ from cadastro.models import Categoria, Produto, Usuario
 TOKEN = "123456:SEGREDO-do-bot"
 SAO_PAULO = ZoneInfo("America/Sao_Paulo")
 AS_09H = datetime(2026, 9, 21, 9, 0, tzinfo=SAO_PAULO)
-
-
-class _TelegramDeMentira(BaseHTTPRequestHandler):
-    recebidas: list = []
-    respostas: list = []  # (código, corpo) por chamada; vazio = sucesso
-
-    def do_POST(self):
-        tamanho = int(self.headers.get("Content-Length") or 0)
-        self.recebidas.append(
-            {
-                "caminho": self.path,
-                "tipo": self.headers.get("Content-Type"),
-                "corpo": json.loads(self.rfile.read(tamanho) or b"{}"),
-            }
-        )
-        codigo, corpo = self.respostas.pop(0) if self.respostas else (200, {"ok": True, "result": {}})
-        dados = json.dumps(corpo).encode()
-        self.send_response(codigo)
-        self.send_header("Content-Type", "application/json")
-        self.send_header("Content-Length", str(len(dados)))
-        self.end_headers()
-        self.wfile.write(dados)
-
-    def log_message(self, *args):
-        pass
-
-
-@pytest.fixture
-def telegram():
-    _TelegramDeMentira.recebidas = []
-    _TelegramDeMentira.respostas = []
-    servidor = ThreadingHTTPServer(("127.0.0.1", 0), _TelegramDeMentira)
-    threading.Thread(target=servidor.serve_forever, kwargs={"poll_interval": 0.01}, daemon=True).start()
-    yield f"http://127.0.0.1:{servidor.server_address[1]}", _TelegramDeMentira
-    servidor.shutdown()
-    servidor.server_close()
 
 
 @pytest.fixture

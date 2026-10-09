@@ -3,9 +3,11 @@ Utilitários compartilhados pelos testes.
 """
 
 import importlib.util
+import json
 import os
 import re
 import threading
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from wsgiref.simple_server import WSGIRequestHandler, make_server
 
@@ -259,3 +261,60 @@ def abrir_tela(page, painel: str, usuario, tela: str):
     guardar_sessao(page, painel, usuario)
     page.goto(f"{painel}/{tela}")
     page.wait_for_selector("#menu a")  # a tela conferiu a sessão com a API e montou o menu
+
+
+# ------------------------------------------------------------------------------------------------
+# Telegram de mentira (H5, H6): a API de bots na própria máquina. O HTTP é de verdade, só o
+# endereço muda — CanalTelegram(token=..., endereco=<este>).
+# ------------------------------------------------------------------------------------------------
+
+
+class _TelegramDeMentira(BaseHTTPRequestHandler):
+    recebidas: list = []  # toda chamada: caminho, tipo, corpo
+    respostas: list = []  # (código, corpo) forçados, um por chamada; vazio = comportamento normal
+    atualizacoes: list = []  # o que o getUpdates devolve (mensagens mandadas ao bot)
+    usuario_do_bot = "MercadoSrJoaoBot"
+
+    def do_POST(self):
+        tamanho = int(self.headers.get("Content-Length") or 0)
+        corpo = json.loads(self.rfile.read(tamanho) or b"{}")
+        self.recebidas.append(
+            {"caminho": self.path, "tipo": self.headers.get("Content-Type"), "corpo": corpo}
+        )
+        if self.respostas:
+            codigo, resposta = self.respostas.pop(0)
+        else:
+            codigo, resposta = (
+                200,
+                {"ok": True, "result": self._resultado(self.path.rsplit("/", 1)[-1], corpo)},
+            )
+        dados = json.dumps(resposta).encode()
+        self.send_response(codigo)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(dados)))
+        self.end_headers()
+        self.wfile.write(dados)
+
+    def _resultado(self, metodo, corpo):
+        if metodo == "getMe":
+            return {"id": 1, "is_bot": True, "username": self.usuario_do_bot}
+        if metodo == "getUpdates":
+            desde = corpo.get("offset") or 0
+            return [a for a in self.atualizacoes if a["update_id"] >= desde]
+        return {}
+
+    def log_message(self, *args):
+        pass
+
+
+@pytest.fixture
+def telegram():
+    """(endereço, classe do servidor) — a classe guarda recebidas, respostas e atualizacoes."""
+    _TelegramDeMentira.recebidas = []
+    _TelegramDeMentira.respostas = []
+    _TelegramDeMentira.atualizacoes = []
+    servidor = ThreadingHTTPServer(("127.0.0.1", 0), _TelegramDeMentira)
+    threading.Thread(target=servidor.serve_forever, kwargs={"poll_interval": 0.01}, daemon=True).start()
+    yield f"http://127.0.0.1:{servidor.server_address[1]}", _TelegramDeMentira
+    servidor.shutdown()
+    servidor.server_close()

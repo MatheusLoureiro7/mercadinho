@@ -154,6 +154,16 @@ avisos ficam guardados para a próxima rodada e o comando termina com erro, com 
 o usuário (termina em `bot`) e cole o token que ele devolve em `TELEGRAM_BOT_TOKEN` no `.env`.
 O token é segredo: nunca no git, nunca no log (RNF12).
 
+**Ligar o celular do Sr. João (uma vez, ou ao trocar de celular — H6):**
+
+```bash
+python backend/manage.py vincular_telegram --login joao
+```
+
+O comando mostra um código de 6 dígitos (vale 5 minutos) e um link `t.me/...`. No celular dele,
+abra o link e toque em **Iniciar** — ou mande `/start <código>` ao bot. O sistema grava o chat e
+manda "Pronto, Sr. João! Os avisos do mercado vão chegar aqui". Só o usuário `DONO` recebe aviso.
+
 ---
 
 ## A API
