@@ -9,7 +9,7 @@ import re
 import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from wsgiref.simple_server import WSGIRequestHandler, make_server
+from wsgiref.simple_server import WSGIRequestHandler, WSGIServer, make_server
 
 import pytest
 from django.core.cache import cache
@@ -166,6 +166,12 @@ def browser_context_args(browser_context_args):
     }
 
 
+class _ApiDosTestes(WSGIServer):
+    # Mesmo motivo do servir.py (ServidorDoPainel): a fila padrão de 5 conexões estoura quando a tela
+    # chama a API várias vezes de uma vez (achado na J1).
+    request_queue_size = 128
+
+
 class _ApiSemRegistro(WSGIRequestHandler):
     def log_message(self, *args):
         pass
@@ -224,7 +230,9 @@ def painel(transactional_db):
     _regravar_parametros_iniciais()
     cache.clear()  # zera o limite de 10 logins por minuto (RNF12) entre um teste e outro
 
-    api = make_server("127.0.0.1", 0, WSGIHandler(), handler_class=_ApiSemRegistro)
+    api = make_server(
+        "127.0.0.1", 0, WSGIHandler(), server_class=_ApiDosTestes, handler_class=_ApiSemRegistro
+    )
     servidor_do_painel = carregar_servir().criar_servidor(porta=0, endereco_api=_no_fundo(api))
     endereco = _no_fundo(servidor_do_painel)
     yield endereco

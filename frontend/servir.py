@@ -136,12 +136,19 @@ class PainelHandler(SimpleHTTPRequestHandler):
         self.wfile.write(dados)
 
 
+class ServidorDoPainel(ThreadingHTTPServer):
+    # O padrão do Python aceita só 5 conexões na fila. Uma tela pede uns dez módulos JS de uma vez;
+    # com a máquina ocupada a fila estoura, um módulo volta "conexão recusada" e o navegador não roda
+    # nenhum — a tela abre sem menu (achado na J1, a falha intermitente dos testes de tela).
+    request_queue_size = 128
+
+
 def criar_servidor(porta: int = 8090, endereco_api: str = "http://127.0.0.1:8000") -> ThreadingHTTPServer:
     """Monta o servidor (sem iniciar). Só aceita conexão da própria máquina (RNF12)."""
     # Uma classe por servidor, para cada um guardar o seu endereço de API.
     classe = type("PainelHandler", (PainelHandler,), {"endereco_api": urllib.parse.urlsplit(endereco_api)})
     handler = partial(classe, directory=str(PASTA_DO_PAINEL))
-    return ThreadingHTTPServer(("127.0.0.1", porta), handler)
+    return ServidorDoPainel(("127.0.0.1", porta), handler)
 
 
 def main():
