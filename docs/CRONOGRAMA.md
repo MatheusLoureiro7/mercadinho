@@ -55,24 +55,24 @@ As horas são as estimadas na apostila para cada tarefa entregue, não horas med
 
 726 testes automáticos, todos passando.
 
-## 4. O que falta e quando
+## 4. O que falta, com data e horas
 
-| Quando | Tarefas |
-|---|---|
-| 02/11 | E1 — colunas da planilha Excel do caixa · E2 — tabelas de venda (remarcada; era 26 a 28/10) |
-| 03 a 05/11 | E3, I1 |
-| 03 e 04/11 | A5 — publicação no computador do Matheus |
-| 06/11 | G1 |
-| 06 e 09/11 | E4, E5 |
-| 09 a 11/11 | J2 (carga dos produtos de exemplo), G2, I3 |
-| 11/11 | G3, G4 |
-| 12 e 13/11 | G5, H3 |
-| 17/11 | J3 — contagem de partida (simulada) |
-| até 18/11 | J1 — fim dos testes automáticos |
-| **21/11** (sábado) | J4 — teste com um dia cheio de vendas de exemplo |
-| 23/11 | J5 — treinamento / demonstração |
-| 23 a 27/11 | J6 — implantação no computador do Matheus |
-| **27/11** | **Entrega** |
+| Data | O que vai ser feito | Tarefas | Horas |
+|---|---|---|---|
+| 02/11 | Definir a planilha Excel do caixa e criar as tabelas de venda | E1, E2 | 12 h |
+| 03 a 05/11 | Ler a planilha e gerar as vendas; cálculo do fechamento de caixa | E3, I1 | 24 h |
+| 03 e 04/11 | Publicar o sistema no computador do Matheus | A5 | 6 h |
+| 06/11 | Somar o consumo de cada dia | G1 | 10 h |
+| 06 e 09/11 | Casar o produto do caixa com o cadastro; tela da importação | E4, E5 | 16 h |
+| 09 a 11/11 | Carga dos produtos de exemplo; consumo médio; balanço semanal | J2, G2, I3 | 32 h |
+| 11/11 | Previsão de quando cada produto acaba | G3, G4 | 12 h |
+| 12 e 13/11 | Rotina das 03h00 e aviso de "vai acabar" no Telegram | G5, H3 | 16 h |
+| 17/11 | Contagem de partida do estoque | J3 | 6 h |
+| até 18/11 | Fim dos testes automáticos de todas as regras | J1 | 16 h |
+| 21/11 (sábado) | Teste com um dia cheio de vendas | J4 | 6 h |
+| 23/11 | Treinamento e demonstração | J5 | 4 h |
+| 23 a 27/11 | Implantação | J6 | 6 h |
+| **27/11** | **Entrega** | **20 tarefas** | **166 h** |
 
 ## 5. Decisões de 30/10/2026
 
