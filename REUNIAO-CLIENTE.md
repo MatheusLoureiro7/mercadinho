@@ -1,5 +1,10 @@
 # Roteiro da reunião com o cliente — Mercado do Sr. João
 
+> **Cancelada em 30/10/2026.** O Mercado do Sr. João é uma loja fictícia, criada pelo professor;
+> não há cliente para entrevistar. O grupo decidiu as perguntas principais: D01 — o caixa exporta
+> em Excel; D05 — o sistema roda no computador do Matheus. Ver `docs/DECISOES-PENDENTES.md`.
+> O roteiro fica guardado como registro.
+
 Preparado em 09/10/2026 pelo Grupo MDGS. Entrega do trabalho: **27/11/2026**.
 
 **Para que serve:** tirar as dúvidas que só o Sr. João, a esposa e o sobrinho podem responder.

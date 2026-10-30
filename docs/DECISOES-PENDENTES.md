@@ -5,18 +5,24 @@ está programando.
 
 | # | Decisão | Situação | O que trava |
 |---|---|---|---|
-| D01 | De onde vêm os dados de venda | **Bloqueante** | Blocos E, G e H · 136 h |
+| D01 | De onde vêm os dados de venda | ✅ Decidida em 30/10: **Excel** | Blocos E, G e H · 136 h |
 | D02 | Como o sistema fica sabendo da validade | **Bloqueante** | Parte do bloco C e todo o aviso de validade |
 | D03 | Tamanho da primeira entrega | Aberta | Define ordem, não bloqueia |
 | D04 | Por onde o aviso chega ao dono | Aberta | Bloco H · 52 h |
-| D05 | Onde o sistema vai rodar | Aberta | Blocos A5 e J6 · 12 h |
+| D05 | Onde o sistema vai rodar | ✅ Decidida em 30/10: **computador do Matheus** | Blocos A5 e J6 · 12 h |
 | D06 | Faturamento mensal da loja | Aberta | Nenhum bloco técnico |
 | D07 | A loja vende fiado | Aberta | Nenhum bloco atual |
 | D08 | Quem registra a mercadoria da segunda de manhã | Aberta | Afeta a operação, não o cronograma |
 
 ---
 
-## D01 — De onde vêm os dados de venda · BLOQUEANTE
+## D01 — De onde vêm os dados de venda · ✅ DECIDIDA EM 30/10/2026
+
+**Decisão do grupo:** o Mercado do Sr. João é uma loja fictícia, criada pelo professor; não há
+cliente para responder. O grupo decidiu que **o caixa exporta as vendas em Excel** (a Apostila IV,
+quadro de usuários, já diz que o sobrinho lança notas e vendas no Excel). As colunas da planilha
+são definidas na tarefa E1. Como não há dados reais, as planilhas usadas nos testes e na
+demonstração são de exemplo, criadas pelo grupo.
 
 **Pergunta:** o caixa da loja exporta as vendas em arquivo? Em que formato?
 
@@ -75,7 +81,10 @@ por e-mail depois vira uma classe nova, não uma reescrita.
 
 ---
 
-## D05 — Onde o sistema vai rodar · ABERTA
+## D05 — Onde o sistema vai rodar · ✅ DECIDIDA EM 30/10/2026
+
+**Decisão do grupo:** o sistema roda **no computador do Matheus**. O professor não instala nem roda
+nada; ele assiste à demonstração.
 
 **Pergunta:** na própria loja, num servidor na nuvem, ou em nuvem gerenciada?
 

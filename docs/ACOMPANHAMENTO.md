@@ -17,7 +17,7 @@ O diário, no fim do arquivo, conta o que foi feito em cada dia.
 
 ## Resumo
 
-*Atualizado em 09/10/2026.*
+*Atualizado em 23/10/2026.*
 
 | | Concluído | Total | % |
 |---|---|---|---|
@@ -36,6 +36,37 @@ Prazo de entrega: **27/11/2026**.
 
 ---
 
+## Datas previstas das tarefas que faltam
+
+*Aprovadas pelo grupo em 23/10/2026.* O cronograma da Apostila IV traz horas e dependências, mas
+não traz datas; o professor pediu datas. As das tarefas concluídas são as reais (tabelas abaixo).
+Estas são as previstas, na ordem das dependências. **Revistas em 30/10/2026:** o Mercado do
+Sr. João é uma loja fictícia, criada pelo professor para o trabalho, então não há reunião com
+cliente. O grupo decidiu a D01 (o caixa exporta as vendas em **Excel**) e a D05 (o sistema roda
+**no computador do Matheus**). Como não há dados reais, as vendas e os produtos usados nos testes e
+na demonstração são de exemplo, criados pelo grupo.
+
+| Quando | Tarefas | Observação |
+|---|---|---|
+| 02/11 | E1, E2 | E1: o grupo define as colunas da planilha do caixa (D01 = Excel). E2 remarcada em 30/10 (era 26 a 28/10) |
+| 03 a 05/11 | E3, I1 | I1 também depende da lacuna L12, que agora o grupo decide |
+| 03 e 04/11 | A5 | No computador do Matheus (D05) |
+| 06/11 | G1 | |
+| 06 e 09/11 | E4, E5 | |
+| 09/11 | J2 | Carga de uma lista de produtos de exemplo (não há dados reais) |
+| 09 a 10/11 | G2 | |
+| 09 a 11/11 | I3 | |
+| 11/11 | G3, G4 | |
+| 12 e 13/11 | G5, H3 | |
+| 17/11 | J3 | Contagem de partida simulada com os produtos de exemplo |
+| até 18/11 | J1 | Em andamento desde 09/10; fecha com as regras da previsão |
+| **21/11** (sábado) | J4 | Teste em movimento real |
+| 23/11 | J5 | Treinamento |
+| 23 a 27/11 | J6 | Implantação no computador do Matheus e primeira semana simulada |
+| **27/11** | — | Entrega |
+
+---
+
 ## Bloco A — Fundação · 40 h  ·  34 de 40 h concluídas
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
@@ -44,7 +75,7 @@ Prazo de entrega: **27/11/2026**.
 | ~~A2~~ | ~~Subir o banco de dados e a ferramenta de migração~~ | A1 | 6 | ✅ Concluída | 06/10/2026 | `02c5ae1` |
 | ~~A3~~ | ~~Esqueleto da API: rotas, tratamento de erro e registro de log~~ | A1 | 10 | ✅ Concluída | 06/10/2026 | `ebea081` |
 | ~~A4~~ | ~~Autenticação e os três perfis de acesso~~ | A3, B1 | 12 | ✅ Concluída | 06/10/2026 | `ec49325` |
-| A5 | Esteira de publicação em ambiente de teste | A1 | 6 | ⛔ Aguarda D05 | — | — |
+| A5 | Esteira de publicação em ambiente de teste | A1 | 6 | ⬜ A fazer | — | — |
 
 ## Bloco B — Cadastros · 46 h  ·  46 de 46 h concluídas ✅
 
@@ -78,15 +109,15 @@ Prazo de entrega: **27/11/2026**.
 | ~~D3~~ | ~~Tela de avarias e quebras~~ | A3 | 7 | ✅ Concluída | 08/10/2026 | `c8c4252` |
 | ~~D4~~ | ~~Integração e teste~~ | D1, D3 | 2 | ✅ Concluída | 08/10/2026 | `9fe0d21` |
 
-## Bloco E — Entrada das vendas · 44 h ⚠️ depende da decisão D01  ·  0 de 44 h concluídas
+## Bloco E — Entrada das vendas · 44 h  ·  0 de 44 h concluídas
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
-| E1 | Levantar o formato do arquivo exportado pelo caixa | **confirmação com o cliente** | 6 | ⛔ Aguarda D01 | — | — |
+| E1 | Levantar o formato do arquivo exportado pelo caixa | decisão D01 (Excel) | 6 | ⬜ A fazer | — | — |
 | E2 | Criar as tabelas de venda, item de venda e importação | A2 | 6 | ⬜ A fazer | — | — |
-| E3 | Serviço que lê o arquivo e gera venda e movimentação | E1, E2 | 16 | ⛔ Aguarda D01 | — | — |
-| E4 | Casar o produto do caixa com o produto cadastrado | E3 | 10 | ⛔ Aguarda D01 | — | — |
-| E5 | Tela de acompanhamento da importação | E3 | 6 | ⛔ Aguarda D01 | — | — |
+| E3 | Serviço que lê o arquivo e gera venda e movimentação | E1, E2 | 16 | ⬜ A fazer | — | — |
+| E4 | Casar o produto do caixa com o produto cadastrado | E3 | 10 | ⬜ A fazer | — | — |
+| E5 | Tela de acompanhamento da importação | E3 | 6 | ⬜ A fazer | — | — |
 
 ## Bloco F — Consulta de estoque · 22 h  ·  22 de 22 h concluídas ✅
 
@@ -96,23 +127,23 @@ Prazo de entrega: **27/11/2026**.
 | ~~F2~~ | ~~API de consulta com filtros~~ | F1 | 6 | ✅ Concluída | 07/10/2026 | `2365139` |
 | ~~F3~~ | ~~Tela de estoque, com destaque para mínimo e vencidos~~ | A3 | 10 | ✅ Concluída | 08/10/2026 | `6a6321e` |
 
-## Bloco G — Previsão · 40 h ⚠️ depende da decisão D01  ·  0 de 40 h concluídas
+## Bloco G — Previsão · 40 h  ·  0 de 40 h concluídas
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
-| G1 | Tabela de consumo diário e rotina de agregação | E2 | 10 | ⛔ Aguarda D01 | — | — |
-| G2 | Cálculo do consumo médio e por dia da semana | G1 | 12 | ⛔ Aguarda D01 | — | — |
-| G3 | Tabela de previsão e gravação do resultado | G2 | 8 | ⛔ Aguarda D01 | — | — |
-| G4 | Regra: histórico mínimo antes de projetar | G2 | 4 | ⛔ Aguarda D01 | — | — |
-| G5 | Agendador das rotinas diárias | G3 | 6 | ⛔ Aguarda D01 | — | — |
+| G1 | Tabela de consumo diário e rotina de agregação | E2 | 10 | ⬜ A fazer | — | — |
+| G2 | Cálculo do consumo médio e por dia da semana | G1 | 12 | ⬜ A fazer | — | — |
+| G3 | Tabela de previsão e gravação do resultado | G2 | 8 | ⬜ A fazer | — | — |
+| G4 | Regra: histórico mínimo antes de projetar | G2 | 4 | ⬜ A fazer | — | — |
+| G5 | Agendador das rotinas diárias | G3 | 6 | ⬜ A fazer | — | — |
 
-## Bloco H — Avisos · 52 h ⚠️ depende da decisão D01  ·  42 de 52 h concluídas
+## Bloco H — Avisos · 52 h  ·  42 de 52 h concluídas
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
 | ~~H1~~ | ~~Tabela de aviso e controle de estado~~ | A2 | 8 | ✅ Concluída | 08/10/2026 | `eae1d23` |
 | ~~H2~~ | ~~Gerador do aviso de validade~~ | H1, C3 | 8 | ✅ Concluída | 08/10/2026 | `a3627f3` |
-| H3 | Gerador do aviso de ruptura | H1, G3 | 10 | ⛔ Aguarda D01 | — | — |
+| H3 | Gerador do aviso de ruptura | H1, G3 | 10 | ⬜ A fazer | — | — |
 | ~~H4~~ | ~~Janela de silêncio e agrupamento~~ | H1 | 8 | ✅ Concluída | 08/10/2026 | `5a7be53` |
 | ~~H5~~ | ~~Integração com o serviço de mensagens~~ | H1 | 10 | ✅ Concluída | 08/10/2026 | `075a5de` |
 | ~~H6~~ | ~~Vincular o celular do dono ao usuário~~ | H5, B1 | 4 | ✅ Concluída | 09/10/2026 | `094a2ee` |
@@ -135,7 +166,7 @@ Prazo de entrega: **27/11/2026**.
 | J3 | Inventário de partida: contagem física | J2 | 6 | ⬜ A fazer | — | — |
 | J4 | Teste em movimento real, num sábado cheio | todos | 6 | ⬜ A fazer | — | — |
 | J5 | Treinamento das três pessoas | J4 | 4 | ⬜ A fazer | — | — |
-| J6 | Implantação e acompanhamento da primeira semana | J4 | 6 | ⛔ Aguarda D05 | — | — |
+| J6 | Implantação e acompanhamento da primeira semana | J4 | 6 | ⬜ A fazer | — | — |
 
 ---
 
@@ -143,6 +174,77 @@ Prazo de entrega: **27/11/2026**.
 
 O que foi feito em cada dia, do mais recente para o mais antigo. Cada linha aponta a tarefa do
 cronograma, a regra de negócio (quando houver) e o commit.
+
+### 30/10/2026
+
+- **Decisão do grupo — E2 remarcada.** As tabelas de venda (E2), previstas para 26 a 28/10, não
+  foram feitas e passam para **02/11**. As que dependem dela andam junto: E3 e I1 para 03 a 05/11,
+  G1 para 06/11, E4 e E5 para 06 e 09/11. As demais datas e a entrega (27/11) não mudam.
+- **Cronograma em uma página (fora do cronograma).** Criado `docs/CRONOGRAMA.md`, versão curta
+  para o professor: o que foi feito em cada dia, com horas; o que falta, com datas; o que já
+  funciona; e o que trava. A apresentação foi atualizada para a situação de 30/10.
+
+- **Decisão do grupo — não há cliente real.** O Mercado do Sr. João é uma loja fictícia, criada
+  pelo professor para o trabalho. Por isso a reunião com o cliente de 30/10 não acontece e as
+  perguntas que dependiam dele foram decididas pelo grupo:
+  **D01** — o caixa exporta as vendas em **Excel** (bate com a Apostila IV, que já diz que o
+  sobrinho lança notas e vendas no Excel); as colunas da planilha serão definidas na E1.
+  **D05** — o sistema roda **no computador do Matheus**; o professor não roda nada, assiste à
+  demonstração. Como não existem dados reais, os produtos e as vendas usados nos testes e na
+  apresentação serão **de exemplo**, criados pelo grupo. Com isso nenhuma tarefa espera mais
+  resposta de fora: o que estava "⛔ Aguarda D01/D05" passou para "⬜ A fazer". Nada muda nas
+  horas nem na entrega (27/11).
+
+**Próxima tarefa:** E1 e E2 — colunas da planilha do caixa e tabelas de venda (02/11).
+
+### 23/10/2026
+
+- **Apresentação do andamento do cronograma (fora do cronograma).** Preparada a apresentação
+  para o professor: números gerais (31 de 51 tarefas, 212 de 378 h), progresso por etapa e por
+  bloco, o que foi entregue em cada dia, o que já funciona, as regras garantidas, a qualidade
+  (726 testes), o que falta e por quê, e o cronograma completo tarefa por tarefa.
+- **Decisão do grupo — datas no cronograma.** O professor pediu que o cronograma tenha datas. O
+  da Apostila IV só tem horas e dependências; as datas das tarefas concluídas são as reais, e as
+  das que faltam foram previstas e **aprovadas pelo grupo** (seção "Datas previstas", no início
+  deste arquivo), contando com a reunião com o cliente em 30/10. Na apresentação, um gráfico de
+  Gantt mostra os dez blocos de 06/10 a 27/11.
+- **Banco de dados para a apresentação.** Configurado o DBeaver para mostrar as tabelas e o
+  diagrama do banco ao professor, além do acesso pelo terminal descrito no `COMO-RODAR.md`.
+  Hoje existem 8 das 14 tabelas da Apostila IV; as outras 6 dependem da D01.
+
+**Próxima tarefa:** E2 — tabelas de venda, item de venda e importação (prevista para 26 a 28/10),
+e a reunião com o cliente em 30/10 (D01, D02, D05, L12).
+
+### 21/10/2026
+
+- **Novo visual do painel — piloto na Consulta de estoque (a pedido do grupo, fora do
+  cronograma).** O grupo achou o visual parecido com o de todo projeto e pediu algo mais
+  profissional. Foi usada a skill *design-taste-frontend*, no modo de telas de trabalho, com o
+  estilo "folha emoldurada": o menu fica à esquerda, sobre uma moldura no verde apagado da loja, e
+  o trabalho numa folha branca, sem sombras. A cor aparece só onde há informação: vermelho e âmbar
+  no que pede atenção, sempre com a palavra junto. **Novidade da tela:** ao lado do saldo, uma régua
+  fina mostra quanto tem contra o estoque mínimo (o tracinho do meio é o mínimo). Ela só desenha os
+  dois números que a API já mandava; quem diz se está abaixo continua sendo a API (RN01). O resumo
+  virou um bloco só, sem ícones, e um zero aparece em cinza, não em vermelho.
+  **Decisões do grupo:** (1) estilo "folha emoldurada", entre dois oferecidos; (2) **fonte IBM Plex
+  Sans guardada no próprio projeto** (`frontend/fontes/`, uns 60 KB, licença livre OFL). Nada é
+  baixado da internet, então a RNF06 continua atendida; (3) começar pela Consulta como piloto; no mesmo dia o
+  grupo pediu o visual em todas as telas (só uma com o visual novo parecia defeito), e ele foi
+  levado para Login, Produtos, Fornecedores, Entrada, Avarias e Fechamento de caixa.
+  **No computador da loja (1024 px)** o menu lateral roubaria a largura da tabela; nessa largura ele
+  volta para cima, em abas, e a folha ocupa a tela toda. Conferido em 1440, 1024, 768 e 390 px.
+  Mantidos: texto de 16 px, alvos de 44 px, contraste AA (o menor par de texto dá 5,48:1). Nenhum
+  dado, regra ou endereço da API mudou. 726 testes automáticos, todos passando.
+
+- **Segunda rodada do visual: tema escuro "mercado de madrugada" (a pedido do grupo).** O grupo
+  achou a primeira versão ainda "padrão" e pediu uma cara futurista. A ideia veio do próprio
+  sistema: os avisos rodam às 03h00, com a loja fechada. O fundo virou verde-pinho escuro e a cor
+  de destaque é o **amarelo das etiquetas de preço da gôndola** (logotipo, botão principal, régua do
+  estoque, filtro ligado). Títulos e os números do resumo usam a fonte **Unbounded**, larga e
+  geométrica, também guardada no projeto (uns 40 KB, licença OFL). O resumo da Consulta virou um
+  painel com números grandes; o Login ganhou um campo inteiro amarelo com o nome da loja. Contraste
+  conferido por cálculo: o menor par de texto dá 7,03:1, acima do mínimo AA (4,5:1). Os campos,
+  listas e calendário do navegador também ficam escuros. Nada de regra, dado ou API mudou.
 
 ### 09/10/2026
 
