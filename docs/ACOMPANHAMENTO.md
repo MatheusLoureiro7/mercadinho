@@ -32,7 +32,7 @@ O diário, no fim do arquivo, conta o que foi feito em cada dia.
 
 As horas concluídas são as **estimadas** na apostila para cada tarefa entregue, não horas medidas.
 
-Prazo de entrega: **27/11/2026**.
+Início: **06/10/2026**. Entrega e apresentação final: **01/12/2026** (até 29/10 era 27/11).
 
 ---
 
@@ -63,7 +63,8 @@ na demonstração são de exemplo, criados pelo grupo.
 | **21/11** (sábado) | J4 | Teste em movimento real |
 | 23/11 | J5 | Treinamento |
 | 23 a 27/11 | J6 | Implantação no computador do Matheus e primeira semana simulada |
-| **27/11** | — | Entrega |
+| 28/11 a 30/11 | — | Folga para ajustes finais |
+| **01/12** | — | Entrega e apresentação final, tudo pronto |
 
 ---
 
@@ -194,6 +195,10 @@ cronograma, a regra de negócio (quando houver) e o commit.
   apresentação serão **de exemplo**, criados pelo grupo. Com isso nenhuma tarefa espera mais
   resposta de fora: o que estava "⛔ Aguarda D01/D05" passou para "⬜ A fazer". Nada muda nas
   horas nem na entrega (27/11).
+
+- **Nova data de entrega: 01/12/2026.** O trabalho tem de estar pronto e ser apresentado em
+  01/12 (antes era 27/11). As tarefas continuam previstas até 27/11; os dias de 28 a 30/11 ficam
+  de folga para ajustes. O início do projeto é 06/10/2026, o primeiro dia de código.
 
 **Próxima tarefa:** E1 e E2 — colunas da planilha do caixa e tabelas de venda (02/11).
 

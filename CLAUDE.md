@@ -1,7 +1,7 @@
 # Sistema de Gestão de Estoque e Compras — Mercado do Sr. João
 
 Trabalho de Engenharia de Software · 2º semestre de Sistemas de Informação · **Grupo MDGS**
-Prazo de entrega: **27/11/2026**.
+Prazo de entrega: **01/12/2026** — tudo pronto e apresentado (era 27/11; mudou em 30/10/2026).
 
 ---
 

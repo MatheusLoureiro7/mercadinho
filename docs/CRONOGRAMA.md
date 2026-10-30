@@ -1,6 +1,8 @@
 # Cronograma — Sistema de Estoque e Compras do Mercado do Sr. João
 
-**Grupo MDGS** · Engenharia de Software · Situação em **30/10/2026** · Entrega em **27/11/2026**
+**Grupo MDGS** · Engenharia de Software · Situação em **30/10/2026**
+
+**Início: 06/10/2026** · **Entrega e apresentação final: 01/12/2026** (tudo pronto)
 
 Cronograma da Apostila IV, seção 9 (entregue em 25/09/2026), com as datas: as das tarefas
 feitas são as reais; as das que faltam foram previstas e aprovadas pelo grupo em 23/10/2026.
@@ -15,7 +17,7 @@ O detalhe tarefa por tarefa, com commit, está em `docs/ACOMPANHAMENTO.md`.
 | Tarefas | 31 | 51 | 60,8 % |
 | Horas estimadas | 212 h | 378 h | 56,1 % |
 
-**Faltam 166 h e 20 tarefas · 28 dias até a entrega (27/11/2026).**
+**Faltam 166 h e 20 tarefas · 32 dias até a entrega (01/12/2026).**
 
 As horas são as estimadas na apostila para cada tarefa entregue, não horas medidas.
 
@@ -72,7 +74,8 @@ As horas são as estimadas na apostila para cada tarefa entregue, não horas med
 | 21/11 (sábado) | Teste com um dia cheio de vendas | J4 | 6 h |
 | 23/11 | Treinamento e demonstração | J5 | 4 h |
 | 23 a 27/11 | Implantação | J6 | 6 h |
-| **27/11** | **Entrega** | **20 tarefas** | **166 h** |
+| 30/11 | Folga para ajustes finais | — | — |
+| **01/12** | **Entrega e apresentação final — tudo pronto** | **20 tarefas** | **166 h** |
 
 ## 5. Decisões de 30/10/2026
 

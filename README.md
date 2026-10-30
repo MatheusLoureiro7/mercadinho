@@ -1,6 +1,6 @@
 # Sistema de Gestão de Estoque e Compras — Mercado do Sr. João
 
-Trabalho de Engenharia de Software · Sistemas de Informação · **Grupo MDGS** · entrega 27/11/2026.
+Trabalho de Engenharia de Software · Sistemas de Informação · **Grupo MDGS** · entrega 01/12/2026.
 
 Controla o que entra, o que sai e o que está vencendo no estoque, e avisa o dono no celular
 (Telegram) antes do problema acontecer. **Não é sistema de caixa**: só lê o arquivo que o caixa
