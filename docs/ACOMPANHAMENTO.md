@@ -21,13 +21,13 @@ O diário, no fim do arquivo, conta o que foi feito em cada dia.
 
 | | Concluído | Total | % |
 |---|---|---|---|
-| **Tarefas** | 33 | 51 | 64,7 % |
-| **Horas estimadas** | 224 h | 378 h | 59,3 % |
+| **Tarefas** | 34 | 51 | 66,7 % |
+| **Horas estimadas** | 240 h | 378 h | 63,5 % |
 
 | Etapa | Blocos | Horas concluídas | Total | % |
 |---|---|---|---|---|
 | 1 · Aviso de validade | A, B, C, D, F, J | 160 h | 212 h | 75,5 % |
-| 2 · Aviso de ruptura | E, G, H | 54 h | 136 h | 39,7 % |
+| 2 · Aviso de ruptura | E, G, H | 70 h | 136 h | 51,5 % |
 | 3 · Gestão | I | 10 h | 30 h | 33,3 % |
 
 As horas concluídas são as **estimadas** na apostila para cada tarefa entregue, não horas medidas.
@@ -110,13 +110,13 @@ na demonstração são de exemplo, criados pelo grupo.
 | ~~D3~~ | ~~Tela de avarias e quebras~~ | A3 | 7 | ✅ Concluída | 08/10/2026 | `c8c4252` |
 | ~~D4~~ | ~~Integração e teste~~ | D1, D3 | 2 | ✅ Concluída | 08/10/2026 | `9fe0d21` |
 
-## Bloco E — Entrada das vendas · 44 h  ·  12 de 44 h concluídas
+## Bloco E — Entrada das vendas · 44 h  ·  28 de 44 h concluídas
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
 | ~~E1~~ | ~~Levantar o formato do arquivo exportado pelo caixa~~ | decisão D01 (Excel) | 6 | ✅ Concluída | 05/11/2026 | `aded7a7` |
 | ~~E2~~ | ~~Criar as tabelas de venda, item de venda e importação~~ | A2 | 6 | ✅ Concluída | 05/11/2026 | `f6f48e7` |
-| E3 | Serviço que lê o arquivo e gera venda e movimentação | E1, E2 | 16 | ⬜ A fazer | — | — |
+| ~~E3~~ | ~~Serviço que lê o arquivo e gera venda e movimentação~~ | E1, E2 | 16 | ✅ Concluída | 05/11/2026 | `2e66774` |
 | E4 | Casar o produto do caixa com o produto cadastrado | E3 | 10 | ⬜ A fazer | — | — |
 | E5 | Tela de acompanhamento da importação | E3 | 6 | ⬜ A fazer | — | — |
 
@@ -162,7 +162,7 @@ na demonstração são de exemplo, criados pelo grupo.
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
-| J1 | Testes automatizados de todas as regras | todas as regras | 16 | 🔄 Em andamento (faltam RN06–RN10, I1, E3) | — | `ab6424c` |
+| J1 | Testes automatizados de todas as regras | todas as regras | 16 | 🔄 Em andamento (faltam RN06–RN10, I1) | — | `ab6424c` |
 | J2 | Carga inicial dos produtos, junto com o cliente | B3 | 8 | ⬜ A fazer | — | — |
 | J3 | Inventário de partida: contagem física | J2 | 6 | ⬜ A fazer | — | — |
 | J4 | Teste em movimento real, num sábado cheio | todos | 6 | ⬜ A fazer | — | — |
@@ -205,8 +205,27 @@ cronograma, a regra de negócio (quando houver) e o commit.
   que casa, e um que não existe no cadastro, que fica pendente). 6 testes automáticos — total do
   projeto: 761, todos passando. Concluída em 05/11/2026 (prevista para 02/11/2026).
 
-**Próxima tarefa:** E3 — serviço que lê a planilha e gera venda e movimentação (prevista para
-03 a 05/11/2026).
+- **E3 — Importação das vendas do caixa.** O sistema agora lê a planilha do caixa e transforma
+  cada cupom numa venda, e cada produto vendido numa baixa no estoque, seguindo a operação 04 da
+  Apostila IV. A baixa sai do lote que **vence primeiro** (RN02), nunca de lote que já estava
+  vencido no dia da venda (RN16), e fica registrada na hora em que a venda aconteceu — assim a
+  venda das 22h30 conta no dia certo para a previsão (RN11). Produto que não existe no cadastro
+  fica **pendente** e não atrapalha o resto da planilha; linha com erro (quantidade zero, hora
+  inválida) é apontada com o número da linha no Excel. Se a mesma planilha for colocada duas vezes,
+  ela não entra de novo; se algo falhar no meio, nada fica pela metade.
+  **Duas decisões do grupo (05/11/2026):** (1) se a planilha mostrar uma venda maior do que o
+  estoque registrado, a venda é gravada inteira e o saldo fica negativo na consulta — a venda já
+  aconteceu, e o negativo mostra que a contagem do estoque está errada; (2) o sobrinho salva a
+  planilha numa pasta do computador, e a rodada das 03h00 importa as novas (como a Apostila IV
+  descreve: leitura de disco, uma vez por dia). Comando: `importar_vendas`.
+  **Foi provado que os testes pegam erro:** cinco defeitos de propósito (data errada no lote
+  vencido, lote vencido saindo na venda, sobra da venda sumindo, hora da importação no lugar da
+  hora da venda, produto com nome repetido escolhido no chute) — quatro pegos de primeira; o
+  quinto só depois de um teste novo. 35 testes automáticos — total do projeto: 796, todos
+  passando. Concluída em 05/11/2026, dentro da data prevista (03 a 05/11/2026).
+
+**Próxima tarefa:** I1 — gravação do fechamento de caixa (prevista para 03 a 05/11/2026), e
+depois E4 — casar o produto pendente com o cadastro (06 e 09/11/2026).
 
 ### 04/11/2026
 
