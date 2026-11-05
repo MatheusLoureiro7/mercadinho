@@ -81,7 +81,7 @@ produto estraga, mais o sistema manda comprar.
 
 | | ID | Tarefa | Tipo | Depende de | H |
 |---|---|---|---|---|---|
-| [ ] | **E1** | Levantar o formato do arquivo exportado pelo caixa | Análise | **confirmação com o cliente** | 6 |
+| [x] | **E1** | Levantar o formato do arquivo exportado pelo caixa | Análise | **confirmação com o cliente** | 6 |
 | [x] | **E2** | Criar as tabelas de venda, item de venda e importação | BD | A2 | 6 |
 | [ ] | **E3** | Serviço que lê o arquivo e gera venda e movimentação | API | E1, E2 | 16 |
 | [ ] | **E4** | Casar o produto do caixa com o produto cadastrado | API/Regra | E3 | 10 |

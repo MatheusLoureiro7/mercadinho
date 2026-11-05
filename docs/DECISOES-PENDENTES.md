@@ -24,6 +24,10 @@ quadro de usuários, já diz que o sobrinho lança notas e vendas no Excel). As 
 são definidas na tarefa E1. Como não há dados reais, as planilhas usadas nos testes e na
 demonstração são de exemplo, criadas pelo grupo.
 
+**Formato decidido na E1 (05/11/2026):** planilha `.xlsx`, um arquivo por dia, uma linha por
+produto vendido, colunas Cupom, Data, Hora, Produto, Quantidade, Preço unitário e Pagamento; lida
+direto pelo sistema com a biblioteca `openpyxl`. Detalhes em `docs/FORMATO-PLANILHA-CAIXA.md`.
+
 **Pergunta:** o caixa da loja exporta as vendas em arquivo? Em que formato?
 
 **Recomendação da equipe:** confirmar com o cliente antes da primeira linha de código. Sem isso,

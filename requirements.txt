@@ -3,3 +3,4 @@ Django>=5.2,<6
 djangorestframework>=3.15,<4
 psycopg[binary]>=3.2,<4      # driver do PostgreSQL (Apostila IV fixa o banco)
 python-dotenv>=1.0,<2        # lê o arquivo .env
+openpyxl>=3.1,<4             # lê a planilha de vendas do caixa (D01 = Excel; decisão do grupo, 05/11/2026)

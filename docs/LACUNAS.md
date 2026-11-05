@@ -75,6 +75,10 @@ para o código do caixa**.
 **Atenção:** isso é uma alteração no modelo de dados da Apostila IV. **Não faça sem o grupo
 decidir e sem registrar a mudança numa versão 1.1 da apostila.** Depende também de D01, porque o
 formato do arquivo é que diz qual é o código.
+**Decisão do grupo (05/11/2026, tarefa E1):** o produto é encontrado **pelo nome**, comparado sem
+diferenciar maiúscula, acento nem espaços a mais. **Nenhuma coluna nova**: o modelo de dados da
+Apostila IV não muda. Linha que não casa fica pendente (operação 04, passo 6). Ver
+`docs/FORMATO-PLANILHA-CAIXA.md`.
 
 ---
 
