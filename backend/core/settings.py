@@ -100,6 +100,10 @@ TELEGRAM_API_ENDERECO = os.environ.get("TELEGRAM_API_ENDERECO", "https://api.tel
 # Segredo que o Telegram manda em todo chamado ao webhook (H7). Vazio: o webhook recusa tudo.
 TELEGRAM_WEBHOOK_SEGREDO = os.environ.get("TELEGRAM_WEBHOOK_SEGREDO", "").strip()
 
+# Pasta onde o sobrinho salva a planilha de vendas do caixa (E1, E3). A rodada das 03h00 importa as
+# planilhas novas dela (comando importar_vendas). Vazio: a importação não roda.
+PASTA_VENDAS_CAIXA = os.environ.get("PASTA_VENDAS_CAIXA", "").strip()
+
 # Regras de senha usadas ao criar ou trocar a senha (RNF12).
 AUTH_PASSWORD_VALIDATORS = [
     {
