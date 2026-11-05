@@ -24,8 +24,8 @@ SAIDA_HTML = PASTA / "RELATORIO-DE-TESTES.html"
 SAIDA_PDF = PASTA / "RELATORIO-DE-TESTES.pdf"
 
 DOCUMENTO = "MDGS-TST-001"
-VERSAO = "1.1"
-COMMIT = "dc3e03f"
+VERSAO = "1.2"
+COMMIT = "416b7b8"
 
 BLOCOS = {
     "a": "A · Fundação: banco, API, login e perfis",
@@ -35,7 +35,7 @@ BLOCOS = {
     "e": "E · Importação das vendas do caixa",
     "f": "F · Consulta de estoque",
     "h": "H · Aviso de validade pelo Telegram",
-    "i": "I · Tela de fechamento de caixa",
+    "i": "I · Fechamento de caixa",
     "j": "J · Cobertura das regras",
     "telas": "Telas no celular e no tablet",
 }
@@ -47,7 +47,7 @@ TESTADO_EM = {
     "e": "05/11/2026",
     "f": "07 e 08/10/2026",
     "h": "08 e 09/10/2026",
-    "i": "09/10/2026",
+    "i": "09/10 e 05/11/2026",
     "j": "09/10/2026",
     "telas": "09/10/2026",
 }
@@ -67,7 +67,7 @@ DATA_DA_REGRA = {
     "RN12": "08/10/2026",
     "RN13": "08/10/2026",
     "RN14": "06/10/2026",
-    "RN15": "09/10/2026",
+    "RN15": "05/11/2026",
     "RN16": "07/10/2026",
 }
 DEFEITOS = [
@@ -126,12 +126,12 @@ REGRAS = [
     (
         "RN15",
         "Diferença de caixa nunca corrigida",
-        "Diferença calculada, não digitada; contar de novo gera registro novo",
+        "Apura R$ 3.240,00, conta R$ 3.215,00 → registra −R$ 25,00; contar de novo gera registro novo",
     ),
     ("RN16", "Lote vencido é bloqueado", "Vencido não sai na venda, só como perda, e aparece destacado"),
 ]
 SEM_CODIGO = {"RN06": "G2", "RN07": "G2", "RN08": "G3 e H3", "RN09": "G4", "RN10": "H3"}
-PARCIAL = {"RN15": "só a tela; a gravação é da tarefa I1"}
+PARCIAL = {}
 
 NAO_TESTADO = [
     ("Revisão das linhas pendentes da importação e tela de importação", "E4, E5", "06 a 09/11/2026"),
@@ -140,7 +140,6 @@ NAO_TESTADO = [
         "G1 a G5, H3",
         "06 a 13/11/2026",
     ),
-    ("Gravação do fechamento de caixa (RN15 completa)", "I1", "03 a 05/11/2026"),
     ("Balanço da semana", "I3", "09 a 11/11/2026"),
     ("Teste em movimento real e aviso no celular de verdade", "J4", "21/11/2026"),
 ]
@@ -294,7 +293,7 @@ código do commit <code>{COMMIT}</code>.</p>
 <h2>Regras de negócio testadas</h2>
 <table class="regras"><thead><tr><th>Regra</th><th>Descrição</th><th>Exemplo verificado</th><th class="num">Testes</th><th>Data</th><th>Situação</th></tr></thead>
 <tbody>{"".join(linhas_regra)}</tbody></table>
-<p>{regras_ok} de 16 regras aprovadas, 1 aprovada em parte e 5 ainda não construídas. Nas regras
+<p>{regras_ok} de 16 regras aprovadas e 5 ainda não construídas. Nas regras
 não testadas, a data é a prevista.</p>
 
 <h2>Defeitos</h2>
@@ -303,7 +302,7 @@ próprio. <b>Nenhum defeito em aberto em {inicio:%d/%m/%Y}.</b></p>
 <table><thead><tr><th>Encontrado em</th><th>Defeito</th><th>Corrigido em</th></tr></thead>
 <tbody>{linhas_defeito}</tbody></table>
 <p>Entre 08/10/2026 e 05/11/2026, para provar que os testes detectam erro, a equipe inseriu
-<b>43 defeitos de propósito</b> no código; os testes detectaram os 43.</p>
+<b>49 defeitos de propósito</b> no código; os testes detectaram os 49.</p>
 
 <h2>O que ainda não foi testado</h2>
 <p>Partes que ainda não foram construídas; o teste de cada uma é feito junto com ela.</p>

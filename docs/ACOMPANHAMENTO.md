@@ -21,14 +21,14 @@ O diário, no fim do arquivo, conta o que foi feito em cada dia.
 
 | | Concluído | Total | % |
 |---|---|---|---|
-| **Tarefas** | 34 | 51 | 66,7 % |
-| **Horas estimadas** | 240 h | 378 h | 63,5 % |
+| **Tarefas** | 35 | 51 | 68,6 % |
+| **Horas estimadas** | 248 h | 378 h | 65,6 % |
 
 | Etapa | Blocos | Horas concluídas | Total | % |
 |---|---|---|---|---|
 | 1 · Aviso de validade | A, B, C, D, F, J | 160 h | 212 h | 75,5 % |
 | 2 · Aviso de ruptura | E, G, H | 70 h | 136 h | 51,5 % |
-| 3 · Gestão | I | 10 h | 30 h | 33,3 % |
+| 3 · Gestão | I | 18 h | 30 h | 60,0 % |
 
 As horas concluídas são as **estimadas** na apostila para cada tarefa entregue, não horas medidas.
 
@@ -150,11 +150,11 @@ na demonstração são de exemplo, criados pelo grupo.
 | ~~H6~~ | ~~Vincular o celular do dono ao usuário~~ | H5, B1 | 4 | ✅ Concluída | 09/10/2026 | `094a2ee` |
 | ~~H7~~ | ~~Receber e registrar a resposta dele~~ | H5 | 4 | ✅ Concluída | 09/10/2026 | `606e94f` |
 
-## Bloco I — Fechamento e relatórios · 30 h  ·  10 de 30 h concluídas
+## Bloco I — Fechamento e relatórios · 30 h  ·  18 de 30 h concluídas
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
-| I1 | Tabela de fechamento e cálculo da diferença | E2 | 8 | ⬜ A fazer | — | — |
+| ~~I1~~ | ~~Tabela de fechamento e cálculo da diferença~~ | E2 | 8 | ✅ Concluída | 05/11/2026 | `416b7b8` |
 | ~~I2~~ | ~~Tela de fechamento de caixa~~ | A3 | 10 | ✅ Concluída (API na I1) | 09/10/2026 | `4184da1` |
 | I3 | Relatório de balanço semanal | E2, D1 | 12 | ⬜ A fazer | — | — |
 
@@ -162,7 +162,7 @@ na demonstração são de exemplo, criados pelo grupo.
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
-| J1 | Testes automatizados de todas as regras | todas as regras | 16 | 🔄 Em andamento (faltam RN06–RN10, I1) | — | `ab6424c` |
+| J1 | Testes automatizados de todas as regras | todas as regras | 16 | 🔄 Em andamento (faltam RN06–RN10) | — | `ab6424c` |
 | J2 | Carga inicial dos produtos, junto com o cliente | B3 | 8 | ⬜ A fazer | — | — |
 | J3 | Inventário de partida: contagem física | J2 | 6 | ⬜ A fazer | — | — |
 | J4 | Teste em movimento real, num sábado cheio | todos | 6 | ⬜ A fazer | — | — |
@@ -224,8 +224,23 @@ cronograma, a regra de negócio (quando houver) e o commit.
   quinto só depois de um teste novo. 35 testes automáticos — total do projeto: 796, todos
   passando. Concluída em 05/11/2026, dentro da data prevista (03 a 05/11/2026).
 
-**Próxima tarefa:** I1 — gravação do fechamento de caixa (prevista para 03 a 05/11/2026), e
-depois E4 — casar o produto pendente com o cadastro (06 e 09/11/2026).
+- **I1 — Fechamento de caixa gravado no sistema (RN15).** A tela de fechamento, pronta desde
+  09/10/2026, agora grava de verdade. A esposa digita só o dinheiro contado; o valor apurado vem do
+  sistema e a **diferença é calculada pelo próprio banco**, nunca digitada. O registro guarda a data
+  e quem registrou, e **não pode ser alterado nem apagado** — nem pela tela, nem direto no banco: se
+  ela contar de novo, é um registro novo e o anterior continua lá. Testado com o exemplo da própria
+  Apostila I: o sistema apura R$ 3.240,00, a contagem dá R$ 3.215,00 → registro de −R$ 25,00.
+  **Duas decisões do grupo sobre a lacuna L12 (05/11/2026):** (1) o valor apurado é a soma das
+  vendas do dia **pagas em dinheiro**, porque a gaveta só tem dinheiro; (2) o fechamento é **do dia
+  anterior**: as vendas só entram no sistema às 03h00 do dia seguinte, então a esposa conta o
+  dinheiro à noite e registra de manhã. Se as vendas daquele dia não entraram, a tela explica o
+  motivo e não deixa registrar — senão o apurado sairia zero e a diferença seria falsa.
+  **Foi provado que os testes pegam erro:** seis defeitos de propósito (somar PIX e cartão, fechar o
+  dia errado, fechar sem as vendas importadas, aceitar importação com erro, não ignorar espaço em
+  "Dinheiro", lista fora de ordem) — todos pegos. 35 testes automáticos, dois deles na tela — total
+  do projeto: 831, todos passando. Concluída em 05/11/2026, dentro da data prevista (03 a 05/11/2026).
+
+**Próxima tarefa:** E4 — casar o produto pendente da importação com o cadastro (06 e 09/11/2026).
 
 ### 04/11/2026
 

@@ -162,6 +162,9 @@ se sabe se considera a forma de pagamento (só dinheiro é contado na gaveta?).
 
 **Impacto:** tarefa I1 (8 h). Depende também da D01.
 **Quem decide:** o grupo, confirmando com a esposa do Sr. João.
+**Decisão do grupo (05/11/2026, tarefa I1):** o apurado é a soma das vendas do dia **pagas em
+dinheiro** (a gaveta só tem dinheiro). O fechamento é do **dia anterior**, porque as vendas entram às
+03h00 do dia seguinte (E3); sem as vendas daquele dia importadas, o fechamento é recusado.
 
 ---
 
