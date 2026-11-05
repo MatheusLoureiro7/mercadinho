@@ -12,6 +12,7 @@ from rest_framework.routers import APIRootView, DefaultRouter
 
 from alertas.views import TelegramWebhookView
 from cadastro.views import CategoriaViewSet, FornecedorViewSet, ProdutoViewSet
+from caixa.views import FechamentoViewSet
 from comum.views import SessaoAtualView, SessaoView
 from estoque.views import EstoquePorLoteView, EstoquePorProdutoView, LoteViewSet, PerdaViewSet
 
@@ -30,6 +31,7 @@ roteador.register("fornecedores", FornecedorViewSet, basename="fornecedor")  # B
 roteador.register("produtos", ProdutoViewSet, basename="produto")  # B3
 roteador.register("lotes", LoteViewSet, basename="lote")  # C2
 roteador.register("perdas", PerdaViewSet, basename="perda")  # D1
+roteador.register("fechamentos", FechamentoViewSet, basename="fechamento")  # I1
 
 urlpatterns = [
     path("api/sessoes/", SessaoView.as_view(), name="sessao"),

@@ -2,16 +2,17 @@
  * Tela de Fechamento de caixa — tarefa I2 (RF12, RN15, fluxograma 06). Usada pela esposa (GESTAO,
  * RN14): confere o dinheiro contado contra o apurado no dia.
  *
- * Só o dinheiro contado é digitado. O apurado vem do sistema (de onde, exatamente, é a lacuna L12) e
- * a diferença (contado − apurado) é calculada: aqui, só para mostrar antes de confirmar; quem grava
- * é o banco, numa coluna gerada (RN15). Correção é um registro novo — a tela nunca altera nem apaga.
+ * Só o dinheiro contado é digitado. O apurado vem do sistema — a soma das vendas do dia pagas em
+ * dinheiro (L12) — e a diferença (contado − apurado) é calculada: aqui, só para mostrar antes de
+ * confirmar; quem grava é o banco, numa coluna gerada (RN15). Correção é um registro novo — a tela
+ * nunca altera nem apaga.
  *
- * Decisão do grupo (09/10/2026): a tela é feita agora e ligada à API na I1, que espera as vendas do
- * caixa (E2, D01). Contrato proposto para a I1:
- *   GET  fechamentos/apurado/?data=AAAA-MM-DD → { data, valor_sistema }
+ * API (tarefa I1):
+ *   GET  fechamentos/apurado/                 → { data, valor_sistema } do dia do fechamento
  *   GET  fechamentos/?data=AAAA-MM-DD         → registros do dia, o mais novo primeiro
  *   POST fechamentos/ { valor_contado }        → o registro gravado (data e apurado: o servidor)
- * Enquanto a API não existe (404), a tela avisa que o fechamento ainda não está disponível.
+ * O fechamento é do dia anterior (L12): as vendas do dia entram às 03h00 do dia seguinte. Se as
+ * vendas daquele dia ainda não entraram, a API recusa (RN15) e a tela mostra o motivo e trava.
  */
 
 import { api } from "./api.js";
@@ -24,7 +25,7 @@ import { entrarNaTela } from "./sessao.js";
 const CAMPOS = { valor_contado: { id: "campo-contado", rotulo: "Dinheiro contado" } };
 const COLUNAS = 5;
 
-const estado = { hoje: diaNaLoja(), apuradoEmCentavos: null };
+const estado = { hoje: diaNaLoja(), quando: "hoje", apuradoEmCentavos: null };
 
 const $ = (id) => document.getElementById(id);
 
@@ -38,8 +39,11 @@ async function iniciar() {
   const apurado = await api.ler("fechamentos/apurado/", { data: estado.hoje });
   if (!apurado.ok) {
     travarFormulario();
-    if (apurado.status === 404) {
-      $("indisponivel").hidden = false; // até a I1
+    const semVendasDoDia = apurado.erro && apurado.erro.regra === "RN15";
+    if (apurado.status === 404 || semVendasDoDia) {
+      // RN15/L12: sem as vendas do dia no sistema não há apurado para conferir; a API diz qual dia.
+      if (semVendasDoDia) $("indisponivel").querySelector("span").textContent = apurado.erro.mensagem;
+      $("indisponivel").hidden = false;
       $("valor-apurado").textContent = "—";
       $("corpo-tabela").append(linhaVazia(COLUNAS, "Nenhum fechamento hoje.", ""));
     } else {
@@ -49,7 +53,14 @@ async function iniciar() {
     return;
   }
   if (apurado.dados.data) estado.hoje = apurado.dados.data; // o dia que vale é o do sistema
-  $("data-de-hoje").textContent = " · " + dataBrasileira(estado.hoje);
+  if (estado.hoje === diaNaLoja()) {
+    $("data-de-hoje").textContent = " · " + dataBrasileira(estado.hoje);
+  } else {
+    // L12: o fechamento é do dia anterior — as vendas do dia só entram às 03h00 do dia seguinte.
+    estado.quando = "em " + dataBrasileira(estado.hoje);
+    $("titulo-formulario").textContent = "Conferir o caixa de " + dataBrasileira(estado.hoje);
+    $("titulo-lista").textContent = "Fechamentos de " + dataBrasileira(estado.hoje);
+  }
   estado.apuradoEmCentavos = centavos(apurado.dados.valor_sistema);
   $("valor-apurado").textContent = emReais(apurado.dados.valor_sistema);
 
@@ -164,12 +175,12 @@ async function carregarLista() {
   }
   const registros = resposta.dados;
   if (!registros.length) {
-    corpo.append(linhaVazia(COLUNAS, "Nenhum fechamento hoje.", "O que você registrar aparece aqui."));
+    corpo.append(linhaVazia(COLUNAS, "Nenhum fechamento " + estado.quando + ".", "O que você registrar aparece aqui."));
   } else {
     registros.forEach((registro) => corpo.append(linhaDoRegistro(registro)));
   }
   $("anuncio-lista").textContent =
-    registros.length === 1 ? "1 fechamento hoje." : registros.length + " fechamentos hoje.";
+    (registros.length === 1 ? "1 fechamento " : registros.length + " fechamentos ") + estado.quando + ".";
 }
 
 function linhaDoRegistro(registro) {
