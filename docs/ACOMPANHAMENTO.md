@@ -176,6 +176,24 @@ na demonstração são de exemplo, criados pelo grupo.
 O que foi feito em cada dia, do mais recente para o mais antigo. Cada linha aponta a tarefa do
 cronograma, a regra de negócio (quando houver) e o commit.
 
+### 04/11/2026
+
+- **Documentação de testes (parte da J1, a pedido do professor).** O professor apontou que faltava
+  documentar o que foi testado e aprovado, e o que ainda não foi testado. Criado
+  `docs/TESTES.md`: resultado da execução completa de hoje — **726 testes, 726 aprovados** —, os
+  testes por tarefa, por regra de negócio, por fluxograma (cada losango pelo "sim" e pelo "não") e
+  por requisito; e uma seção do que **ainda não foi testado e por quê**: o que ainda não foi
+  construído (RN06 a RN10, importação de vendas, fechamento I1, balanço I3), o que só dá para
+  conferir à mão (aviso no celular de verdade, computador antigo, treinamento, teste do sábado
+  cheio) e o que está fora do escopo. O documento passa a ser atualizado a cada execução completa.
+  A J1 continua em andamento até as regras da previsão.
+- **Relatório de testes em PDF (MDGS-TST-001).** O professor achou os arquivos em Markdown
+  confusos e pediu um documento oficial, curto e direto. Criado `docs/testes/RELATORIO-DE-TESTES.pdf`,
+  com 3 páginas: como foi testado, resultado (726 de 726 aprovados), as 16 regras de negócio com
+  o exemplo verificado em cada uma, defeitos encontrados e corrigidos, o que ainda não foi testado
+  (com data prevista) e conclusão. Os números são lidos da execução real dos testes, não
+  digitados; o PDF é reemitido a cada execução completa.
+
 ### 30/10/2026
 
 - **Decisão do grupo — E2 remarcada.** As tabelas de venda (E2), previstas para 26 a 28/10, não
