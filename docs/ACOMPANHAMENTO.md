@@ -21,13 +21,13 @@ O diário, no fim do arquivo, conta o que foi feito em cada dia.
 
 | | Concluído | Total | % |
 |---|---|---|---|
-| **Tarefas** | 32 | 51 | 62,7 % |
-| **Horas estimadas** | 218 h | 378 h | 57,7 % |
+| **Tarefas** | 33 | 51 | 64,7 % |
+| **Horas estimadas** | 224 h | 378 h | 59,3 % |
 
 | Etapa | Blocos | Horas concluídas | Total | % |
 |---|---|---|---|---|
 | 1 · Aviso de validade | A, B, C, D, F, J | 160 h | 212 h | 75,5 % |
-| 2 · Aviso de ruptura | E, G, H | 48 h | 136 h | 35,3 % |
+| 2 · Aviso de ruptura | E, G, H | 54 h | 136 h | 39,7 % |
 | 3 · Gestão | I | 10 h | 30 h | 33,3 % |
 
 As horas concluídas são as **estimadas** na apostila para cada tarefa entregue, não horas medidas.
@@ -110,11 +110,11 @@ na demonstração são de exemplo, criados pelo grupo.
 | ~~D3~~ | ~~Tela de avarias e quebras~~ | A3 | 7 | ✅ Concluída | 08/10/2026 | `c8c4252` |
 | ~~D4~~ | ~~Integração e teste~~ | D1, D3 | 2 | ✅ Concluída | 08/10/2026 | `9fe0d21` |
 
-## Bloco E — Entrada das vendas · 44 h  ·  6 de 44 h concluídas
+## Bloco E — Entrada das vendas · 44 h  ·  12 de 44 h concluídas
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
-| E1 | Levantar o formato do arquivo exportado pelo caixa | decisão D01 (Excel) | 6 | ⬜ A fazer | — | — |
+| ~~E1~~ | ~~Levantar o formato do arquivo exportado pelo caixa~~ | decisão D01 (Excel) | 6 | ✅ Concluída | 05/11/2026 | `aded7a7` |
 | ~~E2~~ | ~~Criar as tabelas de venda, item de venda e importação~~ | A2 | 6 | ✅ Concluída | 05/11/2026 | `f6f48e7` |
 | E3 | Serviço que lê o arquivo e gera venda e movimentação | E1, E2 | 16 | ⬜ A fazer | — | — |
 | E4 | Casar o produto do caixa com o produto cadastrado | E3 | 10 | ⬜ A fazer | — | — |
@@ -191,7 +191,22 @@ cronograma, a regra de negócio (quando houver) e o commit.
   caixa. 29 testes automáticos — total do projeto: 755, todos passando. Concluída em 05/11/2026,
   com 3 dias de atraso sobre a data prevista (02/11/2026).
 
-**Próxima tarefa:** E1 — colunas da planilha do caixa (decisão do grupo), e depois E3.
+- **E1 — Formato da planilha de vendas do caixa.** Decidido pelo grupo: o caixa exporta uma
+  planilha do Excel (`.xlsx`) por dia, com uma linha por produto vendido e as colunas **Cupom,
+  Data, Hora, Produto, Quantidade, Preço unitário e Pagamento**; as linhas do mesmo cupom formam
+  uma venda, e o valor total é a soma dos itens. O sistema lê o arquivo do Excel direto (biblioteca
+  `openpyxl`, dependência nova decidida pelo grupo), sem o sobrinho precisar converter nada.
+  **Decisão sobre a lacuna L05:** o produto da planilha é encontrado **pelo nome do cadastro**,
+  sem diferenciar maiúscula, acento ou espaço a mais — assim o modelo de dados da Apostila IV não
+  muda. Linha com produto que não existe fica pendente e não trava as outras. Duas diferenças em
+  relação ao texto da Apostila IV ficaram registradas, com o motivo, em
+  `docs/FORMATO-PLANILHA-CAIXA.md`: a apostila fala em "arquivo de texto" e em "código do caixa".
+  Criada uma planilha de exemplo com 5 vendas e 10 itens (inclui um produto escrito sem acento,
+  que casa, e um que não existe no cadastro, que fica pendente). 6 testes automáticos — total do
+  projeto: 761, todos passando. Concluída em 05/11/2026 (prevista para 02/11/2026).
+
+**Próxima tarefa:** E3 — serviço que lê a planilha e gera venda e movimentação (prevista para
+03 a 05/11/2026).
 
 ### 04/11/2026
 
