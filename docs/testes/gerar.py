@@ -24,14 +24,15 @@ SAIDA_HTML = PASTA / "RELATORIO-DE-TESTES.html"
 SAIDA_PDF = PASTA / "RELATORIO-DE-TESTES.pdf"
 
 DOCUMENTO = "MDGS-TST-001"
-VERSAO = "1.0"
-COMMIT = "6a66cbd"
+VERSAO = "1.1"
+COMMIT = "dc3e03f"
 
 BLOCOS = {
     "a": "A · Fundação: banco, API, login e perfis",
     "b": "B · Cadastros de produto, categoria e fornecedor",
     "c": "C · Entrada de mercadoria e saldo",
     "d": "D · Perdas e avarias",
+    "e": "E · Importação das vendas do caixa",
     "f": "F · Consulta de estoque",
     "h": "H · Aviso de validade pelo Telegram",
     "i": "I · Tela de fechamento de caixa",
@@ -43,6 +44,7 @@ TESTADO_EM = {
     "b": "06 a 08/10/2026",
     "c": "06 a 08/10/2026",
     "d": "07 e 08/10/2026",
+    "e": "05/11/2026",
     "f": "07 e 08/10/2026",
     "h": "08 e 09/10/2026",
     "i": "09/10/2026",
@@ -132,7 +134,7 @@ SEM_CODIGO = {"RN06": "G2", "RN07": "G2", "RN08": "G3 e H3", "RN09": "G4", "RN10
 PARCIAL = {"RN15": "só a tela; a gravação é da tarefa I1"}
 
 NAO_TESTADO = [
-    ("Importação das vendas do caixa e baixa por venda", "E3 a E5", "03 a 09/11/2026"),
+    ("Revisão das linhas pendentes da importação e tela de importação", "E4, E5", "06 a 09/11/2026"),
     (
         'Previsão de consumo, ponto de pedido e aviso "vai acabar" (RN06 a RN10)',
         "G1 a G5, H3",
@@ -274,7 +276,7 @@ regras de negócio da Apostila I, fluxogramas da Apostila II e requisitos da Apo
 </tbody></table>
 <p>Todos os testes são automáticos (pytest e Playwright), rodam no mesmo banco do sistema
 (PostgreSQL) e cada decisão dos fluxogramas é testada pelo caminho "sim" e pelo "não". Cada teste
-foi escrito junto com a sua tarefa, entre 06/10/2026 e 09/10/2026, e a suíte inteira é executada
+foi escrito junto com a sua tarefa, entre 06/10/2026 e 05/11/2026, e a suíte inteira é executada
 de novo a cada entrega — a última vez em {inicio:%d/%m/%Y}.</p>
 
 <h2>Resultado</h2>
@@ -300,8 +302,8 @@ não testadas, a data é a prevista.</p>
 próprio. <b>Nenhum defeito em aberto em {inicio:%d/%m/%Y}.</b></p>
 <table><thead><tr><th>Encontrado em</th><th>Defeito</th><th>Corrigido em</th></tr></thead>
 <tbody>{linhas_defeito}</tbody></table>
-<p>Entre 08/10/2026 e 09/10/2026, para provar que os testes detectam erro, a equipe inseriu
-<b>38 defeitos de propósito</b> no código; os testes detectaram os 38.</p>
+<p>Entre 08/10/2026 e 05/11/2026, para provar que os testes detectam erro, a equipe inseriu
+<b>43 defeitos de propósito</b> no código; os testes detectaram os 43.</p>
 
 <h2>O que ainda não foi testado</h2>
 <p>Partes que ainda não foram construídas; o teste de cada uma é feito junto com ela.</p>
