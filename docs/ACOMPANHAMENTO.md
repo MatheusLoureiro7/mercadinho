@@ -17,17 +17,17 @@ O diário, no fim do arquivo, conta o que foi feito em cada dia.
 
 ## Resumo
 
-*Atualizado em 23/10/2026.*
+*Atualizado em 05/11/2026.*
 
 | | Concluído | Total | % |
 |---|---|---|---|
-| **Tarefas** | 31 | 51 | 60,8 % |
-| **Horas estimadas** | 212 h | 378 h | 56,1 % |
+| **Tarefas** | 32 | 51 | 62,7 % |
+| **Horas estimadas** | 218 h | 378 h | 57,7 % |
 
 | Etapa | Blocos | Horas concluídas | Total | % |
 |---|---|---|---|---|
 | 1 · Aviso de validade | A, B, C, D, F, J | 160 h | 212 h | 75,5 % |
-| 2 · Aviso de ruptura | E, G, H | 42 h | 136 h | 30,9 % |
+| 2 · Aviso de ruptura | E, G, H | 48 h | 136 h | 35,3 % |
 | 3 · Gestão | I | 10 h | 30 h | 33,3 % |
 
 As horas concluídas são as **estimadas** na apostila para cada tarefa entregue, não horas medidas.
@@ -110,12 +110,12 @@ na demonstração são de exemplo, criados pelo grupo.
 | ~~D3~~ | ~~Tela de avarias e quebras~~ | A3 | 7 | ✅ Concluída | 08/10/2026 | `c8c4252` |
 | ~~D4~~ | ~~Integração e teste~~ | D1, D3 | 2 | ✅ Concluída | 08/10/2026 | `9fe0d21` |
 
-## Bloco E — Entrada das vendas · 44 h  ·  0 de 44 h concluídas
+## Bloco E — Entrada das vendas · 44 h  ·  6 de 44 h concluídas
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
 | E1 | Levantar o formato do arquivo exportado pelo caixa | decisão D01 (Excel) | 6 | ⬜ A fazer | — | — |
-| E2 | Criar as tabelas de venda, item de venda e importação | A2 | 6 | ⬜ A fazer | — | — |
+| ~~E2~~ | ~~Criar as tabelas de venda, item de venda e importação~~ | A2 | 6 | ✅ Concluída | 05/11/2026 | `f6f48e7` |
 | E3 | Serviço que lê o arquivo e gera venda e movimentação | E1, E2 | 16 | ⬜ A fazer | — | — |
 | E4 | Casar o produto do caixa com o produto cadastrado | E3 | 10 | ⬜ A fazer | — | — |
 | E5 | Tela de acompanhamento da importação | E3 | 6 | ⬜ A fazer | — | — |
@@ -162,7 +162,7 @@ na demonstração são de exemplo, criados pelo grupo.
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
-| J1 | Testes automatizados de todas as regras | todas as regras | 16 | 🔄 Em andamento (faltam RN06–RN10, I1, E2) | — | `ab6424c` |
+| J1 | Testes automatizados de todas as regras | todas as regras | 16 | 🔄 Em andamento (faltam RN06–RN10, I1, E3) | — | `ab6424c` |
 | J2 | Carga inicial dos produtos, junto com o cliente | B3 | 8 | ⬜ A fazer | — | — |
 | J3 | Inventário de partida: contagem física | J2 | 6 | ⬜ A fazer | — | — |
 | J4 | Teste em movimento real, num sábado cheio | todos | 6 | ⬜ A fazer | — | — |
@@ -175,6 +175,23 @@ na demonstração são de exemplo, criados pelo grupo.
 
 O que foi feito em cada dia, do mais recente para o mais antigo. Cada linha aponta a tarefa do
 cronograma, a regra de negócio (quando houver) e o commit.
+
+### 05/11/2026
+
+- **E2 — Tabelas de venda, item de venda e importação do caixa.** As três tabelas por onde as
+  vendas do caixa entram no sistema existem no banco, iguais à Apostila IV — conferidas
+  automaticamente, coluna por coluna, contra o modelo de dados entregue. O banco recusa sozinho:
+  venda sem data e hora ou sem valor, item sem quantidade, importação sem nome do arquivo ou com
+  situação fora das quatro previstas (pendente, ok, parcial, erro). Como manda o modelo, o item da
+  venda pode ficar **sem produto** quando a linha do caixa não casar com nenhum produto
+  cadastrado — essa linha fica pendente e não trava as outras (fluxograma 04). Apagar uma venda
+  apaga os itens dela no próprio banco, como está na Apostila IV; já um produto que tem venda não
+  pode ser apagado, para o histórico não se perder. Quantidade em quilo fracionado e dinheiro com
+  centavos exatos. O sistema continua **sem** tela para registrar venda: venda só vem do arquivo do
+  caixa. 29 testes automáticos — total do projeto: 755, todos passando. Concluída em 05/11/2026,
+  com 3 dias de atraso sobre a data prevista (02/11/2026).
+
+**Próxima tarefa:** E1 — colunas da planilha do caixa (decisão do grupo), e depois E3.
 
 ### 04/11/2026
 
