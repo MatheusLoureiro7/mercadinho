@@ -229,6 +229,18 @@ python backend/manage.py criar_usuario --login sobrinho --nome "Sobrinho" --pape
 python backend/manage.py changepassword sobrinho      # trocar a senha depois
 ```
 
+### Carga inicial dos produtos (J2)
+
+Categorias, fornecedores e produtos entram de uma vez por uma planilha do Excel, com as mesmas
+conferências da tela de Produtos. Se uma linha estiver errada, nada é gravado e o comando diz a
+aba, a linha e a coluna. Formato em `docs/FORMATO-PLANILHA-PRODUTOS.md`:
+
+```bash
+python backend/manage.py carregar_produtos docs/exemplos/produtos-iniciais.xlsx
+```
+
+### Sessão
+
 O painel entra com `POST /api/sessoes/` (`{"login", "senha"}`) e recebe um `token`, que manda em
 toda requisição no cabeçalho `Authorization: Bearer <token>`. O token vale `SESSAO_VALIDADE_HORAS`
 (12 h) e cai antes disso se a senha for trocada ou o usuário desativado. `GET /api/sessoes/atual/`
