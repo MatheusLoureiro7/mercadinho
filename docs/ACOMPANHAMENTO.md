@@ -21,13 +21,13 @@ O diário, no fim do arquivo, conta o que foi feito em cada dia.
 
 | | Concluído | Total | % |
 |---|---|---|---|
-| **Tarefas** | 40 | 51 | 78,4 % |
-| **Horas estimadas** | 292 h | 378 h | 77,2 % |
+| **Tarefas** | 41 | 51 | 80,4 % |
+| **Horas estimadas** | 298 h | 378 h | 78,8 % |
 
 | Etapa | Blocos | Horas concluídas | Total | % |
 |---|---|---|---|---|
 | 1 · Aviso de validade | A, B, C, D, F, J | 160 h | 212 h | 75,5 % |
-| 2 · Aviso de ruptura | E, G, H | 114 h | 136 h | 83,8 % |
+| 2 · Aviso de ruptura | E, G, H | 120 h | 136 h | 88,2 % |
 | 3 · Gestão | I | 18 h | 30 h | 60,0 % |
 
 As horas concluídas são as **estimadas** na apostila para cada tarefa entregue, não horas medidas.
@@ -128,7 +128,7 @@ na demonstração são de exemplo, criados pelo grupo.
 | ~~F2~~ | ~~API de consulta com filtros~~ | F1 | 6 | ✅ Concluída | 07/10/2026 | `2365139` |
 | ~~F3~~ | ~~Tela de estoque, com destaque para mínimo e vencidos~~ | A3 | 10 | ✅ Concluída | 08/10/2026 | `6a6321e` |
 
-## Bloco G — Previsão · 40 h  ·  34 de 40 h concluídas
+## Bloco G — Previsão · 40 h  ·  40 de 40 h concluídas ✅
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
@@ -136,7 +136,7 @@ na demonstração são de exemplo, criados pelo grupo.
 | ~~G2~~ | ~~Cálculo do consumo médio e por dia da semana~~ | G1 | 12 | ✅ Concluída | 12/11/2026 | `d6a3e45` |
 | ~~G3~~ | ~~Tabela de previsão e gravação do resultado~~ | G2 | 8 | ✅ Concluída | 12/11/2026 | `62b0ec5` |
 | ~~G4~~ | ~~Regra: histórico mínimo antes de projetar~~ | G2 | 4 | ✅ Concluída | 12/11/2026 | `7fc505c` |
-| G5 | Agendador das rotinas diárias | G3 | 6 | ⬜ A fazer | — | — |
+| ~~G5~~ | ~~Agendador das rotinas diárias~~ | G3 | 6 | ✅ Concluída | 12/11/2026 | `1c62ea9` |
 
 ## Bloco H — Avisos · 52 h  ·  42 de 52 h concluídas
 
@@ -270,7 +270,28 @@ cronograma, a regra de negócio (quando houver) e o commit.
   média) — todos pegos. 8 testes automáticos — total do projeto: 910, todos passando. Concluída em
   12/11/2026 (prevista para 11/11/2026).
 
-**Próxima tarefa:** G5 — agendador da rodada das 03h00 (importação → consumo → previsão → avisos).
+- **G5 — A rodada das 03h00.** Agora existe um comando só, `rodada_diaria`, que faz todo o
+  trabalho da madrugada na ordem da Apostila IV: traz as planilhas novas do caixa, soma o consumo
+  de cada dia, calcula a previsão, gera os avisos de validade e manda tudo pelo Telegram. Se um
+  passo falha — por exemplo, a pasta das planilhas não existe —, os outros acontecem mesmo assim
+  (o aviso de validade não depende da planilha), e a rodada termina avisando qual passo falhou,
+  com o motivo no log. **Achado no caminho:** a geração dos avisos de validade (H2, pronta desde
+  09/10) não era chamada por nenhuma rotina; agora é, toda madrugada. Commit `1c62ea9`.
+  **Decisão do grupo (12/11/2026):** quem dispara a rodada é o **cron** do computador do Matheus
+  (D05), sem programa novo instalado. O comando `agenda_cron` escreve as linhas do cron com os
+  horários da tabela de parâmetros — a rodada às 03h00 e o envio de novo às 13h00 e às 18h00, no
+  fim dos horários de movimento, para soltar os avisos segurados (RN12). As instruções estão no
+  README. O computador precisa estar ligado às 03h00.
+  **Foi provado que os testes pegam erro:** seis defeitos de propósito (previsão antes do consumo,
+  rodada parando no primeiro erro, rodada com falha terminando como se estivesse tudo certo, sem
+  os avisos de validade, envio no começo do horário de movimento em vez do fim, hora da rodada
+  escrita no programa) — todos pegos. 9 testes automáticos, um deles com a rodada inteira de
+  verdade (planilha → previsão → aviso → Telegram de teste) — total do projeto: 919, todos
+  passando. Concluída em 12/11/2026 (prevista para 12 e 13/11/2026). **O bloco G (previsão) está
+  completo.**
+
+**Próxima tarefa:** H3 — gerador do aviso de ruptura ("o frango acaba em 2 dias", RN08) e dos
+itens que não podem faltar no fim de semana (RN10). Depois, E5 e I3.
 
 ### 05/11/2026
 
