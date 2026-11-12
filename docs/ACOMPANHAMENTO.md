@@ -21,13 +21,13 @@ O diário, no fim do arquivo, conta o que foi feito em cada dia.
 
 | | Concluído | Total | % |
 |---|---|---|---|
-| **Tarefas** | 37 | 51 | 72,5 % |
-| **Horas estimadas** | 268 h | 378 h | 70,9 % |
+| **Tarefas** | 38 | 51 | 74,5 % |
+| **Horas estimadas** | 280 h | 378 h | 74,1 % |
 
 | Etapa | Blocos | Horas concluídas | Total | % |
 |---|---|---|---|---|
 | 1 · Aviso de validade | A, B, C, D, F, J | 160 h | 212 h | 75,5 % |
-| 2 · Aviso de ruptura | E, G, H | 90 h | 136 h | 66,2 % |
+| 2 · Aviso de ruptura | E, G, H | 102 h | 136 h | 75,0 % |
 | 3 · Gestão | I | 18 h | 30 h | 60,0 % |
 
 As horas concluídas são as **estimadas** na apostila para cada tarefa entregue, não horas medidas.
@@ -128,12 +128,12 @@ na demonstração são de exemplo, criados pelo grupo.
 | ~~F2~~ | ~~API de consulta com filtros~~ | F1 | 6 | ✅ Concluída | 07/10/2026 | `2365139` |
 | ~~F3~~ | ~~Tela de estoque, com destaque para mínimo e vencidos~~ | A3 | 10 | ✅ Concluída | 08/10/2026 | `6a6321e` |
 
-## Bloco G — Previsão · 40 h  ·  10 de 40 h concluídas
+## Bloco G — Previsão · 40 h  ·  22 de 40 h concluídas
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
 | ~~G1~~ | ~~Tabela de consumo diário e rotina de agregação~~ | E2 | 10 | ✅ Concluída | 12/11/2026 | `48dba3f` |
-| G2 | Cálculo do consumo médio e por dia da semana | G1 | 12 | ⬜ A fazer | — | — |
+| ~~G2~~ | ~~Cálculo do consumo médio e por dia da semana~~ | G1 | 12 | ✅ Concluída | 12/11/2026 | `d6a3e45` |
 | G3 | Tabela de previsão e gravação do resultado | G2 | 8 | ⬜ A fazer | — | — |
 | G4 | Regra: histórico mínimo antes de projetar | G2 | 4 | ⬜ A fazer | — | — |
 | G5 | Agendador das rotinas diárias | G3 | 6 | ⬜ A fazer | — | — |
@@ -220,8 +220,28 @@ cronograma, a regra de negócio (quando houver) e o commit.
   telas, feito em 21/10/2026 (fontes servidas pelo próprio painel, sem nada vindo da internet —
   RNF06) e a skill usada para revisá-lo. Os 94 testes de tela passaram com o visual novo.
 
-**Próxima tarefa:** G2 — consumo médio (RN06) e por dia da semana (RN07), a tarefa mais difícil do
-projeto e a que destrava o aviso de ruptura. Depois, E5 (tela de acompanhamento da importação).
+- **G2 — Consumo médio e por dia da semana (RN06, RN07).** A tarefa mais difícil do projeto. O
+  sistema calcula, para cada produto, **quanto vende por dia**: o total dos últimos 30 dias
+  dividido por 30 — sempre 30, mesmo que o produto só tenha vendido em 5 desses dias (RN06). Calcula
+  também a **média de cada dia da semana**, porque a loja não vende igual todo dia (RN07). Testado
+  com os exemplos da própria apostila: arroz, 150 kg em 30 dias → 5 kg por dia; cerveja, 8 latas
+  por dia na média e 26 aos sábados → na quinta, a conta dos próximos dias já usa as 26 do sábado,
+  e não as 8. Como a perda nunca entra (RN11), 300 kg jogados fora não mudam nada na média.
+  Commit `d6a3e45`.
+  **Decisão do grupo (lacuna L02, 12/11/2026):** a apostila manda usar a média do dia da semana
+  quando a diferença for "relevante", sem dizer quanto. O grupo decidiu: **quando a média do dia
+  chega a 1,5 vez a média geral**. Nos outros dias vale a média geral — inclusive no dia mais
+  fraco, para um domingo parado não fazer o sistema achar que o produto dura mais.
+  **Foi provado que os testes pegam erro:** oito defeitos de propósito (dividir pelos dias com
+  venda em vez de 30, fator 1,4 em vez de 1,5, exigir mais que 1,5 em vez de "pelo menos", média
+  do dia dividida sempre por 4, usar sempre a média do dia, nunca usar a média do dia, contar o dia
+  de hoje ainda incompleto, ignorar os dias sem venda na média do dia) — todos pegos; um nono
+  defeito testado não mudava o resultado e foi trocado por um que muda. 15 testes automáticos —
+  total do projeto: 883, todos passando. Concluída em 12/11/2026 (prevista para 09 e 10/11/2026).
+
+**Próxima tarefa:** G3 — tabela de previsão e gravação do resultado (ponto de pedido, RN08, e
+sugestão de compra, RF11). Antes dela, o grupo precisa decidir a lacuna **L15** (fórmula da
+sugestão de compra). Sem essa decisão, a G4 (histórico mínimo, RN09) e a E5 podem andar.
 
 ### 05/11/2026
 
