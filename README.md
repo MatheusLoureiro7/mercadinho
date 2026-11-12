@@ -138,11 +138,41 @@ servidor web faz o mesmo papel. Para entrar, crie os usuários (abaixo).
 
 ---
 
+## Rodada diária (03h00)
+
+A previsão e os avisos não rodam no clique de ninguém: rodam de madrugada (Apostila IV,
+comunicação nº 4). Um comando faz a rodada inteira, na ordem da apostila — importa as planilhas
+novas do caixa, soma o consumo de cada dia, calcula a previsão, gera os avisos de validade e
+envia pelo Telegram:
+
+```bash
+python backend/manage.py rodada_diaria
+```
+
+Se um passo falha (por exemplo, a pasta das planilhas não existe), os outros acontecem mesmo
+assim; o comando termina com erro dizendo qual falhou, e o motivo fica no log.
+
+**Quem dispara é o cron do computador da loja** (decisão do grupo, 12/11/2026 — sem dependência
+nova). Os horários vêm da tabela de parâmetros: a rodada às 03h00 e o envio de novo no fim de cada
+horário de movimento (13h00 e 18h00), para soltar os avisos segurados (RN12). Para instalar:
+
+```bash
+python backend/manage.py agenda_cron    # mostra as linhas, com os caminhos deste computador
+crontab -e                              # cole as linhas no fim do arquivo e salve
+```
+
+O computador precisa estar **ligado às 03h00** e no **horário de São Paulo**. A saída de cada
+rodada vai para `logs/rodada.log`. Mudou um horário na tabela de parâmetros? Gere as linhas de
+novo e troque no crontab. No macOS, se o cron não conseguir ler a pasta do projeto, dê a ele
+acesso em *Ajustes do Sistema → Privacidade e Segurança → Acesso Total ao Disco* (`/usr/sbin/cron`).
+
+---
+
 ## Avisos no Telegram
 
 O Sr. João não usa o painel: os avisos chegam no celular dele (operação 03). Quem envia é o
-comando abaixo, que o agendador vai chamar (G5) — às 03h00 e de novo depois de cada horário de
-movimento, para soltar os avisos segurados (RN12):
+comando abaixo, que o cron chama (G5, seção anterior) — às 03h00, dentro da rodada diária, e de
+novo depois de cada horário de movimento, para soltar os avisos segurados (RN12):
 
 ```bash
 python backend/manage.py enviar_avisos
