@@ -21,13 +21,13 @@ O diário, no fim do arquivo, conta o que foi feito em cada dia.
 
 | | Concluído | Total | % |
 |---|---|---|---|
-| **Tarefas** | 38 | 51 | 74,5 % |
-| **Horas estimadas** | 280 h | 378 h | 74,1 % |
+| **Tarefas** | 39 | 51 | 76,5 % |
+| **Horas estimadas** | 288 h | 378 h | 76,2 % |
 
 | Etapa | Blocos | Horas concluídas | Total | % |
 |---|---|---|---|---|
 | 1 · Aviso de validade | A, B, C, D, F, J | 160 h | 212 h | 75,5 % |
-| 2 · Aviso de ruptura | E, G, H | 102 h | 136 h | 75,0 % |
+| 2 · Aviso de ruptura | E, G, H | 110 h | 136 h | 80,9 % |
 | 3 · Gestão | I | 18 h | 30 h | 60,0 % |
 
 As horas concluídas são as **estimadas** na apostila para cada tarefa entregue, não horas medidas.
@@ -128,13 +128,13 @@ na demonstração são de exemplo, criados pelo grupo.
 | ~~F2~~ | ~~API de consulta com filtros~~ | F1 | 6 | ✅ Concluída | 07/10/2026 | `2365139` |
 | ~~F3~~ | ~~Tela de estoque, com destaque para mínimo e vencidos~~ | A3 | 10 | ✅ Concluída | 08/10/2026 | `6a6321e` |
 
-## Bloco G — Previsão · 40 h  ·  22 de 40 h concluídas
+## Bloco G — Previsão · 40 h  ·  30 de 40 h concluídas
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
 | ~~G1~~ | ~~Tabela de consumo diário e rotina de agregação~~ | E2 | 10 | ✅ Concluída | 12/11/2026 | `48dba3f` |
 | ~~G2~~ | ~~Cálculo do consumo médio e por dia da semana~~ | G1 | 12 | ✅ Concluída | 12/11/2026 | `d6a3e45` |
-| G3 | Tabela de previsão e gravação do resultado | G2 | 8 | ⬜ A fazer | — | — |
+| ~~G3~~ | ~~Tabela de previsão e gravação do resultado~~ | G2 | 8 | ✅ Concluída | 12/11/2026 | `62b0ec5` |
 | G4 | Regra: histórico mínimo antes de projetar | G2 | 4 | ⬜ A fazer | — | — |
 | G5 | Agendador das rotinas diárias | G3 | 6 | ⬜ A fazer | — | — |
 
@@ -239,9 +239,26 @@ cronograma, a regra de negócio (quando houver) e o commit.
   defeito testado não mudava o resultado e foi trocado por um que muda. 15 testes automáticos —
   total do projeto: 883, todos passando. Concluída em 12/11/2026 (prevista para 09 e 10/11/2026).
 
-**Próxima tarefa:** G3 — tabela de previsão e gravação do resultado (ponto de pedido, RN08, e
-sugestão de compra, RF11). Antes dela, o grupo precisa decidir a lacuna **L15** (fórmula da
-sugestão de compra). Sem essa decisão, a G4 (histórico mínimo, RN09) e a E5 podem andar.
+- **G3 — Previsão gravada: quando acaba, quando pedir e quanto pedir (RN08, RF11).** Toda
+  madrugada o sistema guarda, para cada produto, a média de venda, **em quantos dias o estoque
+  acaba**, o **ponto de pedido** e **quanto comprar** (tabela `previsao_produto`, igual à Apostila
+  IV). Os dias até acabar levam em conta o dia da semana: com 46 latas na quinta, a cerveja acaba
+  em 3,5 dias por causa do sábado — só pela média seriam 5,8, e a loja ficaria sem cerveja no
+  domingo. Conferido com os exemplos da apostila: arroz a 5 kg por dia com 20 kg acaba em 4 dias
+  (RN06); carne a 8 kg por dia, fornecedor que entrega em 3 dias e 20 % de segurança → ponto de
+  pedido de 28,8 kg (RN08), com os 20 % lidos da tabela de parâmetros. Commit `62b0ec5`.
+  **Decisão do grupo (lacuna L15, 12/11/2026):** a apostila pede a sugestão de compra mas não diz
+  a conta. Decidido: **o que o produto vai vender no prazo de entrega do fornecedor mais 7 dias,
+  menos o que já tem em estoque**; nunca negativa, e sem considerar o pedido mínimo. Produto sem
+  fornecedor cadastrado não tem prazo de entrega, então fica sem ponto de pedido e sem sugestão.
+  **Foi provado que os testes pegam erro:** nove defeitos de propósito (esquecer o estoque de
+  segurança, dias até acabar só pela média, sugestão sem os 7 dias, sugestão negativa, sugestão
+  sem descontar o estoque, sem a fração do último dia, produto sem fornecedor tratado como prazo
+  zero, sugestão começando amanhã, conta das semanas errada) — todos pegos. 19 testes automáticos
+  — total do projeto: 902, todos passando. Concluída em 12/11/2026 (prevista para 11/11/2026).
+
+**Próxima tarefa:** G4 — histórico mínimo antes de projetar (RN09): produto com menos de 14 dias
+de venda mostra "ainda aprendendo" em vez de número. Depois, G5 (agendador da rodada das 03h00).
 
 ### 05/11/2026
 
