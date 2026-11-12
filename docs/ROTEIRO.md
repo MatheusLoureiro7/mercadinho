@@ -114,7 +114,7 @@ quando o formato for conhecido. **Não chute o formato e saia implementando.**
 | [x] | **G1** | Tabela de consumo diário e rotina de agregação | BD/API | E2 | 10 |
 | [x] | **G2** | Cálculo do consumo médio e por dia da semana | Regra | G1 | 12 |
 | [x] | **G3** | Tabela de previsão e gravação do resultado | BD/API | G2 | 8 |
-| [ ] | **G4** | Regra: histórico mínimo antes de projetar | Regra | G2 | 4 |
+| [x] | **G4** | Regra: histórico mínimo antes de projetar | Regra | G2 | 4 |
 | [ ] | **G5** | Agendador das rotinas diárias | Infra | G3 | 6 |
 
 **G1 = RN11** (filtra só VENDA) · **G2 = RN06 e RN07** · **G3 = RN08** · **G4 = RN09**.

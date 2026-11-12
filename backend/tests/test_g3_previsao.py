@@ -146,8 +146,14 @@ def test_g3_saldo_negativo_acaba_em_zero_dias(arroz):
     assert _previsao(arroz).dias_ate_acabar == Decimal("0.0")
 
 
-def test_g3_sem_venda_nao_tem_dias_ate_acabar(db):
+def test_g3_sem_venda_nos_30_dias_nao_tem_dias_ate_acabar(db):
+    # Tem histórico (RN09: 14 dias de venda em agosto), mas nada vendido nos últimos 30 dias.
     fosforo = _produto("Fósforo")
+    for k in range(14):
+        dia = date(2026, 8, 1) + timedelta(days=k)
+        ConsumoDiario.objects.create(
+            produto=fosforo, data=dia, quantidade_vendida=1, dia_semana=dia_da_semana(dia)
+        )
     _saldo(fosforo, "10")
     calcular_previsao()
     previsao = _previsao(fosforo)
@@ -236,11 +242,11 @@ def test_g3_numero_de_consultas_nao_cresce_com_os_produtos(db, django_assert_num
     for n in range(3):
         _vende_todo_dia(_produto(f"Produto {n}"), "1")
     calcular_previsao()  # aquece o cache de tipos do banco
-    with django_assert_num_queries(8):
+    with django_assert_num_queries(10):
         calcular_previsao()
     for n in range(3, 10):
         _vende_todo_dia(_produto(f"Produto {n}"), "1")
-    with django_assert_num_queries(8):
+    with django_assert_num_queries(10):
         calcular_previsao()
 
 

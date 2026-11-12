@@ -13,20 +13,23 @@ Para cada produto, a partir do consumo da G2 (`previsao.calculo`) e do saldo de 
   mínimo do fornecedor não entra.
 Sem fornecedor padrão não há prazo de entrega: ponto de pedido e sugestão ficam nulos.
 
-O "ainda aprendendo" (RN09) é da G4: aqui `calculado_em` recebe sempre a hora da rodada.
+RN09 (G4): produto com menos de `historico_minimo_dias` dias de histórico — COUNT(DISTINCT data)
+em consumo_diario, o histórico inteiro, só dias com venda — fica com a linha toda nula, inclusive
+`calculado_em`: é o "ainda aprendendo", e nenhum número sai para tela ou aviso.
 """
 
 from datetime import date, timedelta
 from decimal import ROUND_HALF_UP, Decimal
 
 from django.db import transaction
+from django.db.models import Count
 from django.utils import timezone
 
 from cadastro.models import Produto
 from comum.parametros import parametro_inteiro
 from estoque.saldo import saldos_de_todos
 from previsao.calculo import MILESIMO, Consumo, consumo_de_todos
-from previsao.models import PrevisaoProduto
+from previsao.models import ConsumoDiario, PrevisaoProduto
 
 DIAS_ALEM_DO_PRAZO = 7  # L15, decisão do grupo em 12/11/2026
 DECIMO = Decimal("0.1")  # dias_ate_acabar é NUMERIC(8,1)
@@ -77,16 +80,26 @@ def _previsao(produto: Produto, consumo: Consumo, saldo: Decimal, seguranca_pct:
     )
 
 
+def dias_de_historico() -> dict[int, int]:
+    """RN09: em quantos dias cada produto vendeu, no histórico inteiro de consumo_diario."""
+    linhas = ConsumoDiario.objects.values("produto_id").annotate(dias=Count("data", distinct=True)).order_by()
+    return {linha["produto_id"]: linha["dias"] for linha in linhas}
+
+
 def calcular_previsao() -> int:
     agora = timezone.now()
     hoje = timezone.localdate(agora)
     seguranca_pct = parametro_inteiro("estoque_seguranca_pct")
+    minimo = parametro_inteiro("historico_minimo_dias")
+    historico = dias_de_historico()
     consumos = consumo_de_todos()
     saldos = saldos_de_todos()
     previsoes = [
         _previsao(
             produto, consumos[produto.pk], saldos.get(produto.pk, Decimal(0)), seguranca_pct, hoje, agora
         )
+        if historico.get(produto.pk, 0) >= minimo
+        else PrevisaoProduto(produto=produto)  # RN09: ainda aprendendo
         for produto in Produto.objects.select_related("fornecedor_padrao").filter(pk__in=consumos)
     ]
     campos = [campo.name for campo in PrevisaoProduto._meta.concrete_fields if not campo.primary_key]

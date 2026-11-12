@@ -27,7 +27,6 @@ TESTES = Path(__file__).resolve().parent
 
 # Regras que ainda não têm código: o teste delas nasce com a tarefa que as implementa.
 AINDA_SEM_CODIGO = {
-    "RN09": "histórico mínimo para prever — G4, espera a D01",
     "RN10": "produtos que não podem faltar no fim de semana — H3, espera a D01 (e a L03, feriados)",
 }
 
