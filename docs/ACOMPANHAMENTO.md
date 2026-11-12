@@ -21,13 +21,13 @@ O diário, no fim do arquivo, conta o que foi feito em cada dia.
 
 | | Concluído | Total | % |
 |---|---|---|---|
-| **Tarefas** | 39 | 51 | 76,5 % |
-| **Horas estimadas** | 288 h | 378 h | 76,2 % |
+| **Tarefas** | 40 | 51 | 78,4 % |
+| **Horas estimadas** | 292 h | 378 h | 77,2 % |
 
 | Etapa | Blocos | Horas concluídas | Total | % |
 |---|---|---|---|---|
 | 1 · Aviso de validade | A, B, C, D, F, J | 160 h | 212 h | 75,5 % |
-| 2 · Aviso de ruptura | E, G, H | 110 h | 136 h | 80,9 % |
+| 2 · Aviso de ruptura | E, G, H | 114 h | 136 h | 83,8 % |
 | 3 · Gestão | I | 18 h | 30 h | 60,0 % |
 
 As horas concluídas são as **estimadas** na apostila para cada tarefa entregue, não horas medidas.
@@ -128,14 +128,14 @@ na demonstração são de exemplo, criados pelo grupo.
 | ~~F2~~ | ~~API de consulta com filtros~~ | F1 | 6 | ✅ Concluída | 07/10/2026 | `2365139` |
 | ~~F3~~ | ~~Tela de estoque, com destaque para mínimo e vencidos~~ | A3 | 10 | ✅ Concluída | 08/10/2026 | `6a6321e` |
 
-## Bloco G — Previsão · 40 h  ·  30 de 40 h concluídas
+## Bloco G — Previsão · 40 h  ·  34 de 40 h concluídas
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
 | ~~G1~~ | ~~Tabela de consumo diário e rotina de agregação~~ | E2 | 10 | ✅ Concluída | 12/11/2026 | `48dba3f` |
 | ~~G2~~ | ~~Cálculo do consumo médio e por dia da semana~~ | G1 | 12 | ✅ Concluída | 12/11/2026 | `d6a3e45` |
 | ~~G3~~ | ~~Tabela de previsão e gravação do resultado~~ | G2 | 8 | ✅ Concluída | 12/11/2026 | `62b0ec5` |
-| G4 | Regra: histórico mínimo antes de projetar | G2 | 4 | ⬜ A fazer | — | — |
+| ~~G4~~ | ~~Regra: histórico mínimo antes de projetar~~ | G2 | 4 | ✅ Concluída | 12/11/2026 | `7fc505c` |
 | G5 | Agendador das rotinas diárias | G3 | 6 | ⬜ A fazer | — | — |
 
 ## Bloco H — Avisos · 52 h  ·  42 de 52 h concluídas
@@ -257,8 +257,20 @@ cronograma, a regra de negócio (quando houver) e o commit.
   zero, sugestão começando amanhã, conta das semanas errada) — todos pegos. 19 testes automáticos
   — total do projeto: 902, todos passando. Concluída em 12/11/2026 (prevista para 11/11/2026).
 
-**Próxima tarefa:** G4 — histórico mínimo antes de projetar (RN09): produto com menos de 14 dias
-de venda mostra "ainda aprendendo" em vez de número. Depois, G5 (agendador da rodada das 03h00).
+- **G4 — "Ainda aprendendo" (RN09).** Produto com menos de **14 dias de venda** não ganha número
+  de previsão: o sistema guarda a linha vazia, que é o sinal de "ainda aprendendo", e assim
+  nenhuma tela nem aviso mostra "acaba em 2 dias" para um produto que acabou de chegar — o teste
+  da própria apostila. Conta-se o **histórico inteiro**, não só os últimos 30 dias, e contam-se
+  **dias com venda**, não quantidade: vender 500 unidades em 3 dias não encurta o aprendizado. Os
+  14 dias vêm da tabela de parâmetros, então mudam sem mexer no programa. Quando o produto chega
+  aos 14 dias, ganha os números na rodada seguinte. Commit `7fc505c`.
+  **Foi provado que os testes pegam erro:** seis defeitos de propósito (exigir mais que 14 em vez
+  de "pelo menos 14", 14 escrito no programa em vez do parâmetro, contar só os últimos 30 dias,
+  contar quantidade em vez de dias, produto aprendendo com hora de cálculo, produto aprendendo com
+  média) — todos pegos. 8 testes automáticos — total do projeto: 910, todos passando. Concluída em
+  12/11/2026 (prevista para 11/11/2026).
+
+**Próxima tarefa:** G5 — agendador da rodada das 03h00 (importação → consumo → previsão → avisos).
 
 ### 05/11/2026
 
