@@ -17,17 +17,17 @@ O diário, no fim do arquivo, conta o que foi feito em cada dia.
 
 ## Resumo
 
-*Atualizado em 05/11/2026.*
+*Atualizado em 12/11/2026.*
 
 | | Concluído | Total | % |
 |---|---|---|---|
-| **Tarefas** | 35 | 51 | 68,6 % |
-| **Horas estimadas** | 248 h | 378 h | 65,6 % |
+| **Tarefas** | 36 | 51 | 70,6 % |
+| **Horas estimadas** | 258 h | 378 h | 68,3 % |
 
 | Etapa | Blocos | Horas concluídas | Total | % |
 |---|---|---|---|---|
 | 1 · Aviso de validade | A, B, C, D, F, J | 160 h | 212 h | 75,5 % |
-| 2 · Aviso de ruptura | E, G, H | 70 h | 136 h | 51,5 % |
+| 2 · Aviso de ruptura | E, G, H | 80 h | 136 h | 58,8 % |
 | 3 · Gestão | I | 18 h | 30 h | 60,0 % |
 
 As horas concluídas são as **estimadas** na apostila para cada tarefa entregue, não horas medidas.
@@ -110,14 +110,14 @@ na demonstração são de exemplo, criados pelo grupo.
 | ~~D3~~ | ~~Tela de avarias e quebras~~ | A3 | 7 | ✅ Concluída | 08/10/2026 | `c8c4252` |
 | ~~D4~~ | ~~Integração e teste~~ | D1, D3 | 2 | ✅ Concluída | 08/10/2026 | `9fe0d21` |
 
-## Bloco E — Entrada das vendas · 44 h  ·  28 de 44 h concluídas
+## Bloco E — Entrada das vendas · 44 h  ·  38 de 44 h concluídas
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
 | ~~E1~~ | ~~Levantar o formato do arquivo exportado pelo caixa~~ | decisão D01 (Excel) | 6 | ✅ Concluída | 05/11/2026 | `aded7a7` |
 | ~~E2~~ | ~~Criar as tabelas de venda, item de venda e importação~~ | A2 | 6 | ✅ Concluída | 05/11/2026 | `f6f48e7` |
 | ~~E3~~ | ~~Serviço que lê o arquivo e gera venda e movimentação~~ | E1, E2 | 16 | ✅ Concluída | 05/11/2026 | `2e66774` |
-| E4 | Casar o produto do caixa com o produto cadastrado | E3 | 10 | ⬜ A fazer | — | — |
+| ~~E4~~ | ~~Casar o produto do caixa com o produto cadastrado~~ | E3 | 10 | ✅ Concluída | 12/11/2026 | `c738f43` |
 | E5 | Tela de acompanhamento da importação | E3 | 6 | ⬜ A fazer | — | — |
 
 ## Bloco F — Consulta de estoque · 22 h  ·  22 de 22 h concluídas ✅
@@ -175,6 +175,30 @@ na demonstração são de exemplo, criados pelo grupo.
 
 O que foi feito em cada dia, do mais recente para o mais antigo. Cada linha aponta a tarefa do
 cronograma, a regra de negócio (quando houver) e o commit.
+
+### 12/11/2026
+
+- **E4 — Casar o produto do caixa com o produto cadastrado (operação 04, passo 6).** Quando a
+  planilha do caixa traz um produto que o sistema não reconhece pelo nome, a venda fica
+  **pendente**. Agora o sobrinho consegue resolver: o sistema lista cada venda pendente e ele
+  escolhe qual produto do cadastro foi vendido. Nesse momento a venda sai do estoque exatamente
+  como sairia na importação: **no dia e na hora em que aconteceu**, do lote que **vence primeiro**
+  (RN01, RN02), sem usar lote que já estava vencido no dia da venda (RN16) — e passa a contar no
+  consumo daquele dia para a previsão (RN11). Venda já resolvida não pode ser resolvida de novo
+  (não baixa duas vezes), e só o perfil de operação faz isso (RN14). Commit `c738f43`.
+  **Lacuna nova, decidida pelo grupo (L26):** o modelo de dados da Apostila IV não guarda o nome
+  que veio na planilha, então o sistema não tem como mostrar "o caixa escreveu *Frango
+  congelado*". O grupo decidiu **não mudar o modelo**: a venda pendente aparece com data, hora,
+  quantidade e preço, e o sobrinho confere na planilha dele. Para a mesma linha não ficar pendente
+  todo dia, o certo é acertar o nome no cadastro igual ao do caixa.
+  **Foi provado que os testes pegam erro:** cinco defeitos de propósito (resolver duas vezes a
+  mesma venda, lista fora de ordem, baixa na hora de hoje em vez da hora da venda, lista mostrando
+  vendas já resolvidas, resolver sem baixar o estoque) — quatro pegos de primeira; o da ordem só
+  depois de um teste reforçado. 18 testes automáticos — total do projeto: 849, todos passando.
+  Concluída em 12/11/2026 (prevista para 06 e 09/11/2026).
+
+**Próxima tarefa:** E5 — tela de acompanhamento da importação, onde o sobrinho vê as planilhas
+lidas e resolve as vendas pendentes pela tela.
 
 ### 05/11/2026
 
