@@ -22,6 +22,7 @@ seção 3). Sem framework, sem biblioteca, sem fonte externa — o computador da
 | `js/procurar-produto.js` | "Procurar o produto" sem acento numa lista nativa (Entrada, Avarias) |
 | `consulta-estoque.html` · `js/consulta-estoque.js` | Tela de Consulta de estoque (F3, RF07, RN16) — os três perfis |
 | `importacao-vendas.html` · `js/importacao-vendas.js` | Tela de Importação de vendas (E5, RF06, operação 04) — do sobrinho: vendas para conferir (ligar ao produto, E4) e planilhas lidas. A planilha não é enviada pela tela: vai para a pasta do caixa e entra às 03h00 |
+| `balanco-semana.html` · `js/balanco-semana.js` | Tela de Balanço da semana (I3, RF13, L16) — da esposa: vendas, perdas (a preço de custo, em linha separada — RN11) e resultado, de segunda a domingo. Só lê |
 | `js/tabela-cartoes.js` | Até 860 px (celular e tablet), cada linha de tabela vira um cartão "rótulo: valor"; põe o nome da coluna em cada célula e os papéis de tabela para o leitor de tela |
 | `fechamento-caixa.html` · `js/fechamento-caixa.js` | Tela de Fechamento de caixa (I2, RF12, RN15, fluxograma 06) — da esposa. Ligada à API na I1: até lá avisa que não está disponível |
 | `js/situacao.js` | Situação do lote em palavra e cor: vencido, vence em N dias… (Avarias, Consulta) |

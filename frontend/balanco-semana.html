@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Balanço da semana · Mercado do Sr. João</title>
+    <link rel="icon" href="img/icone.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/painel.css" />
+    <script type="module" src="js/balanco-semana.js"></script>
+  </head>
+  <body>
+    <a class="pular-para-conteudo" href="#conteudo">Pular para o conteúdo</a>
+
+    <header class="cabecalho">
+      <div class="cabecalho__interno">
+        <span class="cabecalho__marca">
+          <span class="marca__logo" aria-hidden="true"><svg class="icone" viewBox="0 0 24 24"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7" /><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" /><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4" /><path d="M2 7h20" /><path d="M22 7v3a2 2 0 0 1-2 2 2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7" /></svg></span>
+          <span class="marca__texto">
+            <span class="marca__nome">Mercado do Sr. João</span>
+            <span class="marca__sub">Estoque e compras</span>
+          </span>
+        </span>
+        <nav aria-label="Menu principal">
+          <!-- Menu do perfil (RN14): montado por js/sessao.js com as telas que /api/sessoes/atual/ devolve. -->
+          <ul class="menu" id="menu"></ul>
+        </nav>
+        <span class="cabecalho__usuario">
+          <span class="avatar" id="usuario-inicial" aria-hidden="true"></span>
+          <span id="usuario-nome"></span>
+          <button type="button" class="botao botao--cabecalho" id="botao-sair" hidden>
+            <svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><path d="m16 17 5-5-5-5" /><path d="M21 12H9" /></svg>
+            <span class="botao__texto">Sair</span>
+          </button>
+        </span>
+      </div>
+    </header>
+
+    <main id="conteudo" class="pagina" tabindex="-1">
+      <p class="recado" id="recado" role="status" hidden>
+        <svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 8v5M12 16.5v.5" /></svg>
+        <span></span>
+      </p>
+      <div class="pagina__titulo">
+        <div>
+          <h1>Balanço da semana</h1>
+          <p class="pagina__descricao">O que a loja vendeu e o que perdeu, de segunda a domingo. As perdas ficam separadas das vendas.</p>
+        </div>
+      </div>
+
+      <!-- RF13, L16: resultado = vendas (a preço de venda) − perdas (a preço de custo). RN11: perda em
+           linha separada. A tela só mostra o que a API calcula. -->
+      <section class="cartao" aria-labelledby="titulo-semana">
+        <div class="semana">
+          <button type="button" class="botao botao--secundario" id="botao-anterior" aria-label="Semana anterior">
+            <svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6" /></svg>
+            <span class="rotulo-longo">Semana anterior</span><span class="rotulo-curto" aria-hidden="true">Anterior</span>
+          </button>
+          <h2 class="cartao__titulo semana__titulo" id="titulo-semana" tabindex="-1" aria-live="polite">Procurando…</h2>
+          <button type="button" class="botao botao--secundario" id="botao-proxima" aria-label="Próxima semana">
+            <span class="rotulo-longo">Próxima semana</span><span class="rotulo-curto" aria-hidden="true">Próxima</span>
+            <svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg>
+          </button>
+        </div>
+
+        <p class="recado" id="aviso-dias" role="status" hidden>
+          <svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 8v5M12 16.5v.5" /></svg>
+          <span></span>
+        </p>
+        <p class="pagina__descricao" id="aviso-andamento" hidden></p>
+
+        <dl class="balanco" id="resumo">
+          <div class="balanco__item">
+            <dt>Vendas</dt>
+            <dd id="valor-vendas">—</dd>
+            <dd class="balanco__nota" id="nota-vendas"></dd>
+          </div>
+          <div class="balanco__item balanco__item--perdas">
+            <dt>Perdas <span class="balanco__dica">a preço de custo</span></dt>
+            <dd id="valor-perdas">—</dd>
+            <dd class="balanco__nota" id="nota-perdas"></dd>
+          </div>
+          <div class="balanco__item balanco__item--resultado">
+            <dt>Resultado <span class="balanco__dica">vendas menos perdas</span></dt>
+            <dd id="valor-resultado">—</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section class="cartao" aria-labelledby="titulo-vendas">
+        <h2 class="cartao__titulo" id="titulo-vendas">Vendas por dia</h2>
+        <div class="tabela-rolavel" tabindex="0" role="region" aria-labelledby="titulo-vendas">
+          <table class="tabela">
+            <thead>
+              <tr>
+                <th scope="col">Dia</th>
+                <th scope="col" class="numero">Cupons</th>
+                <th scope="col" class="numero">Vendas</th>
+              </tr>
+            </thead>
+            <tbody id="corpo-vendas"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- RN11: as perdas aparecem separadas, produto por produto, com o valor a preço de custo. -->
+      <section class="cartao" aria-labelledby="titulo-perdas">
+        <h2 class="cartao__titulo" id="titulo-perdas">Perdas por produto</h2>
+        <p class="recado" id="aviso-custo" role="status" hidden>
+          <svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 8v5M12 16.5v.5" /></svg>
+          <span>Algumas perdas não entraram no valor porque o produto não tem preço de custo cadastrado. Cadastre o custo em Produtos para o balanço ficar completo.</span>
+        </p>
+        <div class="tabela-rolavel" tabindex="0" role="region" aria-labelledby="titulo-perdas">
+          <table class="tabela">
+            <thead>
+              <tr>
+                <th scope="col">Produto</th>
+                <th scope="col" class="numero">Quantidade</th>
+                <th scope="col" class="numero">Valor a preço de custo</th>
+              </tr>
+            </thead>
+            <tbody id="corpo-perdas"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

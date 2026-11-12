@@ -245,6 +245,13 @@ vendida entra na conta.
 **Impacto:** tarefa I3 (12 h).
 **Quem decide:** o grupo, confirmando com a esposa do Sr. João como ela faz a conta no caderno.
 
+> **✅ DECIDIDA em 12/11/2026 (tarefa I3):** **resultado = vendas da semana (a preço de venda, o que
+> o caixa registrou) − perdas da semana (a preço de custo).** O custo da perda é o do lote; se o lote
+> não tiver custo, o preço de custo do produto. **O custo da mercadoria vendida não entra** — seria
+> controle financeiro, fora do escopo. As perdas aparecem em linha separada (RN11). Perda sem custo
+> cadastrado não entra no valor e é avisada na tela. Adotado junto, a confirmar: semana de segunda
+> a domingo; a tela abre na semana de ontem; dia sem a planilha do caixa importada é avisado.
+
 ---
 
 ### L17 — `unidade_medida` aceita só KG, UN, L e PCT?

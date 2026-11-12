@@ -7,6 +7,8 @@ Fechamento de caixa — endpoints. Tarefa I1 (RN15, RF12, fluxograma 06). Tela d
     POST {"valor_contado"}   grava; data, apurado e diferença são do sistema
 
 RN15: não existe alterar nem apagar — correção é um registro novo.
+
+/api/balancos/ — Balanço da semana (I3), também da esposa: ver BalancoView.
 """
 
 from datetime import date
@@ -15,7 +17,9 @@ from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
+from caixa.balanco import balanco_da_semana, ontem, semana_de
 from caixa.fechamento import apurado_do_fechamento, dia_do_fechamento, registrar_fechamento
 from caixa.models import FechamentoCaixa
 from caixa.serializers import DinheiroContadoSerializer, FechamentoSerializer
@@ -47,3 +51,52 @@ class FechamentoViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     def apurado(self, request):
         dia, valor = apurado_do_fechamento()
         return Response({"data": dia.isoformat(), "valor_sistema": f"{valor:.2f}"})
+
+
+class BalancoView(APIView):
+    """
+    Balanço da semana — tarefa I3 (RF13, L16). Tela da esposa (GESTAO, RN14).
+
+    GET /api/balancos/?semana=AAAA-MM-DD   qualquer dia da semana; sem o filtro, a semana de ontem
+    """
+
+    tela = "balanco_semana"
+
+    def get(self, request):
+        texto = request.query_params.get("semana")
+        try:
+            dia = date.fromisoformat(texto) if texto else ontem()
+        except ValueError as erro:
+            raise ValidationError({"semana": ["Use a data no formato AAAA-MM-DD."]}) from erro
+        if semana_de(dia)[0] > ontem():
+            raise ValidationError(
+                {"semana": ["Essa semana ainda não começou: escolha uma semana que já tenha vendas."]}
+            )
+        balanco = balanco_da_semana(dia)
+        return Response(
+            {
+                "inicio": balanco.inicio.isoformat(),
+                "fim": balanco.fim.isoformat(),
+                "ate": balanco.ate.isoformat(),
+                "vendas_total": f"{balanco.vendas_total:.2f}",
+                "cupons": balanco.cupons,
+                "vendas_por_dia": [
+                    {"data": dia.isoformat(), "total": f"{total:.2f}", "cupons": cupons}
+                    for dia, total, cupons in balanco.vendas_por_dia
+                ],
+                "perdas": [
+                    {
+                        "produto_nome": item.produto_nome,
+                        "unidade_medida": item.unidade_medida,
+                        "quantidade": f"{item.quantidade:f}",
+                        "valor": None if item.valor is None else f"{item.valor:.2f}",
+                        "sem_custo": item.sem_custo,
+                    }
+                    for item in balanco.perdas
+                ],
+                "perdas_total": f"{balanco.perdas_total:.2f}",
+                "perdas_sem_custo": balanco.perdas_sem_custo,
+                "resultado": f"{balanco.resultado:.2f}",
+                "dias_sem_vendas": [dia.isoformat() for dia in balanco.dias_sem_vendas],
+            }
+        )

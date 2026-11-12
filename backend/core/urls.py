@@ -12,7 +12,7 @@ from rest_framework.routers import APIRootView, DefaultRouter
 
 from alertas.views import TelegramWebhookView
 from cadastro.views import CategoriaViewSet, FornecedorViewSet, ProdutoViewSet
-from caixa.views import FechamentoViewSet
+from caixa.views import BalancoView, FechamentoViewSet
 from comum.views import SessaoAtualView, SessaoView
 from estoque.views import EstoquePorLoteView, EstoquePorProdutoView, LoteViewSet, PerdaViewSet
 from vendas.views import ImportacaoViewSet, ItemPendenteViewSet
@@ -42,6 +42,7 @@ urlpatterns = [
     path("api/estoque/", EstoquePorProdutoView.as_view(), name="estoque-produtos"),  # F2
     path("api/estoque/lotes/", EstoquePorLoteView.as_view(), name="estoque-lotes"),  # F2
     path("api/telegram/", TelegramWebhookView.as_view(), name="telegram-webhook"),  # H7
+    path("api/balancos/", BalancoView.as_view(), name="balanco"),  # I3
     path("api/", include(roteador.urls)),
 ]
 

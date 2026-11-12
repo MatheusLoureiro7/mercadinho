@@ -151,7 +151,7 @@ entrada de mercadoria. É a parte do produto que entrega valor mais cedo e sem d
 |---|---|---|---|---|---|
 | [x] | **I1** | Tabela de fechamento e cálculo da diferença | BD/Regra | E2 | 8 |
 | [x] | **I2** | Tela de fechamento de caixa | Tela | A3 | 10 |
-| [ ] | **I3** | Relatório de balanço semanal | API/Tela | E2, D1 | 12 |
+| [x] | **I3** | Relatório de balanço semanal | API/Tela | E2, D1 | 12 |
 
 **I1 = RN15**: a diferença é calculada, nunca digitada, e o registro nunca é alterado nem apagado.
 **I3**: perdas aparecem em linha separada das vendas (RN11).

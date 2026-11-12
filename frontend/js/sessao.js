@@ -22,7 +22,7 @@ export const TELAS = {
   importacao_vendas: { nome: "Importação de vendas", endereco: "importacao-vendas.html" }, // E5
   consulta_estoque: { nome: "Consulta de estoque", endereco: "consulta-estoque.html" },
   fechamento_caixa: { nome: "Fechamento de caixa", endereco: "fechamento-caixa.html" }, // I2 (API na I1)
-  balanco_semana: { nome: "Balanço da semana", endereco: null }, // I3
+  balanco_semana: { nome: "Balanço da semana", endereco: "balanco-semana.html" }, // I3
 };
 
 // Ícone de cada tela no menu (SVG no estilo Lucide, traço 2 px, embutido: nada baixado de fora).

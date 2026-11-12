@@ -1010,6 +1010,81 @@ section + .cartao {
   }
 }
 
+/* ---------------------------------------------------------------- Balanço da semana (I3) */
+
+/* Semana anterior · título da semana · próxima semana, numa linha; no celular, título em cima. */
+.semana {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--esp-3);
+  margin-bottom: var(--esp-4);
+}
+.semana__titulo {
+  margin: 0;
+  text-align: center;
+  flex: 1 1 14rem;
+}
+.semana .rotulo-curto {
+  display: none;
+}
+/* No celular: título da semana em cima e os dois botões lado a lado, com o nome curto à vista (o
+   nome completo continua no aria-label do botão). */
+@media (max-width: 640px) {
+  .semana__titulo {
+    order: -1;
+    flex-basis: 100%;
+  }
+  .semana .botao {
+    flex: 1 1 0;
+    justify-content: center;
+  }
+  .semana .rotulo-longo {
+    display: none;
+  }
+  .semana .rotulo-curto {
+    display: inline;
+  }
+}
+/* Vendas, perdas e resultado lado a lado; cada número com a palavra do que ele é (RN11: perda à
+   parte, nunca somada às vendas). */
+.balanco {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: var(--esp-3);
+  margin: 0;
+}
+.balanco__item {
+  padding: var(--esp-3) var(--esp-4);
+  border: 1px solid var(--cor-divisoria);
+  border-radius: var(--raio);
+  background: var(--cor-superficie-2);
+}
+.balanco__item--resultado {
+  border-color: var(--cor-acao);
+}
+.balanco dt {
+  font-weight: 600;
+  color: var(--cor-texto-suave);
+}
+.balanco__dica {
+  display: block;
+  font-weight: 400;
+  font-size: 0.875rem;
+}
+.balanco dd {
+  margin: var(--esp-1) 0 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.balanco dd.balanco__nota {
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: var(--cor-texto-suave);
+}
+
 /* ---------------------------------------------------------------- Telas estreitas */
 
 @media (max-width: 860px) {
