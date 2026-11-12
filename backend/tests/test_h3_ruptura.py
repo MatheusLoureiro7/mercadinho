@@ -232,12 +232,77 @@ def test_rn08_aviso_de_ontem_ja_enviado_continua_enviado_e_hoje_avisa_de_novo(fr
     assert [aviso.status for aviso in _avisos(frango)] == ["ENVIADO", "PENDENTE"]
 
 
-# --- RN10 -----------------------------------------------------------------------------------------
+# --- Depois do "Sim, pedir" ----------------------------------------------------------------------
+# Decisão do grupo (12/11/2026): depois que o Sr. João responde "Sim, pedir", o produto não é
+# avisado de novo até chegar um lote novo dele — o pedido está a caminho.
+
+
+def _respondeu_sim(produto, quando):
+    with patch("django.utils.timezone.now", return_value=quando):
+        aviso = gerar_avisos_de_ruptura()[0]
+    Alerta.objects.filter(pk=aviso.pk).update(
+        status="ENVIADO", enviado_em=quando, resposta_usuario="Sim, pedir"
+    )
+
+
+def _lote_chegou(produto, dia, quantidade="1"):
+    from estoque.models import Lote
+
+    Lote.objects.create(
+        produto=produto,
+        quantidade_inicial=Decimal(quantidade),
+        quantidade_atual=Decimal(quantidade),
+        data_entrada=dia,
+    )
+
+
+def test_h3_depois_do_sim_pedir_nao_avisa_de_novo_ate_chegar_mercadoria(frango, dono):
+    _previsao(frango)
+    _saldo(frango, "6")
+    _respondeu_sim(frango, QUARTA - timedelta(days=1))
+    assert gerar_avisos_de_ruptura() == []
+
+
+def test_h3_depois_do_sim_pedir_nem_o_aviso_de_fim_de_semana(carvao, dono):
+    _previsao(carvao, ponto="10")
+    _saldo(carvao, "8")
+    _respondeu_sim(carvao, QUARTA)
+    PrevisaoProduto.objects.filter(produto=carvao).update(ponto_pedido=Decimal("9"))  # 8 ≤ 9 × 1,4
+    with patch("django.utils.timezone.now", return_value=QUINTA):
+        assert gerar_avisos_de_ruptura() == []
+
+
+def test_h3_chegou_lote_depois_do_sim_e_continua_baixo_avisa_de_novo(frango, dono):
+    _previsao(frango)
+    _saldo(frango, "6")
+    _respondeu_sim(frango, QUARTA - timedelta(days=2))
+    _lote_chegou(frango, date(2026, 11, 10))
+    assert len(gerar_avisos_de_ruptura()) == 1
+
+
+def test_h3_lote_que_chegou_no_mesmo_dia_do_sim_conta_como_chegado(frango, dono):
+    # O aviso nasce às 03h00; a entrega das 10h00 do mesmo dia já é a mercadoria pedida.
+    _previsao(frango)
+    _saldo(frango, "6")
+    _respondeu_sim(frango, QUARTA - timedelta(days=1))
+    _lote_chegou(frango, date(2026, 11, 10))
+    assert len(gerar_avisos_de_ruptura()) == 1
+
+
+def test_h3_lote_antigo_nao_conta_como_chegada_do_pedido(frango, dono):
+    _previsao(frango)
+    _saldo(frango, "6")
+    _lote_chegou(frango, date(2026, 11, 1))
+    _respondeu_sim(frango, QUARTA - timedelta(days=1))
+    assert gerar_avisos_de_ruptura() == []
 
 
 @pytest.fixture
 def carvao(db):
     return _produto("Carvão 5 kg", critico=True, unidade="UN")
+
+
+# --- RN10 -----------------------------------------------------------------------------------------
 
 
 def test_rn10_quinta_critico_dentro_da_folga_avisa_para_o_fim_de_semana(carvao, dono):

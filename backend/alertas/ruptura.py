@@ -16,7 +16,10 @@ Decisões da H3 (docs/ACOMPANHAMENTO.md, 12/11/2026), as mesmas da H2 onde cabem
 - urgência (L11): ALTA quando acabou ou acaba antes de a entrega chegar; MEDIA nos outros casos;
   fim de semana, MEDIA;
 - produto crítico já abaixo do ponto de pedido na quinta recebe só o aviso de "vai acabar", que
-  tem o botão "Sim, pedir" (H7) — não dois avisos do mesmo produto.
+  tem o botão "Sim, pedir" (H7) — não dois avisos do mesmo produto;
+- depois que o Sr. João responde "Sim, pedir" (decisão do grupo, 12/11/2026), o produto não é
+  avisado de novo até chegar um lote novo dele: o pedido está a caminho. Lote que entra no mesmo
+  dia do aviso respondido conta como chegado (o aviso nasce às 03h00, a entrega vem depois).
 
 O saldo vem de `estoque.saldo` (RN01) e a previsão de previsao_produto; este módulo não lê
 movimentação (guarda da RN11, tarefa D2).
@@ -26,14 +29,17 @@ from datetime import date
 from decimal import ROUND_FLOOR, Decimal
 
 from django.db import transaction
+from django.db.models import Max
 from django.utils import timezone
 
 from alertas.estados import cancelar_os_abertos
 from alertas.models import Alerta
+from alertas.respostas import RESPOSTA_PEDIR
 from alertas.servicos import criar_aviso
 from cadastro.models import Usuario
 from comum.formatos import quantidade_na_loja
 from comum.parametros import parametro_inteiro
+from estoque.models import Lote
 from estoque.saldo import saldos_de_todos
 from previsao.models import PrevisaoProduto
 
@@ -66,6 +72,28 @@ def _acaba_antes_da_entrega(previsao: PrevisaoProduto, saldo: Decimal) -> bool:
     return saldo <= 0 or (previsao.dias_ate_acabar is not None and previsao.dias_ate_acabar < prazo)
 
 
+def _pedidos_a_caminho() -> set[int]:
+    """Produtos com "Sim, pedir" respondido e nenhum lote entrado desde o dia daquele aviso."""
+    ultimo_sim = (
+        Alerta.objects.filter(tipo=Alerta.Tipo.RUPTURA, resposta_usuario=RESPOSTA_PEDIR)
+        .values("produto_id")
+        .annotate(quando=Max("gerado_em"))
+        .order_by()
+    )
+    ultima_entrada = dict(
+        Lote.objects.values("produto_id")
+        .annotate(dia=Max("data_entrada"))
+        .order_by()
+        .values_list("produto_id", "dia")
+    )
+    return {
+        linha["produto_id"]
+        for linha in ultimo_sim
+        if ultima_entrada.get(linha["produto_id"]) is None
+        or ultima_entrada[linha["produto_id"]] < timezone.localdate(linha["quando"])
+    }
+
+
 def gerar_avisos_de_ruptura(*, hoje: date | None = None) -> list[Alerta]:
     """Grava os avisos PENDENTES de "vai acabar" (RN08) e, na quinta, de fim de semana (RN10)."""
     hoje = hoje or timezone.localdate()  # o dia da loja, nunca o CURRENT_DATE (UTC) do banco
@@ -73,6 +101,7 @@ def gerar_avisos_de_ruptura(*, hoje: date | None = None) -> list[Alerta]:
     folga = Decimal(1) + Decimal(parametro_inteiro("folga_fim_semana_pct")) / 100
     destinatario = Usuario.objects.filter(papel=Usuario.Papel.DONO, ativo=True).order_by("pk").first()
     saldos = saldos_de_todos()
+    a_caminho = _pedidos_a_caminho()
     tipos = [Alerta.Tipo.RUPTURA, Alerta.Tipo.FIM_SEMANA]
     ja_avisados_hoje = set(
         Alerta.objects.filter(tipo__in=tipos, gerado_em__date=hoje).values_list("produto_id", "tipo")
@@ -87,6 +116,8 @@ def gerar_avisos_de_ruptura(*, hoje: date | None = None) -> list[Alerta]:
     with transaction.atomic():
         for previsao in previsoes:
             produto = previsao.produto
+            if produto.pk in a_caminho:
+                continue
             saldo = saldos.get(produto.pk, Decimal(0))
             if saldo <= previsao.ponto_pedido:
                 tipo, prefixo = Alerta.Tipo.RUPTURA, ""
