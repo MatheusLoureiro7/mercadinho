@@ -38,6 +38,13 @@ geral. O exemplo da apostila (cerveja: 8/dia na média, 26 aos sábados) passari
 critério.
 **Quem decide:** o grupo. É uma escolha técnica, não precisa do cliente.
 
+> **✅ DECIDIDA em 12/11/2026 (tarefa G2):** **≥ 1,5 × a média geral**, como proposto. Quando a
+> média de um dia da semana chega a 1,5 vez a média geral, a projeção daquele dia usa a média do
+> dia (a maior das duas); nos outros dias, a média geral — inclusive no dia mais fraco, para o
+> domingo parado não derrubar a projeção. A média do dia usa os mesmos 30 dias da RN06 e divide
+> pelas vezes que o dia aparece neles (4 ou 5), contando dia sem venda como zero. O fator fica em
+> `previsao.calculo.FATOR_DIA_RELEVANTE`.
+
 ---
 
 ### L03 — Qual calendário de feriados a RN10 usa?

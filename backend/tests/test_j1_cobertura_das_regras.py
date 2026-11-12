@@ -27,8 +27,6 @@ TESTES = Path(__file__).resolve().parent
 
 # Regras que ainda não têm código: o teste delas nasce com a tarefa que as implementa.
 AINDA_SEM_CODIGO = {
-    "RN06": "consumo médio diário — G2, espera a D01 (formato do arquivo do caixa)",
-    "RN07": "consumo por dia da semana — G2, espera a D01",
     "RN08": "ponto de pedido e aviso de ruptura — G3/H3, espera a D01",
     "RN09": "histórico mínimo para prever — G4, espera a D01",
     "RN10": "produtos que não podem faltar no fim de semana — H3, espera a D01 (e a L03, feriados)",
