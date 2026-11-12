@@ -21,14 +21,14 @@ O diário, no fim do arquivo, conta o que foi feito em cada dia.
 
 | | Concluído | Total | % |
 |---|---|---|---|
-| **Tarefas** | 43 | 51 | 84,3 % |
-| **Horas estimadas** | 314 h | 378 h | 83,1 % |
+| **Tarefas** | 44 | 51 | 86,3 % |
+| **Horas estimadas** | 326 h | 378 h | 86,2 % |
 
 | Etapa | Blocos | Horas concluídas | Total | % |
 |---|---|---|---|---|
 | 1 · Aviso de validade | A, B, C, D, F, J | 160 h | 212 h | 75,5 % |
 | 2 · Aviso de ruptura | E, G, H | 136 h | 136 h | 100,0 % ✅ |
-| 3 · Gestão | I | 18 h | 30 h | 60,0 % |
+| 3 · Gestão | I | 30 h | 30 h | 100,0 % ✅ |
 
 As horas concluídas são as **estimadas** na apostila para cada tarefa entregue, não horas medidas.
 
@@ -150,13 +150,13 @@ na demonstração são de exemplo, criados pelo grupo.
 | ~~H6~~ | ~~Vincular o celular do dono ao usuário~~ | H5, B1 | 4 | ✅ Concluída | 09/10/2026 | `094a2ee` |
 | ~~H7~~ | ~~Receber e registrar a resposta dele~~ | H5 | 4 | ✅ Concluída | 09/10/2026 | `606e94f` |
 
-## Bloco I — Fechamento e relatórios · 30 h  ·  18 de 30 h concluídas
+## Bloco I — Fechamento e relatórios · 30 h  ·  30 de 30 h concluídas ✅
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
 | ~~I1~~ | ~~Tabela de fechamento e cálculo da diferença~~ | E2 | 8 | ✅ Concluída | 05/11/2026 | `416b7b8` |
 | ~~I2~~ | ~~Tela de fechamento de caixa~~ | A3 | 10 | ✅ Concluída (API na I1) | 09/10/2026 | `4184da1` |
-| I3 | Relatório de balanço semanal | E2, D1 | 12 | ⬜ A fazer | — | — |
+| ~~I3~~ | ~~Relatório de balanço semanal~~ | E2, D1 | 12 | ✅ Concluída | 12/11/2026 | `f1e319e` |
 
 ## Bloco J — Qualidade e implantação · 46 h  ·  0 de 46 h concluídas
 
@@ -338,8 +338,34 @@ cronograma, a regra de negócio (quando houver) e o commit.
   do projeto: 975, todos passando. Concluída em 12/11/2026 (prevista para 06 e 09/11/2026).
   **Com a E5, a etapa 2 (aviso de ruptura) está completa: blocos E, G e H.**
 
-**Próxima tarefa:** I3 — relatório de balanço semanal (RF13). Depende da lacuna **L16** (o que é o
-"resultado do período").
+- **I3 — Balanço da semana (RF13).** A tela da esposa que substitui a conta do caderno. Mostra,
+  de segunda a domingo: **quanto a loja vendeu** (o que o caixa registrou), **quanto perdeu** (a
+  preço de custo, sempre em linha separada das vendas — RN11) e o **resultado**, com as vendas de
+  cada dia e as perdas produto por produto. Dá para voltar às semanas anteriores; não dá para ir a
+  uma semana que ainda não começou. Commit `f1e319e`.
+  **Decisão do grupo (lacuna L16, 12/11/2026):** a apostila pede o "resultado do período" sem dizer
+  a conta. Decidido: **resultado = vendas − perdas**, com as perdas a preço de custo (o custo do
+  lote ou, sem ele, o do produto). O custo da mercadoria vendida **não entra**, porque um lucro
+  completo seria controle financeiro, que a especificação deixa de fora.
+  **Adotado na tarefa, a confirmar pelo grupo:** semana de segunda a domingo, abrindo na semana de
+  ontem (as vendas de hoje só entram de madrugada); o dia cuja planilha do caixa não entrou aparece
+  como "não entrou", com aviso — nunca como "R$ 0,00", que diria que a loja não vendeu nada; perda
+  de produto sem custo cadastrado não entra no valor e é avisada, em vez de virar zero calado.
+  Conferida em foto no computador da loja e no celular; a conferência corrigiu o dia sem vendas
+  aparecendo como zero e os botões de semana quebrando no celular.
+  **Foi provado que os testes pegam erro:** sete defeitos de propósito (perda somada às vendas,
+  custo do produto no lugar do custo do lote, semana de domingo a sábado, sem aviso de dia sem
+  vendas, perda sem custo virando zero, ir para semana futura, dia sem vendas como zero) — todos
+  pegos; um só depois de um teste reforçado. 29 testes automáticos, 6 com a tela aberta num
+  navegador — total do projeto: 1004, todos passando. Concluída em 12/11/2026 (prevista para 09 a
+  11/11/2026). **Com a I3, a etapa 3 (gestão) está completa.**
+
+**Fim do desenvolvimento das três etapas.** Faltam as tarefas de implantação e qualidade: A5
+(esteira de publicação), J1 (fecha com as regras da previsão), J2 (carga dos produtos de exemplo),
+J3 (contagem de partida), J4 (teste num sábado cheio), J5 (treinamento) e J6 (implantação).
+
+**Próxima tarefa:** J2 — carga inicial dos produtos (uma lista de exemplo, porque o mercado é
+fictício).
 
 ### 05/11/2026
 
