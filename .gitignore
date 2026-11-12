@@ -24,3 +24,6 @@ arquivos_caixa/
 
 # Log da aplicação
 logs/
+
+# Arquivos de trabalho da skill design-taste-frontend (fotos e medições)
+.taste-skill/
