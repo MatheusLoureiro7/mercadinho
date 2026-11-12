@@ -21,13 +21,13 @@ O diário, no fim do arquivo, conta o que foi feito em cada dia.
 
 | | Concluído | Total | % |
 |---|---|---|---|
-| **Tarefas** | 42 | 51 | 82,4 % |
-| **Horas estimadas** | 308 h | 378 h | 81,5 % |
+| **Tarefas** | 43 | 51 | 84,3 % |
+| **Horas estimadas** | 314 h | 378 h | 83,1 % |
 
 | Etapa | Blocos | Horas concluídas | Total | % |
 |---|---|---|---|---|
 | 1 · Aviso de validade | A, B, C, D, F, J | 160 h | 212 h | 75,5 % |
-| 2 · Aviso de ruptura | E, G, H | 130 h | 136 h | 95,6 % |
+| 2 · Aviso de ruptura | E, G, H | 136 h | 136 h | 100,0 % ✅ |
 | 3 · Gestão | I | 18 h | 30 h | 60,0 % |
 
 As horas concluídas são as **estimadas** na apostila para cada tarefa entregue, não horas medidas.
@@ -110,7 +110,7 @@ na demonstração são de exemplo, criados pelo grupo.
 | ~~D3~~ | ~~Tela de avarias e quebras~~ | A3 | 7 | ✅ Concluída | 08/10/2026 | `c8c4252` |
 | ~~D4~~ | ~~Integração e teste~~ | D1, D3 | 2 | ✅ Concluída | 08/10/2026 | `9fe0d21` |
 
-## Bloco E — Entrada das vendas · 44 h  ·  38 de 44 h concluídas
+## Bloco E — Entrada das vendas · 44 h  ·  44 de 44 h concluídas ✅
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
@@ -118,7 +118,7 @@ na demonstração são de exemplo, criados pelo grupo.
 | ~~E2~~ | ~~Criar as tabelas de venda, item de venda e importação~~ | A2 | 6 | ✅ Concluída | 05/11/2026 | `f6f48e7` |
 | ~~E3~~ | ~~Serviço que lê o arquivo e gera venda e movimentação~~ | E1, E2 | 16 | ✅ Concluída | 05/11/2026 | `2e66774` |
 | ~~E4~~ | ~~Casar o produto do caixa com o produto cadastrado~~ | E3 | 10 | ✅ Concluída | 12/11/2026 | `c738f43` |
-| E5 | Tela de acompanhamento da importação | E3 | 6 | ⬜ A fazer | — | — |
+| ~~E5~~ | ~~Tela de acompanhamento da importação~~ | E3 | 6 | ✅ Concluída | 12/11/2026 | `313abeb` |
 
 ## Bloco F — Consulta de estoque · 22 h  ·  22 de 22 h concluídas ✅
 
@@ -314,8 +314,32 @@ cronograma, a regra de negócio (quando houver) e o commit.
   automáticos — total do projeto: 948, todos passando. Concluída em 12/11/2026 (prevista para 12 e
   13/11/2026). **O bloco H (avisos) está completo, e as 16 regras de negócio têm código e teste.**
 
-**Próxima tarefa:** E5 — tela de acompanhamento da importação (a última que falta na etapa 2).
-Depois, I3 (balanço semanal).
+- **Ajuste na H3 — depois do "Sim, pedir", o sistema para de avisar.** Decisão do grupo
+  (12/11/2026): quando o Sr. João responde "Sim, pedir", aquele produto não é avisado de novo
+  (nem o aviso de fim de semana) até chegar mercadoria dele — o pedido está a caminho, e o aviso
+  todo dia só incomodaria. Mercadoria que chega no mesmo dia do aviso respondido conta como
+  chegada. Quatro defeitos de propósito, todos pegos; 5 testes novos. Commit `7bf16b8`.
+
+- **E5 — Tela de Importação de vendas.** A tela do sobrinho para acompanhar as vendas que vêm do
+  caixa. A planilha **não é enviada pela tela**: ele continua salvando na pasta de sempre, e as
+  vendas entram sozinhas às 03h00 (decisão da E3). A tela tem duas partes:
+  **Vendas para conferir** — as vendas da planilha com um produto que o sistema não reconheceu
+  pelo nome, com data, hora, quantidade e preço; ele acha a linha na planilha, toca em "Escolher o
+  produto", procura o produto e a venda sai do estoque no dia em que aconteceu (E4).
+  **Planilhas lidas** — as últimas planilhas, com a situação escrita em palavras ("Lida", "Lida,
+  com vendas a conferir", "Não foi lida"), nunca só pela cor. No celular, cada linha vira um
+  cartão. A tela foi desenhada com a skill UI UX Pro Max, seguindo o sistema de design do painel,
+  e conferida em foto no computador da loja (1024 px) e no celular (360 px); a conferência corrigiu
+  três detalhes (etiqueta cortada, marca da linha cobrindo a data e "1 produtos" no plural).
+  Commit `313abeb`.
+  **Foi provado que os testes pegam erro:** quatro defeitos de propósito na tela (venda ligada
+  continuando na lista, ligar sem escolher o produto, situação só pela cor, "Cancelar" sem devolver
+  o foco) — todos pegos. 19 testes automáticos, 10 deles com a tela aberta num navegador — total
+  do projeto: 975, todos passando. Concluída em 12/11/2026 (prevista para 06 e 09/11/2026).
+  **Com a E5, a etapa 2 (aviso de ruptura) está completa: blocos E, G e H.**
+
+**Próxima tarefa:** I3 — relatório de balanço semanal (RF13). Depende da lacuna **L16** (o que é o
+"resultado do período").
 
 ### 05/11/2026
 
