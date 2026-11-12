@@ -86,7 +86,7 @@ class Movimentacao(models.Model):
     preco_unitario = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
     data_hora = models.DateTimeField(db_default=Agora())
     motivo = models.CharField(max_length=200, null=True, blank=True)  # noqa: DJ001 — obrigatório só na PERDA (D1)
-    origem = models.CharField(max_length=20, null=True, blank=True)  # noqa: DJ001 — 'TELA', 'IMPORTACAO_PDV', 'AJUSTE'
+    origem = models.CharField(max_length=20, null=True, blank=True)  # noqa: DJ001 — 'TELA', 'IMPORTACAO_PDV', 'AJUSTE', 'INVENTARIO' (J3)
 
     class Meta:
         db_table = "movimentacao"

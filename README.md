@@ -229,7 +229,7 @@ python backend/manage.py criar_usuario --login sobrinho --nome "Sobrinho" --pape
 python backend/manage.py changepassword sobrinho      # trocar a senha depois
 ```
 
-### Carga inicial dos produtos (J2)
+### Carga inicial dos produtos e contagem de partida (J2, J3)
 
 Categorias, fornecedores e produtos entram de uma vez por uma planilha do Excel, com as mesmas
 conferências da tela de Produtos. Se uma linha estiver errada, nada é gravado e o comando diz a
@@ -237,6 +237,14 @@ aba, a linha e a coluna. Formato em `docs/FORMATO-PLANILHA-PRODUTOS.md`:
 
 ```bash
 python backend/manage.py carregar_produtos docs/exemplos/produtos-iniciais.xlsx
+```
+
+Depois, a **contagem de partida (J3)**: o saldo inicial de cada produto entra como entrada de
+mercadoria (um lote por linha, com validade), uma vez só. Formato em
+`docs/FORMATO-PLANILHA-CONTAGEM.md`:
+
+```bash
+python backend/manage.py carregar_contagem docs/exemplos/contagem-de-partida.xlsx
 ```
 
 ### Sessão

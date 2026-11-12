@@ -164,7 +164,7 @@ entrada de mercadoria. É a parte do produto que entrega valor mais cedo e sem d
 |---|---|---|---|---|---|
 | [ ] | **J1** | Testes automatizados de todas as regras | Teste | todas as regras | 16 |
 | [x] | **J2** | Carga inicial dos produtos, junto com o cliente | Dados | B3 | 8 |
-| [ ] | **J3** | Inventário de partida: contagem física | Dados | J2 | 6 |
+| [x] | **J3** | Inventário de partida: contagem física | Dados | J2 | 6 |
 | [ ] | **J4** | Teste em movimento real, num sábado cheio | Teste | todos | 6 |
 | [ ] | **J5** | Treinamento das três pessoas | — | J4 | 4 |
 | [ ] | **J6** | Implantação e acompanhamento da primeira semana | Infra | J4 | 6 |
