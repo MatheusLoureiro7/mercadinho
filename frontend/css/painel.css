@@ -1,0 +1,858 @@
+/*
+ * Painel do Mercado do Sr. João — visual novo de 21/10/2026, a pedido do grupo ("outra cara,
+ * futurista e moderno"). Carregado DEPOIS de base.css, em todas as telas; sobrepõe cores, fontes,
+ * a casca e os componentes. Nenhuma regra, dado ou endereço da API depende deste arquivo.
+ *
+ * A ideia: "o mercado de madrugada". Os avisos do sistema rodam às 03h00, com a loja fechada; o
+ * painel tem o fundo verde-pinho da noite e o amarelo das etiquetas de preço da gôndola como cor de
+ * destaque (logotipo, ação principal, régua do estoque, filtro ligado). Vermelho-coral e laranja só
+ * no que pede atenção, sempre com palavra junto (WCAG 1.4.1).
+ *
+ * Fontes guardadas no projeto (frontend/fontes/, licença OFL; nada vem da internet — RNF06, R04):
+ *   - Unbounded (larga, geométrica): títulos, números do resumo, nome da loja;
+ *   - IBM Plex Sans: todo o resto.
+ *
+ * Regras do projeto que valem sobre qualquer skill (CLAUDE.md, frontend/README.md): texto base 16 px,
+ * alvo de clique de 44 px, borda de campo com 3:1, contraste AA conferido por cálculo (o menor par de
+ * texto é 7,03:1, cinza-verde sobre o degrau; a borda de campo dá 4,63:1).
+ */
+
+@font-face {
+  font-family: "IBM Plex Sans";
+  src: url("../fontes/ibm-plex-sans-400.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "IBM Plex Sans";
+  src: url("../fontes/ibm-plex-sans-500.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "IBM Plex Sans";
+  src: url("../fontes/ibm-plex-sans-600.woff2") format("woff2");
+  font-weight: 600 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Unbounded";
+  src: url("../fontes/unbounded-500.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Unbounded";
+  src: url("../fontes/unbounded-600.woff2") format("woff2");
+  font-weight: 600 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  color-scheme: dark; /* campos, listas e calendário nativos do navegador também no escuro */
+
+  /* Noite e folha */
+  --cor-fundo: #0b1a16; /* a moldura: verde-pinho da madrugada */
+  --cor-superficie: #10231e; /* a folha de trabalho */
+  --cor-superficie-2: #142b25; /* linha sob o mouse, lotes abertos */
+  --cor-ativo: #173029; /* degrau: item do menu atual, botão sob o mouse */
+  --cor-poco: #0d1e1a; /* fundo dos campos de digitar */
+  --cor-divisoria: #24413a; /* borda da folha e dos blocos */
+  --cor-regua: #1c3731; /* linhas da tabela */
+  --cor-borda-campo: #6f8f84; /* 4,63:1 — campo precisa de 3:1 (WCAG 1.4.11) */
+  --cor-suave: #173029;
+
+  /* Texto */
+  --cor-texto: #edf5f0; /* 14,77:1 */
+  --cor-texto-suave: #a3bdb3; /* 8,19:1 na folha, 7,03:1 no degrau */
+  --cor-menu: #c4d6ce; /* 11,81:1 na noite */
+  --cor-primaria: #edf5f0;
+
+  /* Etiqueta de gôndola e sinais */
+  --cor-acao: #ffd84d; /* amarelo de etiqueta: 11,85:1 na folha */
+  --cor-acao-hover: #ffe380;
+  --cor-sobre-acao: #0b1a16; /* texto sobre o amarelo: 12,94:1 */
+  --cor-marca-suave: #2b2d16;
+  --cor-marca-escura: #07130f;
+  --cor-foco: #7cc4ff; /* 8,74:1 */
+  --cor-erro: #ff8a7a; /* 7,16:1 */
+  --cor-numero-erro: #ff8a7a;
+  --cor-numero-aviso: #ffb35c; /* 9,25:1 */
+  --cor-erro-fundo: #3a1f1c;
+  --cor-erro-texto: #ffb4a8; /* 8,86:1 */
+  --cor-aviso-fundo: #3a2a12;
+  --cor-aviso-texto: #ffd08a; /* 9,63:1 */
+  --cor-aviso-borda: #6b4f1a;
+  --cor-ok-fundo: #123522;
+  --cor-ok-texto: #9be8b5; /* 9,37:1 */
+  --cor-neutra-fundo: #20393a;
+  --cor-neutra-texto: #d3e3dc; /* 9,25:1 */
+  --cor-trilho: #5f8075; /* tracinho do mínimo na régua: 3:1, parte gráfica (WCAG 1.4.11) */
+
+  --raio: 8px; /* controles */
+  --raio-grande: 12px; /* blocos */
+  --raio-folha: 20px;
+  --raio-etiqueta: 6px;
+  --largura-menu: 248px;
+  --fonte: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --fonte-titulo: "Unbounded", "IBM Plex Sans", system-ui, sans-serif;
+}
+
+body {
+  font-family: var(--fonte);
+  color: var(--cor-texto);
+  background: var(--cor-fundo);
+}
+
+h1,
+h2,
+h3 {
+  letter-spacing: -0.005em;
+}
+
+.icone {
+  stroke-width: 1.75;
+}
+
+/* ================================================================ A casca: moldura + folha */
+
+/* Telas largas: menu à esquerda, na moldura; a folha à direita. */
+@media (min-width: 1101px) {
+  /* Só nas telas com menu (o Login não tem cabeçalho e mantém o seu desenho). */
+  body:has(> .cabecalho) {
+    display: grid;
+    grid-template-columns: var(--largura-menu) minmax(0, 1fr);
+    min-height: 100vh;
+  }
+
+  .cabecalho {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    background: none;
+    border: none;
+    box-shadow: none;
+  }
+  .cabecalho__interno {
+    max-width: none;
+    height: 100%;
+    margin: 0;
+    padding: 20px 12px 16px;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    gap: 24px;
+    overflow-y: auto;
+  }
+  .cabecalho__marca {
+    padding: 0 8px;
+  }
+  .cabecalho nav {
+    order: 0;
+    flex: 0 0 auto;
+  }
+  .menu {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: 2px;
+  }
+  .menu a {
+    min-height: var(--alvo-minimo);
+    padding: 0 12px;
+    gap: 10px;
+    border: none;
+    border-radius: var(--raio);
+    font-weight: 400;
+    font-size: 0.9375rem;
+    line-height: 1.25;
+    color: var(--cor-menu);
+  }
+  .menu a:hover {
+    background: rgba(237, 245, 240, 0.06);
+    color: var(--cor-texto);
+  }
+  .menu a[aria-current="page"] {
+    background: var(--cor-ativo);
+    color: var(--cor-texto);
+    font-weight: 600;
+    border-left: 3px solid var(--cor-acao);
+    padding-left: 9px;
+  }
+  .menu a .icone {
+    color: var(--cor-texto-suave);
+  }
+  .menu a[aria-current="page"] .icone {
+    color: var(--cor-acao);
+  }
+
+  /* Quem está usando e "Sair", no pé do menu. */
+  .cabecalho__usuario {
+    margin: auto 0 0;
+    padding: 12px 8px 0;
+    gap: 10px;
+    border-top: 1px solid var(--cor-divisoria);
+    font-size: 0.9375rem;
+  }
+  #usuario-nome {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .botao--cabecalho {
+    width: var(--alvo-minimo);
+    padding: 0;
+    border-color: transparent;
+    background: none;
+  }
+  .botao--cabecalho:hover {
+    background: rgba(237, 245, 240, 0.07);
+    border-color: transparent;
+  }
+  .botao--cabecalho .botao__texto {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  /* A folha: encostada no menu, 8 px longe da borda da janela em cima, à direita e embaixo. */
+  .pagina {
+    max-width: none;
+    min-height: calc(100vh - 16px);
+    margin: 8px 8px 8px 0;
+    padding: 28px 40px 48px;
+    background: var(--cor-superficie);
+    border: 1px solid var(--cor-divisoria);
+    border-radius: var(--raio-folha);
+  }
+}
+
+/* Menu lateral um pouco mais estreito até 1280 px. */
+@media (min-width: 1101px) and (max-width: 1280px) {
+  :root {
+    --largura-menu: 236px;
+  }
+  .pagina {
+    padding: 24px 32px 40px;
+  }
+}
+
+/*
+ * Computador da loja (1024 px, R04) e tablets: o menu lateral roubaria a largura da tabela. A
+ * moldura vira uma faixa em cima (marca, pessoa, "Sair" e as abas do menu), e a folha branca fica
+ * embaixo, com a largura toda.
+ */
+@media (max-width: 1100px) {
+  .cabecalho {
+    background: var(--cor-fundo);
+    border-bottom: none;
+    box-shadow: none;
+  }
+  .menu a {
+    border-radius: var(--raio) var(--raio) 0 0;
+    font-weight: 400;
+    color: var(--cor-menu);
+  }
+  .menu a:hover {
+    background: rgba(237, 245, 240, 0.06);
+  }
+  .menu a[aria-current="page"] {
+    background: none;
+    color: var(--cor-texto);
+    font-weight: 600;
+    border-bottom-color: var(--cor-texto);
+  }
+  .menu a[aria-current="page"] .icone {
+    color: var(--cor-acao);
+  }
+  .botao--cabecalho {
+    background: none;
+  }
+}
+@media (min-width: 861px) and (max-width: 1100px) {
+  .pagina {
+    max-width: none;
+    min-height: calc(100vh - 128px);
+    margin: 0 8px 8px;
+    padding: 24px 28px 40px;
+    background: var(--cor-superficie);
+    border: 1px solid var(--cor-divisoria);
+    border-radius: var(--raio-folha);
+  }
+}
+
+/* A marca da loja: o logotipo verde, menor e quadrado. */
+.marca__logo {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--raio);
+  background: var(--cor-acao);
+  color: var(--cor-sobre-acao);
+}
+.marca__logo .icone {
+  width: 19px;
+  height: 19px;
+  stroke-width: 2;
+}
+.marca__nome {
+  font-weight: 600;
+  font-size: 0.9375rem;
+  white-space: nowrap;
+}
+.marca__sub {
+  font-size: 0.8125rem;
+}
+.avatar {
+  width: 32px;
+  height: 32px;
+  background: var(--cor-ativo);
+  color: var(--cor-texto);
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+/* ================================================================ Componentes */
+
+.pagina__titulo {
+  align-items: flex-start;
+  margin-bottom: 28px;
+}
+.pagina__titulo h1 {
+  font-family: var(--fonte-titulo);
+  font-size: 2.125rem;
+  font-weight: 600;
+  line-height: 40px; /* altura inteira: posições sem fração de pixel */
+  letter-spacing: -0.03em;
+}
+.pagina__descricao {
+  margin-top: 10px;
+  font-size: 1.0625rem;
+}
+
+.botao {
+  border-radius: var(--raio);
+  font-weight: 500;
+  box-shadow: none;
+}
+.botao--acao {
+  background: var(--cor-acao);
+  border-color: var(--cor-acao);
+  color: var(--cor-sobre-acao);
+  font-weight: 600;
+}
+.botao--acao:hover {
+  background: var(--cor-acao-hover);
+  border-color: var(--cor-acao-hover);
+}
+.botao:active {
+  transform: translateY(1px);
+}
+.botao--secundario {
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-borda-campo);
+  color: var(--cor-texto);
+}
+.botao--secundario:hover {
+  background: var(--cor-ativo);
+  border-color: var(--cor-texto-suave);
+}
+
+/* Bloco de conteúdo: dentro da folha não leva caixa, só um título. */
+.cartao {
+  background: none;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0;
+}
+.cartao + .cartao,
+section + .cartao {
+  margin-top: 40px;
+}
+.cartao__titulo {
+  font-family: var(--fonte-titulo);
+  font-size: 1.0625rem;
+  font-weight: 500;
+  line-height: 24px;
+  letter-spacing: -0.01em;
+  margin-bottom: 18px;
+}
+
+.campo input,
+.campo select {
+  border-radius: var(--raio);
+  border-color: var(--cor-borda-campo);
+  background-color: var(--cor-poco);
+  color: var(--cor-texto);
+  box-shadow: none;
+}
+.campo input::placeholder {
+  color: #86a197; /* 5,8:1 no poço */
+}
+.campo input:hover,
+.campo select:hover {
+  border-color: var(--cor-texto-suave);
+}
+.campo input:focus,
+.campo select:focus {
+  border-color: var(--cor-foco);
+}
+
+.etiqueta {
+  border-radius: var(--raio-etiqueta);
+  padding: 1px 8px;
+  font-weight: 500;
+}
+.etiqueta--aviso {
+  box-shadow: inset 0 0 0 1px var(--cor-aviso-borda);
+}
+
+/* ---------------------------------------------------------------- Tabela */
+
+.tabela-rolavel {
+  border: none;
+  border-radius: 0;
+  background: none;
+}
+.tabela th,
+.tabela td {
+  padding: 12px 16px;
+  border-top: 1px solid var(--cor-regua);
+}
+.tabela th:first-child,
+.tabela td:first-child {
+  padding-left: 0;
+}
+.tabela th:last-child,
+.tabela td:last-child {
+  padding-right: 0;
+}
+.tabela thead th {
+  background: none;
+  border-top: none;
+  border-bottom: 1px solid var(--cor-divisoria);
+  font-size: 0.8125rem;
+  font-weight: 400;
+  color: var(--cor-texto-suave);
+  padding-top: 0;
+  padding-bottom: 10px;
+}
+.tabela tbody tr:hover {
+  background: none;
+}
+.tabela tbody tr:hover > * {
+  background: var(--cor-superficie-2);
+}
+.tabela .tabela__grupo {
+  background: none;
+  border-top: none;
+  padding-top: 28px;
+  padding-bottom: 8px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--cor-texto);
+  letter-spacing: 0;
+}
+.tabela tbody:first-of-type .tabela__grupo {
+  padding-top: 16px;
+}
+.tabela tbody tr:hover > .tabela__grupo {
+  background: none;
+}
+/* A linha logo depois do nome da categoria não leva régua em cima: o nome já separa. */
+.tabela tr:has(> .tabela__grupo) + tr > * {
+  border-top-color: var(--cor-divisoria);
+}
+
+.vazio {
+  padding: 40px 16px;
+}
+
+/* ================================================================ Consulta de estoque (F3) */
+
+.atualizacao {
+  flex-direction: row-reverse;
+}
+
+/* O resumo: um bloco só, dividido em três por linhas finas. Cada parte é um filtro (aria-pressed). */
+.resumo {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  margin-bottom: 8px;
+  border: 1px solid var(--cor-divisoria);
+  border-radius: var(--raio-grande);
+  overflow: hidden;
+  margin-top: 4px;
+}
+.resumo__item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 22px 24px 24px;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  background: var(--cor-fundo);
+}
+.resumo__item + .resumo__item {
+  border-left: 1px solid var(--cor-divisoria);
+}
+.resumo__item:hover {
+  border-color: var(--cor-divisoria);
+  background: var(--cor-superficie-2);
+}
+.resumo__item {
+  align-items: stretch;
+}
+.resumo__texto {
+  flex: 1 1 auto;
+  flex-direction: column-reverse; /* a palavra em cima, o número embaixo (a ordem no HTML não muda) */
+  justify-content: space-between; /* números na mesma altura, mesmo com rótulo de duas linhas */
+  gap: 4px;
+}
+.resumo__rotulo {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--cor-texto-suave);
+}
+.resumo__numero {
+  font-family: var(--fonte-titulo);
+  font-size: 3.5rem;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--cor-texto);
+}
+.resumo__item--erro .resumo__numero {
+  color: var(--cor-numero-erro);
+}
+.resumo__item--aviso .resumo__numero {
+  color: var(--cor-numero-aviso);
+}
+/* Zero é zero: cinza, sem cor de alerta. */
+.resumo__item[data-zero] .resumo__numero {
+  color: var(--cor-texto-suave);
+}
+/* Filtro ligado: traço de 2 px embaixo, fundo um degrau abaixo e a palavra "filtrando". */
+.resumo__item[aria-pressed="true"] {
+  border-color: var(--cor-divisoria);
+  box-shadow: inset 0 -4px 0 var(--cor-acao);
+  background: var(--cor-ativo);
+}
+.resumo__item[aria-pressed="true"] .resumo__rotulo {
+  color: var(--cor-texto);
+}
+.resumo + .campo__ajuda {
+  margin: 0 0 8px;
+}
+
+/* Produtos: título, busca e categoria na mesma linha; a contagem à direita. */
+.cabeca-da-lista {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px 16px;
+  margin-bottom: 20px;
+}
+.cabeca-da-lista .cartao__titulo {
+  flex: 1 0 100%;
+  margin: 0;
+}
+.cabeca-da-lista .barra {
+  flex: 1 1 520px;
+  margin: 0;
+}
+.cabeca-da-lista .barra .campo {
+  flex: 0 1 300px;
+}
+.cabeca-da-lista .barra .campo:last-child {
+  flex-basis: 240px;
+}
+.contagem {
+  margin: 0 0 10px auto;
+  color: var(--cor-texto-suave);
+  font-size: 0.9375rem;
+  white-space: nowrap;
+}
+
+/* Sem faixa colorida na linha: a etiqueta com palavra já diz o que é, e vermelho é sinal, não textura. */
+.linha--vencido > :first-child,
+.linha--atencao > :first-child {
+  box-shadow: none;
+}
+.tabela--estoque tbody th strong {
+  font-weight: 500;
+}
+/* Etiqueta embaixo do nome ou do saldo: um respiro; na coluna Validade fica na linha da data. */
+.tabela--estoque th .etiqueta,
+.tabela--estoque .numero .etiqueta {
+  margin-top: 4px;
+}
+
+/*
+ * A régua do estoque — o elemento só desta loja. O trilho vai de zero ao dobro do mínimo; o traço
+ * vertical no meio é o mínimo. Verde enquanto há folga; âmbar quando a API diz "abaixo do mínimo".
+ * Só desenho (aria-hidden): o número e a etiqueta já dizem tudo em palavras.
+ */
+.regua {
+  position: relative;
+  display: block;
+  width: 104px;
+  height: 6px;
+  margin: 8px 0 2px auto;
+  border-radius: 3px;
+  background: var(--cor-regua);
+}
+.regua__cheio {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 2px;
+  background: var(--cor-acao);
+}
+.regua--abaixo .regua__cheio {
+  background: var(--cor-numero-aviso);
+}
+.regua__minimo {
+  position: absolute;
+  left: 50%;
+  top: -4px;
+  width: 2px;
+  height: 12px;
+  margin-left: -1px;
+  border-radius: 1px;
+  background: var(--cor-trilho);
+}
+
+.validade-proxima {
+  font-size: 0.9375rem;
+}
+
+/* "Ver lotes": ação de texto, sem caixa, para não virar uma coluna de botões. */
+.botao--abre {
+  min-height: var(--alvo-minimo);
+  padding: 0 10px 0 6px;
+  border-color: transparent;
+  background: none;
+  color: var(--cor-texto);
+  font-weight: 500;
+  white-space: nowrap;
+}
+.botao--abre:hover {
+  background: var(--cor-ativo);
+  border-color: transparent;
+}
+.tabela td:last-child .botao--abre {
+  min-height: var(--alvo-minimo);
+}
+.linha-lotes td {
+  background: var(--cor-superficie-2);
+  border-top: none;
+}
+.lotes-do-produto {
+  padding: 4px 0 12px 16px;
+  font-size: 0.9375rem;
+}
+
+/* ================================================================ Telas estreitas */
+
+@media (max-width: 860px) {
+  /* A folha vira a tela: sem borda nem cantos; a faixa de cima ganha uma linha embaixo. */
+  .cabecalho {
+    border-bottom: 1px solid var(--cor-divisoria);
+  }
+  .pagina {
+    background: var(--cor-superficie);
+    min-height: calc(100vh - 110px);
+  }
+
+  .resumo {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .resumo__item {
+    padding: 12px;
+  }
+  .resumo__numero {
+    font-size: 1.5rem;
+  }
+  .resumo__rotulo {
+    font-size: 0.8125rem;
+    line-height: 1.25;
+  }
+
+  .cabeca-da-lista .barra .campo,
+  .cabeca-da-lista .barra .campo:last-child {
+    flex: 1 1 220px;
+  }
+  .contagem {
+    flex: 1 0 100%;
+    margin: 0;
+  }
+
+  /* Cartões da tabela: borda fina, sem faixa colorida. */
+  .tabela tbody tr {
+    border-color: var(--cor-divisoria);
+    border-radius: var(--raio-grande);
+  }
+  .tabela tbody tr.linha--vencido,
+  .tabela tbody tr.linha--atencao {
+    border-left: 1px solid var(--cor-divisoria);
+  }
+  .tabela tbody tr:hover > * {
+    background: none;
+  }
+  /* Cartão: volta o espaçamento e as linhas do modo cartão de base.css (a regra larga acima os mudaria). */
+  .tabela th,
+  .tabela td,
+  .tabela tr:has(> .tabela__grupo) + tr > * {
+    border-top: none;
+    padding: 4px 0;
+  }
+  .tabela tbody > tr > :first-child {
+    padding-bottom: 8px;
+  }
+  .tabela td[data-rotulo] {
+    border-top: 1px solid var(--cor-regua);
+    padding: 8px 0;
+  }
+  .tabela td.celula--acoes {
+    padding-top: 12px;
+  }
+  .tabela td[data-rotulo]::before {
+    font-weight: 500;
+  }
+  .tabela .tabela__grupo {
+    padding: 8px 0 4px;
+  }
+  .regua {
+    margin-top: 6px;
+  }
+  .tabela td.celula--acoes .botao--abre {
+    border: 1px solid var(--cor-borda-campo);
+  }
+}
+
+/* Depois da régua (que já ocupa a linha dela) a quebra de linha antes da etiqueta sobraria. */
+.regua + br {
+  display: none;
+}
+
+/* "Pular para o conteúdo" (só aparece no foco do teclado): borda em vez de sombra. */
+.pular-para-conteudo {
+  box-shadow: none;
+  border: 2px solid var(--cor-texto);
+}
+
+/* ================================================================ Login (B7) */
+
+/* À esquerda, um campo inteiro no amarelo da etiqueta de gôndola, com o nome da loja grande; à
+   direita, o formulário numa folha escura sobre a noite. */
+.login__marca {
+  background: var(--cor-acao);
+  color: var(--cor-sobre-acao);
+}
+.login__marca .marca__logo {
+  width: 56px;
+  height: 56px;
+  background: var(--cor-sobre-acao);
+  color: var(--cor-acao);
+}
+.login__titulo {
+  font-family: var(--fonte-titulo);
+  font-size: 3.5rem;
+  font-weight: 600;
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  max-width: 11ch;
+}
+.login__frase {
+  color: #3b3613; /* 9,9:1 no amarelo */
+  font-size: 1.125rem;
+  font-weight: 500;
+}
+.login__lista {
+  font-weight: 500;
+}
+.login__lista .icone {
+  color: var(--cor-sobre-acao);
+}
+.login__conteudo {
+  background: var(--cor-fundo);
+}
+.login__conteudo .cartao.entrada {
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-divisoria);
+  border-radius: var(--raio-folha);
+  box-shadow: none;
+  padding: 40px 36px 36px;
+}
+
+/* ================================================================ Formulários e links */
+
+/* Formulário de registro (Entrada, Avarias, Fechamento, cadastros): numa tela larga os campos não
+   esticam a folha inteira; a lista "de hoje" embaixo continua com a largura toda. */
+.pagina form {
+  max-width: 960px;
+}
+.entrada .cartao__titulo {
+  margin-bottom: 12px;
+}
+
+/* Links no verde da loja, nunca no azul padrão do navegador. */
+a {
+  color: var(--cor-acao);
+}
+a:hover {
+  color: var(--cor-acao-hover);
+}
+.pular-para-conteudo,
+.menu a {
+  color: var(--cor-texto);
+}
+
+/* Aviso flutuante ("Produto salvo"): verde claro com texto escuro. */
+.toast {
+  background: var(--cor-ok-texto);
+  color: var(--cor-sobre-acao);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45); /* flutua sobre a tela: a única sombra do painel */
+}
+
+/* Um único momento de movimento: ao abrir a tela, título e resumo sobem 8 px. Com "reduzir
+   movimento" ligado, base.css desliga a animação e tudo aparece parado. */
+@keyframes painel-chega {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+.pagina__titulo,
+.resumo {
+  animation: painel-chega 360ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.resumo {
+  animation-delay: 80ms;
+}
+
+@media (max-width: 860px) {
+  .pagina__titulo h1 {
+    font-size: 1.625rem;
+    line-height: 32px;
+  }
+  .resumo__numero {
+    font-size: 2.25rem;
+  }
+  .login__titulo {
+    font-size: 2rem;
+  }
+}

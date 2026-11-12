@@ -7,6 +7,8 @@ seção 3). Sem framework, sem biblioteca, sem fonte externa — o computador da
 |---|---|
 | `design-system/mercado-do-sr-joao/MASTER.md` | Sistema de design gerado pela UI UX Pro Max, com as **adaptações do projeto** no topo |
 | `css/base.css` | Cores, espaçamento, cabeçalho, botões, formulário, tabela, etiquetas |
+| `css/painel.css` | Visual novo (21/10/2026), carregado depois de `base.css` em **todas as telas**: tema escuro "mercado de madrugada" (verde-pinho + amarelo de etiqueta de gôndola) |
+| `fontes/` | IBM Plex Sans (texto) e Unbounded (títulos e números grandes), licença OFL (`OFL.txt`, `OFL-Unbounded.txt`), servidas pelo próprio painel: nada vem da internet (RNF06) |
 | `js/formatos.js` | Dinheiro e quantidade no formato brasileiro; "12,90" digitado → "12.90" para a API |
 | `js/api.js` | **Porta única para a API** (B7): token, sem conexão, demora e sessão vencida tratados num lugar |
 | `js/sessao.js` | Sessão e menu do perfil (B7, RN14): token na aba, telas do papel, guarda de cada tela |

@@ -6,6 +6,7 @@
     <title>Consulta de estoque · Mercado do Sr. João</title>
     <link rel="icon" href="img/icone.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/painel.css" />
     <script type="module" src="js/consulta-estoque.js"></script>
   </head>
   <body>
@@ -60,24 +61,21 @@
         <h2 class="visualmente-oculto" id="titulo-resumo">O que precisa de atenção</h2>
         <div class="resumo">
           <button type="button" class="resumo__item resumo__item--erro" id="filtro-vencidos" aria-pressed="false" aria-describedby="ajuda-resumo">
-            <span class="resumo__icone" aria-hidden="true"><svg class="icone" viewBox="0 0 24 24"><path d="M12 9v4" /><path d="M12 17h.01" /><circle cx="12" cy="12" r="10" /></svg></span>
             <span class="resumo__texto">
-            <span class="resumo__numero" id="contador-vencidos">–</span>
-            <span class="resumo__rotulo">com lote vencido</span>
+              <span class="resumo__numero" id="contador-vencidos">–</span>
+              <span class="resumo__rotulo">com lote vencido</span>
             </span>
           </button>
           <button type="button" class="resumo__item resumo__item--aviso" id="filtro-vencendo" aria-pressed="false" aria-describedby="ajuda-resumo">
-            <span class="resumo__icone" aria-hidden="true"><svg class="icone" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg></span>
             <span class="resumo__texto">
-            <span class="resumo__numero" id="contador-vencendo">–</span>
-            <span class="resumo__rotulo">perto de vencer</span>
+              <span class="resumo__numero" id="contador-vencendo">–</span>
+              <span class="resumo__rotulo">perto de vencer</span>
             </span>
           </button>
           <button type="button" class="resumo__item resumo__item--aviso" id="filtro-abaixo" aria-pressed="false" aria-describedby="ajuda-resumo">
-            <span class="resumo__icone" aria-hidden="true"><svg class="icone" viewBox="0 0 24 24"><path d="M16 17h6v-6" /><path d="m22 17-8.5-8.5-5 5L2 7" /></svg></span>
             <span class="resumo__texto">
-            <span class="resumo__numero" id="contador-abaixo">–</span>
-            <span class="resumo__rotulo">abaixo do mínimo</span>
+              <span class="resumo__numero" id="contador-abaixo">–</span>
+              <span class="resumo__rotulo">abaixo do mínimo</span>
             </span>
           </button>
         </div>
@@ -85,20 +83,22 @@
       </section>
 
       <section class="cartao" aria-labelledby="titulo-lista">
-        <h2 class="cartao__titulo" id="titulo-lista">Produtos</h2>
+        <div class="cabeca-da-lista">
+          <h2 class="cartao__titulo" id="titulo-lista">Produtos</h2>
 
-        <div class="barra">
-          <div class="campo">
-            <label for="campo-procurar">Procurar pelo nome</label>
-            <input id="campo-procurar" type="search" autocomplete="off" placeholder="Ex.: arroz" />
+          <div class="barra">
+            <div class="campo">
+              <label for="campo-procurar">Procurar pelo nome</label>
+              <input id="campo-procurar" type="search" autocomplete="off" placeholder="Ex.: arroz" />
+            </div>
+            <div class="campo">
+              <label for="filtro-categoria">Categoria</label>
+              <select id="filtro-categoria"></select>
+            </div>
           </div>
-          <div class="campo">
-            <label for="filtro-categoria">Categoria</label>
-            <select id="filtro-categoria"></select>
-          </div>
+
+          <p class="contagem" id="anuncio-lista" aria-live="polite"></p>
         </div>
-
-        <p class="visualmente-oculto" id="anuncio-lista" aria-live="polite"></p>
         <!-- Focável: no celular a tabela rola de lado (WCAG 2.1.1). -->
         <div class="tabela-rolavel" tabindex="0" role="region" aria-labelledby="titulo-lista">
           <table class="tabela tabela--estoque" id="lista-estoque">

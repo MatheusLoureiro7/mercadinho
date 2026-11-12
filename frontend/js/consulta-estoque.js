@@ -95,7 +95,10 @@ function preencherCategorias() {
 
 function contarQuadros() {
   Object.values(QUADROS).forEach((quadro) => {
-    $(quadro.contador).textContent = String(estado.produtos.filter(quadro.vale).length);
+    const total = estado.produtos.filter(quadro.vale).length;
+    $(quadro.contador).textContent = String(total);
+    // Zero é zero: o quadro fica cinza, sem cor de alerta (painel.css).
+    $(quadro.botao).toggleAttribute("data-zero", total === 0);
   });
 }
 
@@ -182,6 +185,8 @@ function linhaDoProduto(produto) {
   }
 
   const saldo = celula(quantidade(produto.saldo, produto.unidade_medida), "numero");
+  const desenho = regua(produto);
+  if (desenho) saldo.append(desenho);
   if (produto.abaixo_do_minimo) saldo.append(document.createElement("br"), etiqueta("Abaixo do mínimo", "aviso"));
 
   const validade = celula();
@@ -210,6 +215,28 @@ function linhaDoProduto(produto) {
     acoes
   );
   return linha;
+}
+
+/**
+ * A régua do estoque: o saldo contra o mínimo, num trilho que vai de zero ao dobro do mínimo (o
+ * traço do meio é o mínimo). Só desenho — o número e a etiqueta "Abaixo do mínimo" dizem o mesmo em
+ * palavras, por isso fica fora do leitor de tela. Quem diz se está abaixo é a API (abaixo_do_minimo);
+ * a tela só desenha os dois números que recebeu. Produto sem mínimo não tem régua.
+ */
+function regua(produto) {
+  const minimo = Number(produto.estoque_minimo);
+  if (produto.estoque_minimo === null || !(minimo > 0)) return null;
+  const parte = Math.max(0, Math.min(Number(produto.saldo) / (2 * minimo), 1));
+  const trilho = document.createElement("span");
+  trilho.className = "regua" + (produto.abaixo_do_minimo ? " regua--abaixo" : "");
+  trilho.setAttribute("aria-hidden", "true");
+  const cheio = document.createElement("span");
+  cheio.className = "regua__cheio";
+  cheio.style.width = (parte * 100).toFixed(1) + "%";
+  const marca = document.createElement("span");
+  marca.className = "regua__minimo";
+  trilho.append(cheio, marca);
+  return trilho;
 }
 
 // ------------------------------------------------------------------------------------------ Lotes de um produto
