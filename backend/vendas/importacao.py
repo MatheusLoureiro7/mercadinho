@@ -59,30 +59,31 @@ def _produtos_por_nome() -> dict[str, Produto | None]:
     return produtos
 
 
-def _baixar_do_estoque(produto: Produto, linha: LinhaDeVenda) -> None:
-    dia_da_venda = timezone.localtime(linha.data_hora).date()
+def baixar_venda_do_estoque(produto: Produto, quantidade: Decimal, preco: Decimal | None, data_hora) -> None:
+    """Passo 8. Também usada ao casar depois um item pendente (E4, `vendas.conciliacao`)."""
+    dia_da_venda = timezone.localtime(data_hora).date()
     lotes = lotes_em_ordem_de_validade(produto, hoje=dia_da_venda, incluir_vencidos=False).select_for_update()
-    restante = linha.quantidade
+    restante = quantidade
     for lote in lotes:
         if restante <= 0:
             break
         baixa = min(restante, lote.quantidade_atual)
         lote.quantidade_atual -= baixa
         lote.save(update_fields=["quantidade_atual"])
-        _movimentacao(produto, linha, baixa, lote)
+        _movimentacao(produto, baixa, preco, data_hora, lote)
         restante -= baixa
     if restante > 0:
-        _movimentacao(produto, linha, restante, None)
+        _movimentacao(produto, restante, preco, data_hora, None)
 
 
-def _movimentacao(produto, linha, quantidade, lote):
+def _movimentacao(produto, quantidade, preco, data_hora, lote):
     Movimentacao.objects.create(
         produto=produto,
         lote=lote,
         tipo=Movimentacao.Tipo.VENDA,
         quantidade=quantidade,
-        preco_unitario=linha.preco,
-        data_hora=linha.data_hora,
+        preco_unitario=preco,
+        data_hora=data_hora,
         origem=ORIGEM,
     )
 
@@ -111,7 +112,7 @@ def _gravar(linhas: list[LinhaDeVenda]) -> int:
             if produto is None:
                 pendentes += 1
             else:
-                _baixar_do_estoque(produto, item)
+                baixar_venda_do_estoque(produto, item.quantidade, item.preco, item.data_hora)
     return pendentes
 
 

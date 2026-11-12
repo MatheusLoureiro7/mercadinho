@@ -15,6 +15,7 @@ from cadastro.views import CategoriaViewSet, FornecedorViewSet, ProdutoViewSet
 from caixa.views import FechamentoViewSet
 from comum.views import SessaoAtualView, SessaoView
 from estoque.views import EstoquePorLoteView, EstoquePorProdutoView, LoteViewSet, PerdaViewSet
+from vendas.views import ItemPendenteViewSet
 
 
 class RaizDaApi(APIRootView):
@@ -32,6 +33,7 @@ roteador.register("produtos", ProdutoViewSet, basename="produto")  # B3
 roteador.register("lotes", LoteViewSet, basename="lote")  # C2
 roteador.register("perdas", PerdaViewSet, basename="perda")  # D1
 roteador.register("fechamentos", FechamentoViewSet, basename="fechamento")  # I1
+roteador.register("itens-pendentes", ItemPendenteViewSet, basename="item-pendente")  # E4
 
 urlpatterns = [
     path("api/sessoes/", SessaoView.as_view(), name="sessao"),

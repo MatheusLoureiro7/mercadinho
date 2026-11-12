@@ -369,6 +369,26 @@ navegador bloqueia a chamada (CORS), e liberar exigiria configuração a mais �
 > papel. É o arranjo usual de painel + API: sem CORS, sem dependência nova, nenhuma linha a mais no
 > Django, e o painel continua separado do servidor da API, como na figura 2.
 
+### L26 — Como o sobrinho sabe qual produto era a linha pendente?
+
+A operação 04, passo 6, diz que a linha sem produto correspondente "fica pendente de revisão" e
+que "o sobrinho resolve depois, na tela de importação". Mas `item_venda` guarda só venda,
+quantidade e preço — **não guarda o nome escrito na planilha**, e `venda` não guarda o número do
+cupom. Na revisão, o sistema não tem como mostrar qual produto o caixa registrou.
+
+**Impacto:** tarefas E4 (casar o item pendente) e E5 (tela de acompanhamento da importação).
+
+> **✅ DECIDIDA em 12/11/2026 (tarefa E4):** **o modelo de dados não muda.** O item pendente
+> aparece com **data, hora, quantidade e preço** da venda; o sobrinho confere na planilha dele e
+> escolhe o produto. Ao escolher, o sistema grava o produto no item e faz a baixa do estoque como
+> se tivesse casado na importação: na hora da venda, do lote que vence primeiro (RN01, RN02), sem
+> lote vencido no dia da venda (RN16). A importação continua com a situação que teve na leitura
+> (`PARCIAL`): ela é o registro do que aconteceu, e não tem ligação com a venda no modelo.
+> Alternativas descartadas: coluna nova `item_venda.nome_no_caixa` (mudaria o modelo de dados
+> entregue) e reler a planilha guardada na pasta (frágil se o arquivo sumir ou houver duas linhas
+> iguais). Para a mesma linha não ficar pendente todo dia, o caminho é acertar o nome no cadastro
+> igual ao do caixa.
+
 ---
 
 ## 2. Divergências internas da documentação entregue
