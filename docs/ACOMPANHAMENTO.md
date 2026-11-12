@@ -21,13 +21,13 @@ O diário, no fim do arquivo, conta o que foi feito em cada dia.
 
 | | Concluído | Total | % |
 |---|---|---|---|
-| **Tarefas** | 41 | 51 | 80,4 % |
-| **Horas estimadas** | 298 h | 378 h | 78,8 % |
+| **Tarefas** | 42 | 51 | 82,4 % |
+| **Horas estimadas** | 308 h | 378 h | 81,5 % |
 
 | Etapa | Blocos | Horas concluídas | Total | % |
 |---|---|---|---|---|
 | 1 · Aviso de validade | A, B, C, D, F, J | 160 h | 212 h | 75,5 % |
-| 2 · Aviso de ruptura | E, G, H | 120 h | 136 h | 88,2 % |
+| 2 · Aviso de ruptura | E, G, H | 130 h | 136 h | 95,6 % |
 | 3 · Gestão | I | 18 h | 30 h | 60,0 % |
 
 As horas concluídas são as **estimadas** na apostila para cada tarefa entregue, não horas medidas.
@@ -138,13 +138,13 @@ na demonstração são de exemplo, criados pelo grupo.
 | ~~G4~~ | ~~Regra: histórico mínimo antes de projetar~~ | G2 | 4 | ✅ Concluída | 12/11/2026 | `7fc505c` |
 | ~~G5~~ | ~~Agendador das rotinas diárias~~ | G3 | 6 | ✅ Concluída | 12/11/2026 | `1c62ea9` |
 
-## Bloco H — Avisos · 52 h  ·  42 de 52 h concluídas
+## Bloco H — Avisos · 52 h  ·  52 de 52 h concluídas ✅
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
 | ~~H1~~ | ~~Tabela de aviso e controle de estado~~ | A2 | 8 | ✅ Concluída | 08/10/2026 | `eae1d23` |
 | ~~H2~~ | ~~Gerador do aviso de validade~~ | H1, C3 | 8 | ✅ Concluída | 08/10/2026 | `a3627f3` |
-| H3 | Gerador do aviso de ruptura | H1, G3 | 10 | ⬜ A fazer | — | — |
+| ~~H3~~ | ~~Gerador do aviso de ruptura~~ | H1, G3 | 10 | ✅ Concluída | 12/11/2026 | `406c890` |
 | ~~H4~~ | ~~Janela de silêncio e agrupamento~~ | H1 | 8 | ✅ Concluída | 08/10/2026 | `5a7be53` |
 | ~~H5~~ | ~~Integração com o serviço de mensagens~~ | H1 | 10 | ✅ Concluída | 08/10/2026 | `075a5de` |
 | ~~H6~~ | ~~Vincular o celular do dono ao usuário~~ | H5, B1 | 4 | ✅ Concluída | 09/10/2026 | `094a2ee` |
@@ -290,8 +290,32 @@ cronograma, a regra de negócio (quando houver) e o commit.
   passando. Concluída em 12/11/2026 (prevista para 12 e 13/11/2026). **O bloco G (previsão) está
   completo.**
 
-**Próxima tarefa:** H3 — gerador do aviso de ruptura ("o frango acaba em 2 dias", RN08) e dos
-itens que não podem faltar no fim de semana (RN10). Depois, E5 e I3.
+- **H3 — O aviso de "vai acabar" e o de fim de semana (RN08, RN10).** É o aviso que o Sr. João
+  pediu. Toda madrugada, quando o estoque de um produto chega ao ponto de pedido, o celular dele
+  recebe, no vocabulário da loja: *"Frango resfriado 1 kg acaba em 2 dias — sobram 6 KG. Pedir
+  30 KG — Granja Boa Vista entrega em 2 dias."*, com o botão "Sim, pedir" (H7). Nunca aparece
+  "ponto de pedido" nem "ruptura" na mensagem (RNF10). Na **quinta-feira**, os produtos que não
+  podem faltar no fim de semana (carne, carvão, cerveja, linguiça, asinha) são avaliados com 40 %
+  de folga (RN10), para dar tempo de o fornecedor entregar antes do sábado. Produto "ainda
+  aprendendo" (RN09) ou sem fornecedor cadastrado não gera aviso, e chegar mercadoria cancela o
+  aviso que ainda não saiu (operação 02). O gerador entrou na rodada das 03h00. Commit `406c890`.
+  **Decisão do grupo (lacuna L03, 12/11/2026):** a RN10 também fala em "véspera de feriado", mas
+  a apostila não diz de onde vem a lista de feriados. Decidido: **só sábado e domingo nesta
+  versão**; véspera de feriado fica **fora do escopo, declarado**.
+  **Decisões da tarefa, seguindo a H2:** o aviso sai todo dia enquanto o estoque estiver baixo,
+  sem repetir no mesmo dia; urgência **alta** quando o produto acabou ou vai acabar antes de a
+  entrega chegar, **média** nos outros casos; produto crítico que já está abaixo do ponto de
+  pedido na quinta recebe só o aviso de "vai acabar", e não dois avisos do mesmo produto.
+  **Foi provado que os testes pegam erro:** doze defeitos de propósito (exigir saldo menor em vez
+  de "igual ou menor", avisar produto ainda aprendendo, avaliar o fim de semana em qualquer dia,
+  sem a folga, folga escrita no programa, ignorar se o produto é crítico, repetir no mesmo dia, não
+  cancelar o de ontem, arredondar os dias para cima, urgência sempre média, prazo contado errado,
+  dia no fuso errado) — todos pegos; um deles só depois de um teste reforçado. 29 testes
+  automáticos — total do projeto: 948, todos passando. Concluída em 12/11/2026 (prevista para 12 e
+  13/11/2026). **O bloco H (avisos) está completo, e as 16 regras de negócio têm código e teste.**
+
+**Próxima tarefa:** E5 — tela de acompanhamento da importação (a última que falta na etapa 2).
+Depois, I3 (balanço semanal).
 
 ### 05/11/2026
 
