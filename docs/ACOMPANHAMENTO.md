@@ -21,12 +21,12 @@ O diário, no fim do arquivo, conta o que foi feito em cada dia.
 
 | | Concluído | Total | % |
 |---|---|---|---|
-| **Tarefas** | 45 | 51 | 88,2 % |
-| **Horas estimadas** | 334 h | 378 h | 88,4 % |
+| **Tarefas** | 46 | 51 | 90,2 % |
+| **Horas estimadas** | 340 h | 378 h | 89,9 % |
 
 | Etapa | Blocos | Horas concluídas | Total | % |
 |---|---|---|---|---|
-| 1 · Aviso de validade | A, B, C, D, F, J | 168 h | 212 h | 79,2 % |
+| 1 · Aviso de validade | A, B, C, D, F, J | 174 h | 212 h | 82,1 % |
 | 2 · Aviso de ruptura | E, G, H | 136 h | 136 h | 100,0 % ✅ |
 | 3 · Gestão | I | 30 h | 30 h | 100,0 % ✅ |
 
@@ -158,13 +158,13 @@ na demonstração são de exemplo, criados pelo grupo.
 | ~~I2~~ | ~~Tela de fechamento de caixa~~ | A3 | 10 | ✅ Concluída (API na I1) | 09/10/2026 | `4184da1` |
 | ~~I3~~ | ~~Relatório de balanço semanal~~ | E2, D1 | 12 | ✅ Concluída | 12/11/2026 | `f1e319e` |
 
-## Bloco J — Qualidade e implantação · 46 h  ·  8 de 46 h concluídas
+## Bloco J — Qualidade e implantação · 46 h  ·  14 de 46 h concluídas
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
 | J1 | Testes automatizados de todas as regras | todas as regras | 16 | 🔄 Em andamento (faltam RN06–RN10) | — | `ab6424c` |
 | ~~J2~~ | ~~Carga inicial dos produtos, junto com o cliente~~ | B3 | 8 | ✅ Concluída | 12/11/2026 | `261ce90` |
-| J3 | Inventário de partida: contagem física | J2 | 6 | ⬜ A fazer | — | — |
+| ~~J3~~ | ~~Inventário de partida: contagem física~~ | J2 | 6 | ✅ Concluída | 12/11/2026 | `d1b72b5` |
 | J4 | Teste em movimento real, num sábado cheio | todos | 6 | ⬜ A fazer | — | — |
 | J5 | Treinamento das três pessoas | J4 | 4 | ⬜ A fazer | — | — |
 | J6 | Implantação e acompanhamento da primeira semana | J4 | 6 | ⬜ A fazer | — | — |
@@ -381,8 +381,27 @@ J3 (contagem de partida), J4 (teste num sábado cheio), J5 (treinamento) e J6 (i
   pegos. 16 testes automáticos — total do projeto: 1020, todos passando. Concluída em 12/11/2026
   (prevista para 09/11/2026).
 
-**Próxima tarefa:** J3 — inventário de partida: a contagem física que dá o saldo inicial de cada
-produto (simulada com os produtos de exemplo).
+- **J3 — Contagem de partida.** Antes de o sistema começar a valer, alguém conta o que tem em
+  cada prateleira; essa contagem é o estoque inicial. Ela entra por uma planilha (aba Contagem:
+  produto, quantidade contada, validade e custo) com o comando `carregar_contagem`.
+  **Decisão do grupo (12/11/2026):** a contagem entra **como entrada de mercadoria**, pelo mesmo
+  caminho da tela de Entrada: cada linha contada vira um **lote**, com validade para os perecíveis
+  (a da embalagem ou, se ficar em branco, a data da contagem mais a durabilidade — RN04). Assim o
+  frango contado já entra no aviso de vencimento (RN05) e sai primeiro pelo lote que vence antes
+  (RN02). A movimentação fica marcada como **INVENTARIO** — um valor novo numa coluna que já existe
+  (`movimentacao.origem`), sem mudar o banco. Produto vencido não é aceito na contagem (sai por
+  Avarias). Como na J2, é **tudo ou nada**, e rodar de novo não lança duas vezes: produto que já
+  tinha estoque é mantido. Planilha de exemplo com a contagem simulada dos 49 produtos da J2
+  (`docs/exemplos/contagem-de-partida.xlsx`); formato em `docs/FORMATO-PLANILHA-CONTAGEM.md`.
+  Commit `d1b72b5`.
+  **Foi provado que os testes pegam erro:** seis defeitos de propósito (lançar com a origem da
+  tela, gravar a parte boa com erro, lançar de novo produto que já tinha estoque, escolher qualquer
+  um entre dois produtos de mesmo nome, ignorar a validade da planilha, aceitar quantidade
+  negativa) — todos pegos. 16 testes automáticos — total do projeto: 1036, todos passando.
+  Concluída em 12/11/2026 (prevista para 17/11/2026).
+
+**Próxima tarefa:** A5 — esteira de publicação em ambiente de teste (no computador do Matheus,
+decisão D05). Depois, J1 (fechamento da cobertura de testes) e J4 a J6.
 
 ### 05/11/2026
 
