@@ -56,3 +56,19 @@ def vendido_por_dia(produto: Produto | int, inicio: date, fim: date) -> dict[dat
         .order_by("dia")
     )
     return {linha["dia"]: linha["total"] for linha in linhas}
+
+
+def vendido_por_produto_e_dia(inicio: date, fim: date) -> dict[tuple[int, date], Decimal]:
+    """
+    O mesmo que `vendido_por_dia`, para todos os produtos de uma vez, numa consulta só — é o que a
+    rotina de agregação (G1) grava em consumo_diario. Chave: (produto_id, dia da loja).
+    """
+    linhas = (
+        movimentacoes_de_consumo()
+        .filter(data_hora__date__gte=inicio, data_hora__date__lte=fim)
+        .annotate(dia=TruncDate("data_hora", tzinfo=timezone.get_current_timezone()))
+        .values("produto_id", "dia")
+        .annotate(total=Sum("quantidade"))
+        .order_by("produto_id", "dia")
+    )
+    return {(linha["produto_id"], linha["dia"]): linha["total"] for linha in linhas}

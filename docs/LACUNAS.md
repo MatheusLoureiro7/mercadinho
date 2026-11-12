@@ -389,6 +389,21 @@ cupom. Na revisão, o sistema não tem como mostrar qual produto o caixa registr
 > iguais). Para a mesma linha não ficar pendente todo dia, o caminho é acertar o nome no cadastro
 > igual ao do caixa.
 
+### L27 — Qual número é cada dia da semana em `consumo_diario.dia_semana`?
+
+O `schema.sql` tem `dia_semana SMALLINT` com `CHECK (dia_semana BETWEEN 0 AND 6)`, marcado como
+`[derivado]`, mas nenhum documento diz se 0 é domingo ou segunda-feira. O Python numera segunda = 0;
+o PostgreSQL (`EXTRACT(DOW)`) numera domingo = 0.
+
+**Impacto:** tarefas G1 (gravar), G2 (média por dia da semana, RN07) e o formato de
+`previsao_produto.consumo_por_dia_semana` (G3).
+
+> **Adotado na G1 (12/11/2026), a confirmar pelo grupo:** **0 = domingo … 6 = sábado**, como o
+> `EXTRACT(DOW)` do PostgreSQL — o banco que a Apostila IV fixa, e a única numeração comum que cabe
+> no `CHECK 0 a 6` sem conversão (a ISO vai de 1 a 7). O banco não muda; se o grupo decidir
+> diferente, muda uma função (`previsao.agregacao.dia_da_semana`) e a tabela é recalculada com
+> `agregar_consumo --desde`, porque é dado derivado.
+
 ---
 
 ## 2. Divergências internas da documentação entregue

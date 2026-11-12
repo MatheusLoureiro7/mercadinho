@@ -111,7 +111,7 @@ quando o formato for conhecido. **Não chute o formato e saia implementando.**
 
 | | ID | Tarefa | Tipo | Depende de | H |
 |---|---|---|---|---|---|
-| [ ] | **G1** | Tabela de consumo diário e rotina de agregação | BD/API | E2 | 10 |
+| [x] | **G1** | Tabela de consumo diário e rotina de agregação | BD/API | E2 | 10 |
 | [ ] | **G2** | Cálculo do consumo médio e por dia da semana | Regra | G1 | 12 |
 | [ ] | **G3** | Tabela de previsão e gravação do resultado | BD/API | G2 | 8 |
 | [ ] | **G4** | Regra: histórico mínimo antes de projetar | Regra | G2 | 4 |
