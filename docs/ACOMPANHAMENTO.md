@@ -21,13 +21,13 @@ O diário, no fim do arquivo, conta o que foi feito em cada dia.
 
 | | Concluído | Total | % |
 |---|---|---|---|
-| **Tarefas** | 36 | 51 | 70,6 % |
-| **Horas estimadas** | 258 h | 378 h | 68,3 % |
+| **Tarefas** | 37 | 51 | 72,5 % |
+| **Horas estimadas** | 268 h | 378 h | 70,9 % |
 
 | Etapa | Blocos | Horas concluídas | Total | % |
 |---|---|---|---|---|
 | 1 · Aviso de validade | A, B, C, D, F, J | 160 h | 212 h | 75,5 % |
-| 2 · Aviso de ruptura | E, G, H | 80 h | 136 h | 58,8 % |
+| 2 · Aviso de ruptura | E, G, H | 90 h | 136 h | 66,2 % |
 | 3 · Gestão | I | 18 h | 30 h | 60,0 % |
 
 As horas concluídas são as **estimadas** na apostila para cada tarefa entregue, não horas medidas.
@@ -128,11 +128,11 @@ na demonstração são de exemplo, criados pelo grupo.
 | ~~F2~~ | ~~API de consulta com filtros~~ | F1 | 6 | ✅ Concluída | 07/10/2026 | `2365139` |
 | ~~F3~~ | ~~Tela de estoque, com destaque para mínimo e vencidos~~ | A3 | 10 | ✅ Concluída | 08/10/2026 | `6a6321e` |
 
-## Bloco G — Previsão · 40 h  ·  0 de 40 h concluídas
+## Bloco G — Previsão · 40 h  ·  10 de 40 h concluídas
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
-| G1 | Tabela de consumo diário e rotina de agregação | E2 | 10 | ⬜ A fazer | — | — |
+| ~~G1~~ | ~~Tabela de consumo diário e rotina de agregação~~ | E2 | 10 | ✅ Concluída | 12/11/2026 | `48dba3f` |
 | G2 | Cálculo do consumo médio e por dia da semana | G1 | 12 | ⬜ A fazer | — | — |
 | G3 | Tabela de previsão e gravação do resultado | G2 | 8 | ⬜ A fazer | — | — |
 | G4 | Regra: histórico mínimo antes de projetar | G2 | 4 | ⬜ A fazer | — | — |
@@ -197,8 +197,31 @@ cronograma, a regra de negócio (quando houver) e o commit.
   depois de um teste reforçado. 18 testes automáticos — total do projeto: 849, todos passando.
   Concluída em 12/11/2026 (prevista para 06 e 09/11/2026).
 
-**Próxima tarefa:** E5 — tela de acompanhamento da importação, onde o sobrinho vê as planilhas
-lidas e resolve as vendas pendentes pela tela.
+- **G1 — Consumo de cada produto em cada dia (RN11).** Primeiro passo da previsão. Toda madrugada
+  o sistema soma quanto cada produto vendeu em cada dia e guarda numa tabela própria
+  (`consumo_diario`, igual à Apostila IV) — é dessa tabela que sai a média de consumo (RN06, RN07)
+  e o "ainda aprendendo" (RN09). **Só venda entra; perda fica de fora (RN11):** no exemplo da
+  própria regra, 10 kg de frango jogados fora não aumentam o consumo do dia. A venda das 22h30
+  conta no dia da loja, e não no dia seguinte do relógio do servidor. A rotina refaz **os últimos
+  30 dias até ontem** (30 é a janela da média; hoje fica de fora porque as vendas de hoje só entram
+  de madrugada); assim, rodar duas vezes não duplica nada, e a venda pendente que o sobrinho
+  resolveu depois (E4) entra na rodada seguinte. Para refazer o histórico inteiro há o comando
+  `agregar_consumo --desde`. Commit `48dba3f`.
+  **Lacuna nova, adotada e a confirmar pelo grupo (L27):** a apostila não diz que número é cada
+  dia da semana; adotado **0 = domingo … 6 = sábado**, como o próprio PostgreSQL numera.
+  **Para a G4:** pela RN09, o histórico é contado em dias **com venda** na tabela — um produto que
+  vende pouco demora mais para sair do "ainda aprendendo", o que é o comportamento pedido.
+  **Foi provado que os testes pegam erro:** sete defeitos de propósito (perda entrando no consumo,
+  dia contado no fuso errado, segunda como dia 0, rodar duas vezes duplicando, hoje entrando
+  incompleto, janela de 31 dias, apagar dias fora da janela) — todos pegos. 19 testes automáticos
+  — total do projeto: 868, todos passando. Concluída em 12/11/2026 (prevista para 06/11/2026).
+
+- **Visual novo do painel e skill de revisão visual.** Registrados no repositório o tema novo das
+  telas, feito em 21/10/2026 (fontes servidas pelo próprio painel, sem nada vindo da internet —
+  RNF06) e a skill usada para revisá-lo. Os 94 testes de tela passaram com o visual novo.
+
+**Próxima tarefa:** G2 — consumo médio (RN06) e por dia da semana (RN07), a tarefa mais difícil do
+projeto e a que destrava o aviso de ruptura. Depois, E5 (tela de acompanhamento da importação).
 
 ### 05/11/2026
 
