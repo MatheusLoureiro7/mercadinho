@@ -58,6 +58,11 @@ ignorar feriado na primeira versão e tratar só sábado e domingo.
 **Quem decide:** o grupo. Se escolher ignorar, **declare isso** — vira um item de escopo, não um
 esquecimento.
 
+> **✅ DECIDIDA em 12/11/2026 (tarefa H3):** **sem calendário de feriados nesta versão — só sábado e
+> domingo.** Os itens críticos são avaliados na quinta-feira (RN10), para garantir o fim de
+> semana. **Véspera de feriado fica fora do escopo da primeira versão, declarado:** não há tabela
+> de feriados (seria tabela nova no modelo de dados) nem biblioteca de feriados (dependência nova).
+
 ---
 
 ### L04 — O que é a "previsão por período" do Natal?

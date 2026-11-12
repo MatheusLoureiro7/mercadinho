@@ -10,7 +10,8 @@ importação → previsão → regras → notificação:
     2. agregar_consumo            consumo de cada dia (G1, RN11)
     3. calcular_previsao          média, dias até acabar, ponto de pedido, sugestão (G2–G4)
     4. avisos de validade         lotes perto de vencer (RN05, H2)
-    5. enviar_avisos              Telegram, com janela de silêncio e agrupamento (RN12, RN13)
+    5. avisos de ruptura          vai acabar (RN08) e fim de semana na quinta (RN10, H3)
+    6. enviar_avisos              Telegram, com janela de silêncio e agrupamento (RN12, RN13)
 
 Um passo que falha não impede os outros (o aviso de validade não depende da planilha do caixa);
 a rodada termina com erro, dizendo quais falharam, e o motivo vai para o log.
@@ -68,6 +69,7 @@ def test_g5_roda_os_passos_na_ordem_da_apostila(db):
         "Consumo de cada dia",
         "Previsão de cada produto",
         "Avisos de validade",
+        "Avisos de vai acabar e de fim de semana",
         "Envio dos avisos pelo Telegram",
     ]
 
@@ -89,7 +91,7 @@ def test_g5_passo_que_falha_nao_impede_os_outros(db, caplog):
 
 def test_g5_comando_termina_com_erro_dizendo_o_que_falhou(db):
     passos = [(nome, lambda saida: None) for nome, _ in rodada.PASSOS]
-    passos[4] = (passos[4][0], lambda saida: (_ for _ in ()).throw(RuntimeError("sem internet")))
+    passos[5] = (passos[5][0], lambda saida: (_ for _ in ()).throw(RuntimeError("sem internet")))
     saida = StringIO()
     with patch.object(rodada, "PASSOS", passos), pytest.raises(CommandError, match="Envio dos avisos"):
         call_command("rodada_diaria", stdout=saida)

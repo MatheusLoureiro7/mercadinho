@@ -130,7 +130,7 @@ depois acrescente a média por dia da semana (RN07).
 |---|---|---|---|---|---|
 | [x] | **H1** | Tabela de aviso e controle de estado | BD/API | A2 | 8 |
 | [x] | **H2** | Gerador do aviso de validade | Regra | H1, C3 | 8 |
-| [ ] | **H3** | Gerador do aviso de ruptura | Regra | H1, G3 | 10 |
+| [x] | **H3** | Gerador do aviso de ruptura | Regra | H1, G3 | 10 |
 | [x] | **H4** | Janela de silêncio e agrupamento | Regra | H1 | 8 |
 | [x] | **H5** | Integração com o serviço de mensagens | API | H1 | 10 |
 | [x] | **H6** | Vincular o celular do dono ao usuário | API | H5, B1 | 4 |

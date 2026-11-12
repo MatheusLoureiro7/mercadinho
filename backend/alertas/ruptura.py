@@ -1,0 +1,118 @@
+"""
+Gerador do aviso de ruptura e de fim de semana — tarefa H3 (RN08, RN10). Passos 6 a 8 da operação
+03, na rodada diária, logo depois da previsão (G3).
+
+RN08: saldo <= ponto_pedido → aviso RUPTURA, no vocabulário da loja (RNF10):
+      "Frango resfriado 1 kg acaba em 2 dias — sobram 6 KG. Pedir 30 KG — Granja Boa Vista entrega
+      em 2 dias."
+RN10: na quinta, produto crítico de fim de semana com saldo <= ponto_pedido × (1 + folga ÷ 100)
+      → aviso FIM_SEMANA. L03 (decisão do grupo, 12/11/2026): sem calendário de feriados nesta
+      versão — só sábado e domingo; véspera de feriado fica fora do escopo, declarado.
+
+Decisões da H3 (docs/ACOMPANHAMENTO.md, 12/11/2026), as mesmas da H2 onde cabem:
+- sem ponto de pedido não há aviso: produto "ainda aprendendo" (RN09) ou sem fornecedor (G3);
+- todo dia, enquanto a condição valer; rodar duas vezes no mesmo dia não duplica; o aviso de um
+  dia anterior que ainda não saiu dá lugar ao de hoje;
+- urgência (L11): ALTA quando acabou ou acaba antes de a entrega chegar; MEDIA nos outros casos;
+  fim de semana, MEDIA;
+- produto crítico já abaixo do ponto de pedido na quinta recebe só o aviso de "vai acabar", que
+  tem o botão "Sim, pedir" (H7) — não dois avisos do mesmo produto.
+
+O saldo vem de `estoque.saldo` (RN01) e a previsão de previsao_produto; este módulo não lê
+movimentação (guarda da RN11, tarefa D2).
+"""
+
+from datetime import date
+from decimal import ROUND_FLOOR, Decimal
+
+from django.db import transaction
+from django.utils import timezone
+
+from alertas.estados import cancelar_os_abertos
+from alertas.models import Alerta
+from alertas.servicos import criar_aviso
+from cadastro.models import Usuario
+from comum.formatos import quantidade_na_loja
+from comum.parametros import parametro_inteiro
+from estoque.saldo import saldos_de_todos
+from previsao.models import PrevisaoProduto
+
+QUINTA = 4  # isoweekday: a RN10 avalia o fim de semana na quinta-feira
+
+
+def _quando(previsao: PrevisaoProduto) -> str:
+    dias = int(previsao.dias_ate_acabar.to_integral_value(rounding=ROUND_FLOOR))
+    return {0: "acaba hoje", 1: "acaba amanhã"}.get(dias, f"acaba em {dias} dias")
+
+
+def _mensagem(previsao: PrevisaoProduto, saldo: Decimal) -> str:
+    produto = previsao.produto
+    if saldo <= 0:
+        texto = f"{produto.nome} acabou — não tem mais no estoque."
+    else:
+        sobram = quantidade_na_loja(saldo, produto.unidade_medida)
+        texto = f"{produto.nome} {_quando(previsao)} — sobram {sobram}."
+    if previsao.sugestao_compra:
+        fornecedor = produto.fornecedor_padrao
+        prazo = fornecedor.prazo_entrega_dias
+        entrega = "1 dia" if prazo == 1 else f"{prazo} dias"
+        pedir = quantidade_na_loja(previsao.sugestao_compra, produto.unidade_medida)
+        texto += f" Pedir {pedir} — {fornecedor.nome} entrega em {entrega}."
+    return texto
+
+
+def _acaba_antes_da_entrega(previsao: PrevisaoProduto, saldo: Decimal) -> bool:
+    prazo = previsao.produto.fornecedor_padrao.prazo_entrega_dias
+    return saldo <= 0 or (previsao.dias_ate_acabar is not None and previsao.dias_ate_acabar < prazo)
+
+
+def gerar_avisos_de_ruptura(*, hoje: date | None = None) -> list[Alerta]:
+    """Grava os avisos PENDENTES de "vai acabar" (RN08) e, na quinta, de fim de semana (RN10)."""
+    hoje = hoje or timezone.localdate()  # o dia da loja, nunca o CURRENT_DATE (UTC) do banco
+    e_quinta = hoje.isoweekday() == QUINTA
+    folga = Decimal(1) + Decimal(parametro_inteiro("folga_fim_semana_pct")) / 100
+    destinatario = Usuario.objects.filter(papel=Usuario.Papel.DONO, ativo=True).order_by("pk").first()
+    saldos = saldos_de_todos()
+    tipos = [Alerta.Tipo.RUPTURA, Alerta.Tipo.FIM_SEMANA]
+    ja_avisados_hoje = set(
+        Alerta.objects.filter(tipo__in=tipos, gerado_em__date=hoje).values_list("produto_id", "tipo")
+    )
+    previsoes = (
+        PrevisaoProduto.objects.filter(calculado_em__isnull=False, ponto_pedido__isnull=False)
+        .select_related("produto__fornecedor_padrao")
+        .order_by("produto__nome", "produto_id")
+    )
+
+    criados = []
+    with transaction.atomic():
+        for previsao in previsoes:
+            produto = previsao.produto
+            saldo = saldos.get(produto.pk, Decimal(0))
+            if saldo <= previsao.ponto_pedido:
+                tipo, prefixo = Alerta.Tipo.RUPTURA, ""
+                severidade = (
+                    Alerta.Severidade.ALTA
+                    if _acaba_antes_da_entrega(previsao, saldo)
+                    else Alerta.Severidade.MEDIA
+                )
+            elif e_quinta and produto.critico_fim_semana and saldo <= previsao.ponto_pedido * folga:
+                tipo, prefixo, severidade = (
+                    Alerta.Tipo.FIM_SEMANA,
+                    "Para o fim de semana: ",
+                    Alerta.Severidade.MEDIA,
+                )
+            else:
+                continue
+            if (produto.pk, tipo) in ja_avisados_hoje:
+                continue
+            cancelar_os_abertos(Alerta.objects.filter(tipo=tipo, produto=produto))
+            criados.append(
+                criar_aviso(
+                    produto=produto,
+                    tipo=tipo,
+                    severidade=severidade,
+                    mensagem=prefixo + _mensagem(previsao, saldo),
+                    destinatario=destinatario,
+                )
+            )
+    return criados

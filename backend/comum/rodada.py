@@ -16,6 +16,7 @@ import logging
 
 from django.core.management import call_command
 
+from alertas.ruptura import gerar_avisos_de_ruptura
 from alertas.validade import gerar_avisos_de_validade
 from previsao.agregacao import agregar_consumo_recente
 from previsao.projecao import calcular_previsao
@@ -39,6 +40,10 @@ def _avisos_de_validade(saida):
     saida.write(f"{len(gerar_avisos_de_validade())} aviso(s) de validade novo(s).")
 
 
+def _avisos_de_ruptura(saida):
+    saida.write(f"{len(gerar_avisos_de_ruptura())} aviso(s) de vai acabar ou de fim de semana novo(s).")
+
+
 def _enviar_avisos(saida):
     call_command("enviar_avisos", stdout=saida)
 
@@ -48,6 +53,7 @@ PASSOS = [
     ("Consumo de cada dia", _agregar_consumo),  # G1, RN11
     ("Previsão de cada produto", _calcular_previsao),  # G2–G4: RN06–RN09, RF11
     ("Avisos de validade", _avisos_de_validade),  # H2, RN05
+    ("Avisos de vai acabar e de fim de semana", _avisos_de_ruptura),  # H3, RN08, RN10
     ("Envio dos avisos pelo Telegram", _enviar_avisos),  # H5, RN12, RN13
 ]
 
