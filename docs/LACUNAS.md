@@ -223,6 +223,12 @@ número é calculado: até quantos dias de cobertura comprar, se desconta o sald
 **Impacto:** tarefa G3 (8 h).
 **Quem decide:** o grupo. Vale confirmar com o Sr. João como ele decide hoje quanto pedir.
 
+> **✅ DECIDIDA em 12/11/2026 (tarefa G3):** sugestão = **o que o produto vai vender durante o prazo
+> de entrega do fornecedor + 7 dias**, contados de hoje e com o consumo de cada dia (RN07: o
+> sábado da cerveja conta 26), **menos o saldo atual**; nunca negativa. O pedido mínimo do
+> fornecedor **não entra**. Produto sem fornecedor padrão não tem prazo, então fica sem sugestão
+> (e sem ponto de pedido). Os 7 dias ficam em `previsao.projecao.DIAS_ALEM_DO_PRAZO`.
+
 ---
 
 ### L16 — O que é o "resultado do período" no balanço?
