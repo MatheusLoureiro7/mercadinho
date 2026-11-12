@@ -30,7 +30,9 @@ export function procurarProduto({ produtos, aoEscolher }) {
     else if (encontrados.some((p) => String(p.id) === antes)) select.value = antes;
 
     $("anuncio-produtos").textContent = !busca
-      ? produtos.length + " produtos na lista."
+      ? produtos.length === 1
+        ? "1 produto na lista."
+        : produtos.length + " produtos na lista."
       : encontrados.length === 1
         ? "1 produto encontrado e escolhido: " + encontrados[0].nome + "."
         : encontrados.length + " produtos encontrados. Escolha na lista abaixo.";

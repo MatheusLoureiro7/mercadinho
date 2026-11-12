@@ -32,6 +32,7 @@ TELAS = [
     ("entrada-mercadoria.html", "#corpo-tabela tr td"),
     ("avarias.html", "#corpo-tabela tr td"),
     ("consulta-estoque.html", "#lista-estoque tr td"),
+    ("importacao-vendas.html", "#corpo-planilhas tr td"),
 ]
 
 # O que sai da largura da tela (ou fica numa caixa que rola de lado) dentro do conteúdo da página.

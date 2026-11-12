@@ -1,5 +1,6 @@
 """
-Vendas — o que a API recebe e devolve. Tarefa E4: itens pendentes da importação.
+Vendas — o que a API recebe e devolve. Tarefa E4: itens pendentes da importação. Tarefa E5: as
+planilhas lidas.
 
 O item pendente não tem o nome escrito na planilha (o modelo de dados não guarda, lacuna L26): a
 tela mostra data, hora, quantidade e preço, que o sobrinho confere na planilha dele.
@@ -8,7 +9,7 @@ tela mostra data, hora, quantidade e preço, que o sobrinho confere na planilha 
 from rest_framework import serializers
 
 from cadastro.models import Produto
-from vendas.models import ItemVenda
+from vendas.models import ImportacaoPdv, ItemVenda
 
 
 class ItemPendenteSerializer(serializers.ModelSerializer):
@@ -38,3 +39,18 @@ class CasarItemSerializer(serializers.Serializer):
             "incorrect_type": "Escolha o produto da lista.",
         },
     )
+
+
+class ImportacaoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ImportacaoPdv
+        fields = [
+            "id",
+            "arquivo_nome",
+            "data_referencia",
+            "linhas_lidas",
+            "linhas_erro",
+            "status",
+            "processado_em",
+        ]
+        read_only_fields = fields

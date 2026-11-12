@@ -965,6 +965,51 @@ section + .cartao {
   color: var(--cor-ok-texto);
 }
 
+/* ---------------------------------------------------------------- Importação de vendas (E5) */
+
+/* O formulário de uma venda para conferir: abre no alto do quadro, em bloco destacado da lista. */
+.conferir {
+  margin: 0 0 var(--esp-4);
+  padding: var(--esp-4);
+  border: 1px solid var(--cor-divisoria);
+  border-radius: var(--raio);
+  background: var(--cor-superficie-2);
+}
+.conferir__titulo {
+  margin: 0 0 var(--esp-1);
+  font-size: 1.0625rem;
+}
+.conferir__venda {
+  margin: 0 0 var(--esp-3);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+/* A venda que está sendo conferida fica marcada na lista, com o traço da ação ao lado; a primeira
+   coluna tem recuo fixo para o traço não cobrir a data. */
+.tabela--marcavel tbody tr > :first-child {
+  padding-left: var(--esp-3);
+}
+.tabela--marcavel thead th:first-child {
+  padding-left: var(--esp-3);
+}
+.tabela tbody tr.linha--escolhida {
+  background: var(--cor-superficie-2);
+  box-shadow: inset 4px 0 0 var(--cor-acao);
+}
+/* No computador, nome da planilha e hora numa linha só; no celular (cartão), o nome comprido
+   quebra em vez de empurrar a tela para o lado. */
+.sem-quebra {
+  white-space: nowrap;
+}
+.texto-longo {
+  overflow-wrap: anywhere;
+}
+@media (min-width: 861px) {
+  .texto-longo {
+    white-space: nowrap;
+  }
+}
+
 /* ---------------------------------------------------------------- Telas estreitas */
 
 @media (max-width: 860px) {

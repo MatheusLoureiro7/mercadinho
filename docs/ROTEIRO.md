@@ -85,7 +85,7 @@ produto estraga, mais o sistema manda comprar.
 | [x] | **E2** | Criar as tabelas de venda, item de venda e importação | BD | A2 | 6 |
 | [x] | **E3** | Serviço que lê o arquivo e gera venda e movimentação | API | E1, E2 | 16 |
 | [x] | **E4** | Casar o produto do caixa com o produto cadastrado | API/Regra | E3 | 10 |
-| [ ] | **E5** | Tela de acompanhamento da importação | Tela | E3 | 6 |
+| [x] | **E5** | Tela de acompanhamento da importação | Tela | E3 | 6 |
 
 **E2 não depende de D01** e pode ser feita desde já. **E3 e E4 dependem.**
 

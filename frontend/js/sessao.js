@@ -19,7 +19,7 @@ export const TELAS = {
   fornecedores: { nome: "Fornecedores", endereco: "fornecedores.html" },
   entrada_mercadoria: { nome: "Entrada de mercadoria", endereco: "entrada-mercadoria.html" },
   avarias: { nome: "Avarias e quebras", endereco: "avarias.html" },
-  importacao_vendas: { nome: "Importação de vendas", endereco: null }, // E5
+  importacao_vendas: { nome: "Importação de vendas", endereco: "importacao-vendas.html" }, // E5
   consulta_estoque: { nome: "Consulta de estoque", endereco: "consulta-estoque.html" },
   fechamento_caixa: { nome: "Fechamento de caixa", endereco: "fechamento-caixa.html" }, // I2 (API na I1)
   balanco_semana: { nome: "Balanço da semana", endereco: null }, // I3
