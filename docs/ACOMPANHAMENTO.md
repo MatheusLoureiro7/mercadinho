@@ -21,12 +21,12 @@ O diário, no fim do arquivo, conta o que foi feito em cada dia.
 
 | | Concluído | Total | % |
 |---|---|---|---|
-| **Tarefas** | 44 | 51 | 86,3 % |
-| **Horas estimadas** | 326 h | 378 h | 86,2 % |
+| **Tarefas** | 45 | 51 | 88,2 % |
+| **Horas estimadas** | 334 h | 378 h | 88,4 % |
 
 | Etapa | Blocos | Horas concluídas | Total | % |
 |---|---|---|---|---|
-| 1 · Aviso de validade | A, B, C, D, F, J | 160 h | 212 h | 75,5 % |
+| 1 · Aviso de validade | A, B, C, D, F, J | 168 h | 212 h | 79,2 % |
 | 2 · Aviso de ruptura | E, G, H | 136 h | 136 h | 100,0 % ✅ |
 | 3 · Gestão | I | 30 h | 30 h | 100,0 % ✅ |
 
@@ -158,12 +158,12 @@ na demonstração são de exemplo, criados pelo grupo.
 | ~~I2~~ | ~~Tela de fechamento de caixa~~ | A3 | 10 | ✅ Concluída (API na I1) | 09/10/2026 | `4184da1` |
 | ~~I3~~ | ~~Relatório de balanço semanal~~ | E2, D1 | 12 | ✅ Concluída | 12/11/2026 | `f1e319e` |
 
-## Bloco J — Qualidade e implantação · 46 h  ·  0 de 46 h concluídas
+## Bloco J — Qualidade e implantação · 46 h  ·  8 de 46 h concluídas
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
 | J1 | Testes automatizados de todas as regras | todas as regras | 16 | 🔄 Em andamento (faltam RN06–RN10) | — | `ab6424c` |
-| J2 | Carga inicial dos produtos, junto com o cliente | B3 | 8 | ⬜ A fazer | — | — |
+| ~~J2~~ | ~~Carga inicial dos produtos, junto com o cliente~~ | B3 | 8 | ✅ Concluída | 12/11/2026 | `261ce90` |
 | J3 | Inventário de partida: contagem física | J2 | 6 | ⬜ A fazer | — | — |
 | J4 | Teste em movimento real, num sábado cheio | todos | 6 | ⬜ A fazer | — | — |
 | J5 | Treinamento das três pessoas | J4 | 4 | ⬜ A fazer | — | — |
@@ -364,8 +364,25 @@ cronograma, a regra de negócio (quando houver) e o commit.
 (esteira de publicação), J1 (fecha com as regras da previsão), J2 (carga dos produtos de exemplo),
 J3 (contagem de partida), J4 (teste num sábado cheio), J5 (treinamento) e J6 (implantação).
 
-**Próxima tarefa:** J2 — carga inicial dos produtos (uma lista de exemplo, porque o mercado é
-fictício).
+- **J2 — Carga inicial dos produtos.** Para não cadastrar produto por produto na tela, a lista
+  inteira entra de uma vez por uma **planilha do Excel** com três abas — Categorias, Fornecedores e
+  Produtos —, carregada pelo comando `carregar_produtos`. Cada linha passa pelas **mesmas
+  conferências da tela de Produtos** (RN03, unidade de medida, nome repetido). Se alguma linha
+  estiver errada, **nada é gravado** e o comando diz a aba, a linha e a coluna de cada problema,
+  para corrigir tudo de uma vez; o que já está cadastrado é mantido, e rodar de novo não duplica.
+  Como o mercado é fictício, o grupo montou uma **planilha de exemplo**
+  (`docs/exemplos/produtos-iniciais.xlsx`): 9 categorias, 6 fornecedores e 49 produtos de um
+  mercadinho de bairro, com os itens que não podem faltar no fim de semana marcados (carne,
+  carvão, cerveja, linguiça, asinha — RN10). Na loja de verdade, seria esta a planilha que a esposa
+  preencheria com a equipe. Formato em `docs/FORMATO-PLANILHA-PRODUTOS.md`. Commit `261ce90`.
+  **Foi provado que os testes pegam erro:** seis defeitos de propósito (gravar a parte boa mesmo
+  com erro, aceitar produto repetido na planilha, aceitar "talvez" em sim/não, exigir o nome da
+  categoria com acento exato, duplicar produto já cadastrado, deixar a RN03 escapar) — todos
+  pegos. 16 testes automáticos — total do projeto: 1020, todos passando. Concluída em 12/11/2026
+  (prevista para 09/11/2026).
+
+**Próxima tarefa:** J3 — inventário de partida: a contagem física que dá o saldo inicial de cada
+produto (simulada com os produtos de exemplo).
 
 ### 05/11/2026
 
