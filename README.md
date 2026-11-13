@@ -138,6 +138,27 @@ servidor web faz o mesmo papel. Para entrar, crie os usuários (abaixo).
 
 ---
 
+## Publicar no computador da loja (A5)
+
+O sistema roda no computador do Matheus (decisão D05). Com o `.venv` ativado, um comando faz a
+esteira inteira:
+
+```bash
+python publicar.py                  # atualiza, confere, testa e, se tudo passar, publica
+python publicar.py --sem-atualizar  # publica o que está na pasta, sem git pull
+python publicar.py --parar          # para a API e o painel publicados
+```
+
+A ordem protege o que está no ar: `git pull`, dependências, banco, `ruff` e **todos os testes**
+vêm antes; só se tudo passar o script aplica as migrações e troca a API (`127.0.0.1:8000`) e o
+painel (`127.0.0.1:8090`), conferindo que os dois respondem. Se um passo falhar, nada muda no
+sistema publicado. Cada publicação fica em `logs/publicacoes.log`; a saída dos servidores, em
+`logs/api.log` e `logs/painel.log`. Usa o servidor do próprio Django, sem dependência nova
+(decisão do grupo, 13/11/2026): basta para a demonstração; um servidor de produção ficaria para
+outra decisão.
+
+---
+
 ## Rodada diária (03h00)
 
 A previsão e os avisos não rodam no clique de ninguém: rodam de madrugada (Apostila IV,

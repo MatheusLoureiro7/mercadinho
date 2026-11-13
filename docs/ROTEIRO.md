@@ -18,7 +18,7 @@ Marque `[x]` quando a tarefa estiver pronta **e testada**.
 | [x] | **A2** | Subir o banco de dados e a ferramenta de migração | Infra/BD | A1 | 6 |
 | [x] | **A3** | Esqueleto da API: rotas, tratamento de erro e registro de log | API | A1 | 10 |
 | [x] | **A4** | Autenticação e os três perfis de acesso | API/Regra | A3, B1 | 12 |
-| [ ] | **A5** | Esteira de publicação em ambiente de teste | Infra | A1 | 6 |
+| [x] | **A5** | Esteira de publicação em ambiente de teste | Infra | A1 | 6 |
 
 **A4 implementa a RN14.** A verificação de papel acontece antes de qualquer operação, na camada de
 autenticação — não dentro de cada regra de negócio.

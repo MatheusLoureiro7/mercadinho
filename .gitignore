@@ -27,3 +27,6 @@ logs/
 
 # Arquivos de trabalho da skill design-taste-frontend (fotos e medições)
 .taste-skill/
+
+# Estado da esteira de publicação (A5): o número de cada servidor no ar
+.publicacao/
