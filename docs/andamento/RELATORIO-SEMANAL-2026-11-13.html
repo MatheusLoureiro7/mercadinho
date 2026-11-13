@@ -1,0 +1,135 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Relatório de Andamento — semana de 09/11 a 13/11/2026</title>
+<style>
+@font-face { font-family: Plex; font-weight: 400; src: url(file:///Users/bibico/Documents/projetos/Mercadinho/frontend/fontes/ibm-plex-sans-400.woff2); }
+@font-face { font-family: Plex; font-weight: 500; src: url(file:///Users/bibico/Documents/projetos/Mercadinho/frontend/fontes/ibm-plex-sans-500.woff2); }
+@font-face { font-family: Plex; font-weight: 600; src: url(file:///Users/bibico/Documents/projetos/Mercadinho/frontend/fontes/ibm-plex-sans-600.woff2); }
+* { box-sizing: border-box; }
+body { font-family: Plex, sans-serif; font-size: 9.6pt; line-height: 1.45; color: #1d2430; margin: 0;
+        counter-reset: secao; }
+header { border-bottom: 1.5pt solid #12305a; padding-bottom: 4mm; margin-bottom: 6mm; }
+.sup { font-size: 8.4pt; color: #556; display: flex; justify-content: space-between; }
+h1 { font-size: 21pt; color: #12305a; margin: 3mm 0 1mm; font-weight: 600; }
+.sistema { font-size: 11pt; color: #33415a; }
+h2 { font-size: 12.5pt; color: #12305a; font-weight: 600; margin: 7mm 0 2.5mm; break-after: avoid;
+      counter-increment: secao; }
+h2::before { content: counter(secao) ". "; }
+p { margin: 0 0 2.5mm; }
+table { width: 100%; border-collapse: collapse; margin: 1mm 0 3mm; font-size: 8.8pt; }
+th, td { border: 0.5pt solid #b9c2d0; padding: 1.5mm 2mm; text-align: left; vertical-align: top; }
+thead th { background: #12305a; color: #fff; font-weight: 500; }
+tr { break-inside: avoid; }
+.num { text-align: right; width: 18mm; }
+.id { font-weight: 500; white-space: nowrap; }
+.regras td:nth-child(2) { width: 44mm; } .regras td:last-child { width: 22mm; }
+.data { white-space: nowrap; width: 26mm; }
+.selo { display: inline-block; padding: 0.3mm 1.6mm; border-radius: 1mm; font-size: 7.6pt;
+         font-weight: 600; white-space: nowrap; border: 0.5pt solid; }
+.selo.ok { color: #12663a; background: #e3f4ea; border-color: #9bd1b2; }
+.selo.falha { color: #9b1c1c; background: #fbe5e5; border-color: #e5a3a3; }
+.selo.parcial { color: #7a5200; background: #fdf1d8; border-color: #e6c27a; }
+.selo.nao { color: #4a5568; background: #edf0f4; border-color: #c3cad5; }
+.numeros { display: flex; gap: 3mm; margin: 1mm 0 3mm; }
+.numeros div { flex: 1; border: 0.5pt solid #b9c2d0; padding: 2.5mm 3mm; font-size: 8.4pt; color: #445; }
+.numeros span { display: block; font-size: 17pt; font-weight: 600; color: #12305a; }
+.conclusao { border-left: 2pt solid #12305a; background: #f2f5fa; padding: 3mm 4mm; }
+
+@page { size: A4; margin: 15mm 16mm 16mm; }
+.sem { color: #12663a; font-weight: 600; }
+ul { margin: 0 0 2.5mm; padding-left: 5mm; } li { margin-bottom: 1.2mm; }
+.pequeno { font-size: 8.2pt; color: #556; }
+</style></head><body>
+<header>
+  <div class="sup"><span>Engenharia de Software · Grupo MDGS</span>
+  <span>MDGS-AND-001 · versão 1.0 · 13/11/2026</span></div>
+  <h1>Relatório de Andamento da Semana</h1>
+  <div class="sistema">Sistema de Gestão de Estoque e Compras — Mercado do Sr. João · semana de 09/11/2026 a 13/11/2026</div>
+</header>
+
+<h2>Resumo</h2>
+<p>Nesta semana foram concluídas <b>12 tarefas</b> do cronograma da Apostila IV (98 horas estimadas). Com elas,
+<b>as três etapas de desenvolvimento estão completas</b>: o aviso de validade (etapa 1), o aviso de que um produto
+vai acabar (etapa 2) e a gestão — fechamento de caixa e balanço da semana (etapa 3). Restam 4 tarefas de qualidade
+e implantação, com entrega mantida em <b>01/12/2026</b>.</p>
+<div class="numeros">
+  <div><span>35 → 47</span>tarefas concluídas, de 51 (05/11/2026 → 13/11/2026)</div>
+  <div><span>65,6% → 91,5%</span>das horas estimadas (248 h → 346 h, de 378 h)</div>
+  <div><span>1.046</span>testes automáticos aprovados em 13/11/2026, nenhum reprovado</div>
+</div>
+<table><thead><tr><th>Etapa</th><th class="num">Em 05/11/2026</th><th class="num">Em 13/11/2026</th></tr></thead><tbody>
+<tr><td>1 · Aviso de validade (blocos A, B, C, D, F, J)</td><td class="num">75,5%</td><td class="num">84,9%</td></tr>
+<tr><td>2 · Aviso de ruptura (blocos E, G, H)</td><td class="num">51,5%</td><td class="num"><span class="sem">100%</span></td></tr>
+<tr><td>3 · Gestão (bloco I)</td><td class="num">60,0%</td><td class="num"><span class="sem">100%</span></td></tr>
+</tbody></table>
+
+<h2>Tarefas concluídas na semana</h2>
+<table><thead><tr><th>Código</th><th>Tarefa</th><th>Regra</th><th>Prevista</th><th>Concluída</th><th>Situação</th><th>Versão</th></tr></thead><tbody>
+<tr><td class="id">E4</td><td>Casar o produto do caixa com o cadastro</td><td>Operação 04</td><td class="data">06–09/11/2026</td><td class="data">12/11/2026</td><td><span class="selo ok">Concluída</span></td><td class="pequeno">c738f43</td></tr>
+<tr><td class="id">G1</td><td>Consumo de cada produto em cada dia</td><td>RN11</td><td class="data">06/11/2026</td><td class="data">12/11/2026</td><td><span class="selo ok">Concluída</span></td><td class="pequeno">48dba3f</td></tr>
+<tr><td class="id">G2</td><td>Consumo médio e por dia da semana</td><td>RN06, RN07</td><td class="data">09–10/11/2026</td><td class="data">12/11/2026</td><td><span class="selo ok">Concluída</span></td><td class="pequeno">d6a3e45</td></tr>
+<tr><td class="id">G3</td><td>Previsão: quando acaba, ponto de pedido, quanto comprar</td><td>RN08, RF11</td><td class="data">11/11/2026</td><td class="data">12/11/2026</td><td><span class="selo ok">Concluída</span></td><td class="pequeno">62b0ec5</td></tr>
+<tr><td class="id">G4</td><td>"Ainda aprendendo": histórico mínimo</td><td>RN09</td><td class="data">11/11/2026</td><td class="data">12/11/2026</td><td><span class="selo ok">Concluída</span></td><td class="pequeno">7fc505c</td></tr>
+<tr><td class="id">G5</td><td>Rodada automática das 03h00</td><td>Operação 03</td><td class="data">12–13/11/2026</td><td class="data">12/11/2026</td><td><span class="selo ok">Concluída</span></td><td class="pequeno">1c62ea9</td></tr>
+<tr><td class="id">H3</td><td>Aviso "vai acabar" e de fim de semana</td><td>RN08, RN10</td><td class="data">12–13/11/2026</td><td class="data">12/11/2026</td><td><span class="selo ok">Concluída</span></td><td class="pequeno">406c890</td></tr>
+<tr><td class="id">E5</td><td>Tela de importação das vendas</td><td>RF06</td><td class="data">06–09/11/2026</td><td class="data">12/11/2026</td><td><span class="selo ok">Concluída</span></td><td class="pequeno">313abeb</td></tr>
+<tr><td class="id">I3</td><td>Balanço da semana</td><td>RF13, RN11</td><td class="data">09–11/11/2026</td><td class="data">12/11/2026</td><td><span class="selo ok">Concluída</span></td><td class="pequeno">f1e319e</td></tr>
+<tr><td class="id">J2</td><td>Carga inicial dos produtos por planilha</td><td>RF01, RN03</td><td class="data">09/11/2026</td><td class="data">12/11/2026</td><td><span class="selo ok">Concluída</span></td><td class="pequeno">261ce90</td></tr>
+<tr><td class="id">J3</td><td>Contagem de partida do estoque</td><td>RN01, RN04</td><td class="data">17/11/2026</td><td class="data">12/11/2026</td><td><span class="selo ok">Concluída</span></td><td class="pequeno">d1b72b5</td></tr>
+<tr><td class="id">A5</td><td>Esteira de publicação</td><td>D05</td><td class="data">03–04/11/2026</td><td class="data">13/11/2026</td><td><span class="selo ok">Concluída</span></td><td class="pequeno">759e62e</td></tr>
+</tbody></table>
+<p class="pequeno">E4, E5 e A5 saíram com 3 a 9 dias de atraso em relação à data prevista; J3 saiu 5 dias adiantada.
+O atraso foi absorvido na própria semana e não altera a data de entrega. "Versão" é o registro no histórico do projeto (git).</p>
+
+<h2>O que o sistema faz agora</h2>
+<ul>
+<li><b>Avisa que o produto vai acabar.</b> Toda madrugada, às 03h00, o sistema lê as vendas do caixa, calcula quanto
+cada produto vende por dia e manda ao celular do Sr. João: <i>"Frango resfriado 1 kg acaba em 2 dias — sobram 6 KG.
+Pedir 30 KG — Granja Boa Vista entrega em 2 dias."</i>, com o botão "Sim, pedir". A conta leva em conta o dia da semana
+(a cerveja do sábado) e nunca conta perda como venda (RN11).</li>
+<li><b>Protege o fim de semana.</b> Na quinta-feira, carne, carvão, cerveja, linguiça e asinha são avaliados com folga
+de 40% (RN10). Produto novo, com menos de 14 dias de venda, aparece como "ainda aprendendo" (RN09).</li>
+<li><b>Resolve as vendas que não casaram.</b> Na tela de Importação de vendas, o sobrinho liga ao produto certo a venda
+que o caixa escreveu com outro nome; ela sai do estoque no dia em que aconteceu.</li>
+<li><b>Faz o balanço da semana.</b> A esposa vê vendas, perdas (separadas) e resultado, de segunda a domingo, sem caderno.</li>
+<li><b>Começa do zero com planilhas.</b> Produtos e contagem inicial do estoque entram por planilha do Excel, com as
+mesmas conferências da tela; se uma linha estiver errada, nada é gravado. E um comando coloca o sistema no ar só se
+todos os testes passarem.</li>
+</ul>
+
+<h2>Decisões tomadas pelo grupo</h2>
+<p>A especificação deixava estes pontos em aberto. Cada decisão está registrada, com o motivo, em
+<i>docs/LACUNAS.md</i>; nenhuma mudou o modelo de dados entregue na Apostila IV.</p>
+<table><thead><tr><th>Ponto</th><th>Pergunta</th><th>Decisão</th><th>Data</th></tr></thead><tbody>
+<tr><td class="id">L26</td><td>Venda da planilha que não casou com o cadastro</td><td>Aparece com data, hora, quantidade e preço; o sobrinho escolhe o produto. Modelo de dados não muda.</td><td class="data">12/11/2026</td></tr>
+<tr><td class="id">L02</td><td>"Diferença relevante" entre a média do dia da semana e a geral (RN07)</td><td>Relevante quando a média do dia chega a 1,5 vez a média geral.</td><td class="data">12/11/2026</td></tr>
+<tr><td class="id">L15</td><td>Quanto comprar (RF11)</td><td>O que vai vender no prazo de entrega + 7 dias, menos o estoque; nunca negativo.</td><td class="data">12/11/2026</td></tr>
+<tr><td class="id">D05</td><td>Agendador da rodada diária</td><td>Cron do computador do Matheus, sem programa novo.</td><td class="data">12/11/2026</td></tr>
+<tr><td class="id">L03</td><td>Véspera de feriado (RN10)</td><td>Só sábado e domingo nesta versão; feriado fica fora do escopo, declarado.</td><td class="data">12/11/2026</td></tr>
+<tr><td class="id">H3</td><td>Aviso depois do "Sim, pedir"</td><td>Para de avisar o produto até chegar mercadoria.</td><td class="data">12/11/2026</td></tr>
+<tr><td class="id">L16</td><td>"Resultado" do balanço (RF13)</td><td>Vendas menos perdas a preço de custo; sem custo da mercadoria vendida.</td><td class="data">12/11/2026</td></tr>
+<tr><td class="id">J3</td><td>Como entra a contagem de partida</td><td>Como entrada de mercadoria: um lote por linha, com validade (RN04).</td><td class="data">12/11/2026</td></tr>
+<tr><td class="id">A5</td><td>Servidor da publicação</td><td>Servidor do próprio Django, sem dependência nova (demonstração).</td><td class="data">13/11/2026</td></tr>
+</tbody></table>
+
+<h2>Testes</h2>
+<p>Cada tarefa foi entregue com os seus testes automáticos, e a suíte inteira roda de novo a cada entrega. Em cada
+tarefa da semana, o grupo colocou <b>defeitos de propósito</b> no código (por exemplo: perda somada às vendas,
+semana contada de domingo a sábado, aviso repetido no mesmo dia) para provar que os testes pegam o erro; quando um
+defeito passou, o teste foi reforçado antes da entrega. As 16 regras de negócio têm código e teste desde 12/11/2026.</p>
+<table><thead><tr><th>Data</th><th>Testes executados</th><th>Aprovados</th><th>Reprovados</th></tr></thead><tbody>
+<tr><td class="data">05/11/2026</td><td>831</td><td>831</td><td>0</td></tr>
+<tr><td class="data">13/11/2026</td><td>1.046</td><td>1.046</td><td>0</td></tr>
+</tbody></table>
+
+<h2>O que falta</h2>
+<table><thead><tr><th>Código</th><th>Tarefa</th><th>Data prevista</th></tr></thead><tbody>
+<tr><td class="id">J1</td><td>Relatório de testes versão 1.3 (fechamento da cobertura)</td><td class="data">até 18/11/2026</td></tr>
+<tr><td class="id">J4</td><td>Teste em movimento real, num sábado cheio (simulado)</td><td class="data">21/11/2026</td></tr>
+<tr><td class="id">J5</td><td>Treinamento das três pessoas (simulado)</td><td class="data">23/11/2026</td></tr>
+<tr><td class="id">J6</td><td>Implantação no computador do Matheus e primeira semana simulada</td><td class="data">23 a 27/11/2026</td></tr>
+<tr><td class="id">—</td><td>Folga para ajustes finais</td><td class="data">28 a 30/11/2026</td></tr>
+<tr><td class="id">—</td><td>Entrega e apresentação final</td><td class="data">01/12/2026</td></tr>
+</tbody></table>
+<div class="conclusao">Desenvolvimento das três etapas concluído em 13/11/2026. As tarefas restantes são de
+qualidade e implantação e cabem nas datas previstas, com folga de 28 a 30/11/2026 antes da entrega final.</div>
+
+</body></html>
