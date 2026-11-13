@@ -255,3 +255,18 @@ def test_g3_comando_calcula_e_diz_quantos_produtos(arroz):
     call_command("calcular_previsao", stdout=saida)
     assert "1 produto" in saida.getvalue()
     assert PrevisaoProduto.objects.filter(produto=arroz).exists()
+
+
+def test_l15_sugestao_de_produto_por_unidade_ou_pacote_arredonda_para_cima(db):
+    # Achado na demonstração de 13/11/2026: "Pedir 14,531 PCT" de carvão. Pacote não se compra pela
+    # metade: UN e PCT sobem para o inteiro seguinte; KG e L continuam com as casas.
+    for unidade, esperado in (("PCT", Decimal("6")), ("UN", Decimal("6")), ("KG", Decimal("5.600"))):
+        produto = _produto(f"Produto em {unidade}", prazo=1)
+        PrevisaoProduto.objects.filter(produto=produto).delete()
+        Produto.objects.filter(pk=produto.pk).update(unidade_medida=unidade)
+        for dia in DIAS:
+            ConsumoDiario.objects.create(
+                produto=produto, data=dia, quantidade_vendida=Decimal("0.7"), dia_semana=dia_da_semana(dia)
+            )
+        calcular_previsao()
+        assert _previsao(produto).sugestao_compra == esperado, unidade  # 8 dias × 0,7 = 5,6

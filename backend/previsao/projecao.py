@@ -10,7 +10,8 @@ Para cada produto, a partir do consumo da G2 (`previsao.calculo`) e do saldo de 
   contra o exemplo da apostila (8 kg/dia, 3 dias, 20 % → 28,8 kg).
 - sugestao_compra (RF11) — decisão do grupo sobre a lacuna L15 (12/11/2026): o que o produto vai
   vender no prazo de entrega + 7 dias, contados de hoje, menos o saldo; nunca negativa; o pedido
-  mínimo do fornecedor não entra.
+  mínimo do fornecedor não entra. Produto vendido por unidade ou pacote (UN, PCT) sobe para o
+  inteiro seguinte — pacote não se compra pela metade (achado na demonstração de 13/11/2026).
 Sem fornecedor padrão não há prazo de entrega: ponto de pedido e sugestão ficam nulos.
 
 RN09 (G4): produto com menos de `historico_minimo_dias` dias de histórico — COUNT(DISTINCT data)
@@ -19,7 +20,7 @@ em consumo_diario, o histórico inteiro, só dias com venda — fica com a linha
 """
 
 from datetime import date, timedelta
-from decimal import ROUND_HALF_UP, Decimal
+from decimal import ROUND_CEILING, ROUND_HALF_UP, Decimal
 
 from django.db import transaction
 from django.db.models import Count
@@ -32,6 +33,7 @@ from previsao.calculo import MILESIMO, Consumo, consumo_de_todos
 from previsao.models import ConsumoDiario, PrevisaoProduto
 
 DIAS_ALEM_DO_PRAZO = 7  # L15, decisão do grupo em 12/11/2026
+UNIDADES_INTEIRAS = {"UN", "PCT"}  # KG e L aceitam fração
 DECIMO = Decimal("0.1")  # dias_ate_acabar é NUMERIC(8,1)
 MAIOR_NUMERO_DE_DIAS = Decimal("9999999.9")
 
@@ -57,11 +59,14 @@ def ponto_pedido(consumo: Consumo, prazo: int, seguranca_pct: int) -> Decimal:
     return (no_prazo + no_prazo * seguranca_pct / 100).quantize(MILESIMO, rounding=ROUND_HALF_UP)
 
 
-def sugestao_compra(saldo: Decimal, consumo: Consumo, prazo: int, hoje: date) -> Decimal:
+def sugestao_compra(saldo: Decimal, consumo: Consumo, prazo: int, hoje: date, unidade: str = "KG") -> Decimal:
     vai_vender = sum(
         (consumo.do_dia(hoje + timedelta(days=n)) for n in range(prazo + DIAS_ALEM_DO_PRAZO)), Decimal(0)
     )
-    return max(vai_vender - saldo, Decimal(0)).quantize(MILESIMO, rounding=ROUND_HALF_UP)
+    falta = max(vai_vender - saldo, Decimal(0))
+    if unidade in UNIDADES_INTEIRAS:
+        return falta.to_integral_value(rounding=ROUND_CEILING).quantize(MILESIMO)
+    return falta.quantize(MILESIMO, rounding=ROUND_HALF_UP)
 
 
 def _previsao(produto: Produto, consumo: Consumo, saldo: Decimal, seguranca_pct: int, hoje: date, agora):
@@ -75,7 +80,9 @@ def _previsao(produto: Produto, consumo: Consumo, saldo: Decimal, seguranca_pct:
         },
         dias_ate_acabar=dias_ate_acabar(saldo, consumo, hoje),
         ponto_pedido=None if prazo is None else ponto_pedido(consumo, prazo, seguranca_pct),
-        sugestao_compra=None if prazo is None else sugestao_compra(saldo, consumo, prazo, hoje),
+        sugestao_compra=None
+        if prazo is None
+        else sugestao_compra(saldo, consumo, prazo, hoje, produto.unidade_medida),
         calculado_em=agora,
     )
 
