@@ -264,7 +264,12 @@ interface e deixe o parser real para quando a resposta chegar.
    risque a tarefa (`~~A3~~`), preencha situação, data de conclusão e commit, recalcule o resumo
    (tarefas, horas e % por etapa) e escreva no **Diário** o que foi feito no dia, em linguagem
    que o professor entenda. Decisões tomadas e lacunas novas também entram no diário.
-8. Ao responder, diga sempre o que foi feito, em que data, e qual é a próxima tarefa.
+8. Atualize a **documentação do sistema** (`docs/sistema/`, organizada pelos slides "Documentação
+   de Software" do professor: usar, manter, sustentar, evoluir) conforme a tabela "Como alimentar"
+   do `docs/sistema/LEIA-ME.md`, troque a data "Atualizado em" do que mudou e rode
+   `python docs/sistema/gerar.py`. Endpoint, tabela, regra ou dependência nova sem regenerar faz o
+   `test_documentacao.py` falhar — é proposital ("docs as code").
+9. Ao responder, diga sempre o que foi feito, em que data, e qual é a próxima tarefa.
 
 Não pule para uma tarefa adiante porque parece mais fácil. A ordem existe por dependência real:
 o modelo de dados sustenta quase tudo e por isso vem primeiro.
