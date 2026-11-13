@@ -17,16 +17,16 @@ O diário, no fim do arquivo, conta o que foi feito em cada dia.
 
 ## Resumo
 
-*Atualizado em 12/11/2026.*
+*Atualizado em 13/11/2026.*
 
 | | Concluído | Total | % |
 |---|---|---|---|
-| **Tarefas** | 46 | 51 | 90,2 % |
-| **Horas estimadas** | 340 h | 378 h | 89,9 % |
+| **Tarefas** | 47 | 51 | 92,2 % |
+| **Horas estimadas** | 346 h | 378 h | 91,5 % |
 
 | Etapa | Blocos | Horas concluídas | Total | % |
 |---|---|---|---|---|
-| 1 · Aviso de validade | A, B, C, D, F, J | 174 h | 212 h | 82,1 % |
+| 1 · Aviso de validade | A, B, C, D, F, J | 180 h | 212 h | 84,9 % |
 | 2 · Aviso de ruptura | E, G, H | 136 h | 136 h | 100,0 % ✅ |
 | 3 · Gestão | I | 30 h | 30 h | 100,0 % ✅ |
 
@@ -68,7 +68,7 @@ na demonstração são de exemplo, criados pelo grupo.
 
 ---
 
-## Bloco A — Fundação · 40 h  ·  34 de 40 h concluídas
+## Bloco A — Fundação · 40 h  ·  40 de 40 h concluídas ✅
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
@@ -76,7 +76,7 @@ na demonstração são de exemplo, criados pelo grupo.
 | ~~A2~~ | ~~Subir o banco de dados e a ferramenta de migração~~ | A1 | 6 | ✅ Concluída | 06/10/2026 | `02c5ae1` |
 | ~~A3~~ | ~~Esqueleto da API: rotas, tratamento de erro e registro de log~~ | A1 | 10 | ✅ Concluída | 06/10/2026 | `ebea081` |
 | ~~A4~~ | ~~Autenticação e os três perfis de acesso~~ | A3, B1 | 12 | ✅ Concluída | 06/10/2026 | `ec49325` |
-| A5 | Esteira de publicação em ambiente de teste | A1 | 6 | ⬜ A fazer | — | — |
+| ~~A5~~ | ~~Esteira de publicação em ambiente de teste~~ | A1 | 6 | ✅ Concluída | 13/11/2026 | `759e62e` |
 
 ## Bloco B — Cadastros · 46 h  ·  46 de 46 h concluídas ✅
 
@@ -175,6 +175,29 @@ na demonstração são de exemplo, criados pelo grupo.
 
 O que foi feito em cada dia, do mais recente para o mais antigo. Cada linha aponta a tarefa do
 cronograma, a regra de negócio (quando houver) e o commit.
+
+### 13/11/2026
+
+- **A5 — Esteira de publicação no computador do Matheus (D05).** Um comando só, `publicar.py`,
+  coloca o sistema no ar: atualiza o código, instala as dependências, sobe o banco, confere o
+  padrão do código e roda **todos os testes**; **só se tudo passar** aplica as mudanças no banco e
+  troca a API e o painel pelos novos, conferindo que os dois respondem. Se qualquer passo falhar,
+  o sistema que está no ar continua como estava. Cada publicação fica anotada em
+  `logs/publicacoes.log` (data, versão e resultado). `--parar` desliga tudo.
+  **Decisão do grupo (13/11/2026):** usar o servidor do próprio Django, sem programa novo
+  instalado — basta para a demonstração; um servidor de produção ficaria para outra decisão.
+  **Provado de verdade neste computador:** a esteira rodou de ponta a ponta — 1046 testes
+  aprovados, as tabelas da previsão criadas no banco, a tela de login respondendo e a API
+  respondendo "entre no sistema" a quem não fez login —, e o `--parar` liberou as portas. Commit
+  `759e62e`.
+  **Foi provado que os testes pegam erro:** os 10 testes conferem a ordem (testes antes de mexer
+  no que está no ar), que um passo reprovado não migra nem troca os servidores, a troca dos
+  servidores antigos pelos novos, servidor que não respondeu e o `--parar`. Total do projeto:
+  1046, todos passando. Concluída em 13/11/2026 (prevista para 03 e 04/11/2026).
+
+**Próxima tarefa:** J1 — fechamento dos testes automatizados de todas as regras (as 16 já têm
+teste; falta o relatório de testes versão 1.3 com a previsão e os avisos de ruptura). Depois, J4
+(teste num sábado cheio, simulado), J5 (treinamento) e J6 (implantação).
 
 ### 12/11/2026
 
@@ -400,8 +423,7 @@ J3 (contagem de partida), J4 (teste num sábado cheio), J5 (treinamento) e J6 (i
   negativa) — todos pegos. 16 testes automáticos — total do projeto: 1036, todos passando.
   Concluída em 12/11/2026 (prevista para 17/11/2026).
 
-**Próxima tarefa:** A5 — esteira de publicação em ambiente de teste (no computador do Matheus,
-decisão D05). Depois, J1 (fechamento da cobertura de testes) e J4 a J6.
+**Próxima tarefa:** A5 — esteira de publicação (13/11/2026).
 
 ### 05/11/2026
 
