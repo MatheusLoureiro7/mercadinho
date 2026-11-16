@@ -26,6 +26,21 @@ export function numeroParaApi(digitado) {
   return texto;
 }
 
+/**
+ * Revisão X1, item 13 (decisão do grupo, 16/11/2026): "1.000" ou "12.500", sem vírgula, pode ser mil
+ * (o ponto de milhar do Brasil) ou um com três casas — a tela não adivinha. Recebe { campo: digitado }
+ * e devolve null, ou o erro no formato da API ({ campos: { campo: [mensagem] } }) para mostrarErros.
+ */
+export function numerosAmbiguos(digitados) {
+  const campos = {};
+  Object.entries(digitados).forEach(([campo, digitado]) => {
+    if (/^\d{1,3}(\.\d{3})+$/.test(String(digitado || "").replace(/\s/g, ""))) {
+      campos[campo] = ["Não dá para saber se é mil ou um: escreva 1000 para mil, ou 1,5 para um e meio."];
+    }
+  });
+  return Object.keys(campos).length ? { campos: campos } : null;
+}
+
 /** "12.90" (da API) → "12,90" (para o campo). */
 export function numeroParaCampo(daApi) {
   if (daApi === null || daApi === undefined) return "";

@@ -13,7 +13,7 @@
 
 import { api } from "./api.js";
 import { linhaDeFalha } from "./falha.js";
-import { dataBrasileira, diaNaLoja, horaNaLoja, numeroParaApi, quantidade } from "./formatos.js";
+import { dataBrasileira, diaNaLoja, horaNaLoja, numerosAmbiguos, numeroParaApi, quantidade } from "./formatos.js";
 import {
   apagarErroAoCorrigir,
   celula,
@@ -184,6 +184,9 @@ async function salvar(evento) {
   evento.preventDefault();
   limparErros(CAMPOS);
   confirmar(null);
+
+  const ambiguos = numerosAmbiguos({ quantidade: $("campo-quantidade").value });
+  if (ambiguos) return mostrarErros(CAMPOS, ambiguos); // X1, item 13: "1.000" é mil ou um?
 
   const dados = dadosDoFormulario();
   // Só "escolha/informe": evita uma ida à API à toa. O motivo e tudo o mais é conferido pela API.

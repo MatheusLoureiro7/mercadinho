@@ -13,7 +13,7 @@
 import { api } from "./api.js";
 import { linhaDeFalha } from "./falha.js";
 import { entrarNaTela } from "./sessao.js";
-import { emReais, numeroParaApi, numeroParaCampo } from "./formatos.js";
+import { emReais, numerosAmbiguos, numeroParaApi, numeroParaCampo } from "./formatos.js";
 
 const CAMPOS = {
   nome: { id: "campo-nome", rotulo: "Nome do fornecedor" },
@@ -175,6 +175,8 @@ function dadosDoFormulario() {
 async function salvar(evento) {
   evento.preventDefault();
   limparErros();
+  const ambiguos = numerosAmbiguos({ pedido_minimo: $("campo-pedido-minimo").value });
+  if (ambiguos) return mostrarErros(ambiguos); // X1, item 13: "1.000" é mil ou um?
   const botao = $("botao-salvar");
   botao.setAttribute("aria-busy", "true");
   botao.disabled = true;

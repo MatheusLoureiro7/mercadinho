@@ -35,7 +35,8 @@ importação das vendas e no que depende dela.
 **Combinado:** os itens 1 a 4 serão corrigidos antes do teste de sábado (J4, 21/11/2026).
 
 **Situação em 16/11/2026:** os itens 1 a 4 foram corrigidos (commits `fa2866e`, `b16f38d`, `1b710f5`
-e o do item 4), cada um com teste e anotação no Diário do `docs/ACOMPANHAMENTO.md`.
+e `7b6072b`), cada um com teste e anotação no Diário do `docs/ACOMPANHAMENTO.md`. Os itens 5 a 13
+(gravidade média) também foram corrigidos no mesmo dia, um commit por item. Ficam os de gravidade baixa.
 
 ---
 

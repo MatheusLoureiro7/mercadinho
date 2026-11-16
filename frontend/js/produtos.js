@@ -11,7 +11,7 @@
 import { api } from "./api.js";
 import { entrarNaTela } from "./sessao.js";
 import { linhaDeFalha } from "./falha.js";
-import { emReais, numeroParaApi, numeroParaCampo, quantidade } from "./formatos.js";
+import { emReais, numerosAmbiguos, numeroParaApi, numeroParaCampo, quantidade } from "./formatos.js";
 
 const CAMPOS = {
   nome: { id: "campo-nome", rotulo: "Nome do produto", obrigatorio: "Preencha o nome do produto." },
@@ -293,6 +293,12 @@ function dadosDoFormulario() {
 async function salvar(evento) {
   evento.preventDefault();
   limparErros();
+  const ambiguos = numerosAmbiguos({
+    preco_custo: $("campo-custo").value,
+    preco_venda: $("campo-venda").value,
+    estoque_minimo: $("campo-minimo").value,
+  });
+  if (ambiguos) return mostrarErros(ambiguos); // X1, item 13: "1.000" é mil ou um?
   const botao = $("botao-salvar");
   botao.setAttribute("aria-busy", "true");
   botao.disabled = true;

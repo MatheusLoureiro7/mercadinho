@@ -187,6 +187,21 @@ cronograma, a regra de negócio (quando houver) e o commit.
 
 ### 16/11/2026
 
+- **X1, item 13 — "1.000" digitado virava 1 (correção da revisão, gravidade média).**
+  **O problema:** nas telas, número sem vírgula tinha o ponto lido como casa decimal ("12.90" =
+  12,90). Quem digitava "1.000" do jeito brasileiro, para mil latas, gravava um lote de **1** lata,
+  sem aviso — e a previsão e os avisos erravam junto.
+  **Decisão do grupo (16/11/2026):** número com ponto seguido de grupos de três dígitos e sem vírgula
+  ("1.000", "12.500") é ambíguo: a tela **não envia** e mostra embaixo do campo "Não dá para saber se
+  é mil ou um: escreva 1000 para mil, ou 1,5 para um e meio". "1000", "1,5", "1.000,50" e "12.90"
+  continuam aceitos. Vale nas quatro telas que recebem número: Entrada de mercadoria, Avarias e
+  quebras, Produtos e Fornecedores (o Fechamento de caixa já tratava o milhar). Nenhuma tabela mudou.
+  **Testes:** 12 novos — a entrada de "1.000" recusada sem gravar nada, a reescrita "1000" aceita,
+  9 casos da regra de conversão e uma guarda que falha se uma tela nova converter número sem
+  conferir o ambíguo. Os 11 que dependiam da correção falharam antes e passam depois. **1121 testes
+  no total, todos aprovados.** FAQ atualizado.
+  **Com isso, os 9 itens de gravidade média da revisão estão corrigidos.** Ficam os 9 de baixa.
+
 - **X1, item 12 — Dois produtos com o "mesmo" nome (correção da revisão, gravidade média).**
   **O problema:** o cadastro pela tela recusava nome repetido na categoria comparando o texto exato,
   e aceitava "Arroz 5 kg" e "arroz 5 KG" como produtos diferentes. A importação das vendas compara
@@ -412,7 +427,7 @@ cronograma, a regra de negócio (quando houver) e o commit.
   21/11/2026)**. Os de gravidade média e baixa ficam para depois, na ordem da lista.
   Não muda as 51 tarefas, as 378 horas nem as porcentagens do resumo.
 
-**Próxima tarefa:** correção dos itens de gravidade média 6 a 13 da revisão; depois, J4 — teste em movimento real num sábado cheio (simulado, 21/11/2026).
+**Próxima tarefa:** J4 — teste em movimento real num sábado cheio (simulado, 21/11/2026).
 Depois, J5 (treinamento, 23/11) e J6 (implantação, 23 a 27/11).
 
 ### 13/11/2026

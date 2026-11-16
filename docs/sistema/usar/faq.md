@@ -69,6 +69,11 @@ A planilha do caixa daquele dia veio sem a coluna Pagamento, ou com linhas em br
 não dá para saber quanto entrou em dinheiro, e o sistema não deixa registrar uma diferença falsa.
 Peça para o caixa exportar sempre a coluna Pagamento.
 
+**Digitei "1.000" e a tela pediu para reescrever.**
+Sem vírgula, "1.000" pode ser mil ou um (com três casas). Para não gravar 1 no lugar de mil, a tela
+pede: escreva **1000** para mil, ou **1,5** para um e meio. Com vírgula ("1.000,50") o ponto é de
+milhar e a tela aceita.
+
 **Esqueci de fechar o caixa de sábado. Ainda dá?**
 Dá. Na tela de Fechamento de caixa, troque o **Dia do caixa** para o sábado e registre normalmente.
 

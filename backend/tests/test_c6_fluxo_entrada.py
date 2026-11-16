@@ -17,6 +17,7 @@ Pular estes testes (mais lentos, abrem navegador): pytest -m "not tela"
 import re
 from datetime import timedelta
 from decimal import Decimal
+from pathlib import Path
 
 import pytest
 from django.utils import timezone
@@ -32,6 +33,7 @@ pytestmark = pytest.mark.tela
 
 SENHA = "Mercado#2026"
 TELA = "entrada-mercadoria.html"
+FRONTEND = Path(__file__).resolve().parents[2] / "frontend"
 
 
 def _usuario(login, nome, papel):
@@ -237,6 +239,62 @@ def test_c6_recusa_da_api_nao_grava_e_mantem_o_digitado(tela, loja):
     expect(tela.locator("#erro-quantidade")).to_have_text(mensagem)
     expect(tela.locator("#campo-custo")).to_have_value("21,00")
     assert not Lote.objects.exists()
+
+
+# X1, item 13 (decisão do grupo, 16/11/2026): "1.000" sem vírgula pode ser mil ou 1,000 — a tela
+# recusa e pede para reescrever, em vez de gravar 1 lata no lugar de mil.
+
+AMBIGUO = "Não dá para saber se é mil ou um: escreva 1000 para mil, ou 1,5 para um e meio."
+
+
+def test_x1_quantidade_1_000_sem_virgula_e_recusada_e_nada_e_gravado(tela, loja):
+    _registrar(tela, procurar="arroz", quantidade="1.000")
+
+    _recusado(tela)
+    expect(tela.locator("#erro-quantidade")).to_have_text(AMBIGUO)
+    expect(tela.locator("#campo-quantidade")).to_have_value("1.000")
+    assert not Lote.objects.exists()
+
+
+def test_x1_quantidade_reescrita_sem_ponto_e_aceita(tela, loja):
+    _registrar(tela, procurar="arroz", quantidade="1000")
+
+    _confirmado(tela)
+    assert Lote.objects.get(produto=loja["arroz"]).quantidade_inicial == 1000
+
+
+@pytest.mark.parametrize(
+    "digitado, para_api",
+    [
+        ("1.000", "AMBIGUO"),
+        ("12.500", "AMBIGUO"),
+        ("1.000.000", "AMBIGUO"),
+        ("1.000,5", "1000.5"),  # com vírgula, o ponto é de milhar
+        ("1,5", "1.5"),
+        ("12.90", "12.90"),  # duas casas: só pode ser centavo
+        ("2.5", "2.5"),
+        ("1000", "1000"),
+        ("", "VAZIO"),
+    ],
+)
+def test_x1_regras_da_conversao_do_numero_digitado(tela, digitado, para_api):
+    resultado = tela.evaluate(
+        """async (digitado) => {
+            const f = await import("./js/formatos.js");
+            if (f.numerosAmbiguos({ campo: digitado })) return "AMBIGUO";
+            const numero = f.numeroParaApi(digitado);
+            return numero === null ? "VAZIO" : numero;
+        }""",
+        digitado,
+    )
+    assert resultado == para_api
+
+
+def test_x1_toda_tela_que_converte_numero_confere_o_ambiguo():
+    for script in sorted((FRONTEND / "js").glob("*.js")):
+        texto = script.read_text(encoding="utf-8")
+        if "numeroParaApi(" in texto and script.name != "formatos.js":
+            assert "numerosAmbiguos(" in texto, script.name
 
 
 # ------------------------------------------------------------------------------------------------

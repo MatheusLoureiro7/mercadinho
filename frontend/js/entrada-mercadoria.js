@@ -15,7 +15,7 @@
 
 import { api } from "./api.js";
 import { linhaDeFalha } from "./falha.js";
-import { dataBrasileira, diaNaLoja, emReais, numeroParaApi, quantidade } from "./formatos.js";
+import { dataBrasileira, diaNaLoja, emReais, numerosAmbiguos, numeroParaApi, quantidade } from "./formatos.js";
 import {
   apagarErroAoCorrigir,
   celula,
@@ -139,6 +139,9 @@ async function salvar(evento) {
   evento.preventDefault();
   limparErros(CAMPOS);
   confirmar(null);
+
+  const ambiguos = numerosAmbiguos({ quantidade: $("campo-quantidade").value, custo_unitario: $("campo-custo").value });
+  if (ambiguos) return mostrarErros(CAMPOS, ambiguos); // X1, item 13: "1.000" é mil ou um?
 
   const dados = dadosDoFormulario();
   // Só "preencha": evita uma ida à API à toa. Tudo o mais (quantidade zero, validade vencida) é da API.
