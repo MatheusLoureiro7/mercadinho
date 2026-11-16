@@ -42,6 +42,20 @@ def test_documentos_gerados_do_codigo_estao_em_dia(gerador):
 
 
 @pytest.mark.django_db
+def test_contratos_nao_mudam_depois_que_a_api_ja_foi_chamada(gerador):
+    """O DRF põe "head" nas ações da rota na primeira chamada; o documento não pode mudar por isso."""
+    from django.urls import resolve
+
+    antes = gerador.contratos_da_api()
+    acoes = resolve("/api/produtos/").func.actions
+    acoes["head"] = acoes["get"]  # o que o DRF faz quando a tela pede a lista de produtos
+    try:
+        assert gerador.contratos_da_api() == antes
+    finally:
+        del acoes["head"]
+
+
+@pytest.mark.django_db
 def test_todo_endpoint_da_api_tem_descricao(gerador):
     assert gerador.SEM_DESCRICAO not in gerador.contratos_da_api()
 

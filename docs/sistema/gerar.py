@@ -249,7 +249,9 @@ def contratos_da_api() -> str:
         visao = getattr(callback, "cls", None) or getattr(callback, "view_class", None)
         if visao is None:
             continue
-        acoes = getattr(callback, "actions", None)
+        # o DRF acrescenta "head" em `actions` na primeira chamada da rota: sem o filtro, a lista
+        # mudaria conforme o que já rodou antes (o teste falhava só na suíte inteira — J1, 16/11/2026)
+        acoes = [m for m in getattr(callback, "actions", None) or {} if m != "head"]
         metodos = (
             sorted(m.upper() for m in acoes)
             if acoes
