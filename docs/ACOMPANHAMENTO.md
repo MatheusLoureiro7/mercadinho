@@ -187,6 +187,22 @@ cronograma, a regra de negócio (quando houver) e o commit.
 
 ### 16/11/2026
 
+- **X1, item 19 — Banco diferente do `schema.sql` em detalhes (correção da revisão, gravidade
+  baixa).**
+  **O problema:** colunas, tipos e restrições conferem, mas o Django cria detalhes que o `schema.sql`
+  não tem: chave primária `IDENTITY` em vez de `SERIAL`, chaves estrangeiras conferidas no fim da
+  transação e índices a mais. E o banco deste computador tinha o padrão de `movimentacao.data_hora`
+  diferente do `NOW()` da apostila.
+  **O que foi apurado:** o padrão diferente era só deste computador — a migração 0001 foi editada
+  depois de aplicada, e qualquer banco criado do zero (o dos testes, o da implantação) já nasce com
+  `NOW()`. Os índices a mais são **16**, não 17: 13 de chave estrangeira e 3 de busca por texto.
+  **Decisão do grupo (16/11/2026):** aceitar e registrar os três detalhes do Django (lacuna L28,
+  ADR-014), que funcionam igual ou melhor. Uma migração nova (`estoque.0003`) acerta o `NOW()` em
+  banco antigo, e foi aplicada neste computador. Nenhuma coluna mudou.
+  **Testes:** 4 novos — três guardas (as diferenças são exatamente essas; tirar um índice da lista
+  faz o teste falhar, conferido) e um da migração, que falhou antes de ela existir e passa depois.
+  **1134 testes no total, todos aprovados.**
+
 - **X1, item 18 — Venda ligada ao produto errado não tinha desfazer (correção da revisão,
   gravidade baixa).**
   **O problema:** na tela de importação, o sobrinho escolhe o produto de uma venda não reconhecida, e

@@ -95,3 +95,10 @@ verificação de hora em hora do item 11) gravavam em dobro. **Decisão:** a con
 acontecem numa transação só, depois de `pg_advisory_xact_lock` (`comum/trava.py`), sem tabela nem
 dependência nova. **Consequência:** quem chega depois espera e encontra o que o primeiro gravou; a
 trava se solta sozinha no fim da transação, mesmo se o processo cair.
+
+### ADR-014 — Detalhes do banco criados pelo Django, aceitos
+**Contexto:** revisão X1, item 19 (16/11/2026): o banco tem chave primária `IDENTITY` (não `SERIAL`),
+chaves estrangeiras `DEFERRABLE` e 16 índices automáticos que o `schema.sql` não tem. **Decisão:**
+aceitar e registrar (lacuna L28); um teste falha se surgir outra diferença. A migração `estoque.0003`
+acerta o padrão `NOW()` de `movimentacao.data_hora` no banco antigo. **Consequência:** o modelo de
+dados entregue continua valendo coluna por coluna; os três detalhes são infraestrutura do framework.
