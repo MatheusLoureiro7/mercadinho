@@ -12,7 +12,7 @@ Exemplo pronto: `docs/exemplos/vendas-2026-11-05.xlsx`.
 | Item | Definição |
 |---|---|
 | Tipo | Planilha do Excel, `.xlsx`, lida direto pelo sistema (biblioteca `openpyxl`) |
-| Quantos | **Um arquivo por dia** de vendas |
+| Quantos | **Um arquivo por dia** de vendas. Planilha com mais de um dia também é aceita (ver abaixo) |
 | Aba | A primeira aba da planilha |
 | Linha 1 | Cabeçalho com os nomes das colunas abaixo |
 | Demais linhas | **Uma linha por produto vendido.** Linhas com o mesmo número de cupom formam uma venda |
@@ -47,6 +47,10 @@ ordem das colunas não importa.
   reconhecidas **pelo dia**, não pelo nome do arquivo. Linha de um dia que já entrou é ignorada; se
   a planilha inteira for de dias que já entraram, ela é recusada e não deixa registro. O caixa pode
   gravar sempre o mesmo nome (`vendas.xlsx`): o arquivo regravado depois da última leitura é lido.
+- **Planilha com mais de um dia — decisão do grupo, 16/11/2026 (revisão X1, item 4):** cada dia
+  ganha o seu registro em `importacao_pdv` (mesmo `arquivo_nome`, `data_referencia` daquele dia,
+  com as linhas e pendências dele), para o fechamento de caixa e o balanço enxergarem todos os dias.
+  Os cupons são agrupados dentro de cada dia, porque o caixa recomeça a numeração.
 - **Situação da importação:** `OK` se todas as linhas foram lidas e casaram; `PARCIAL` se alguma
   ficou pendente (produto não reconhecido); `ERRO` se o arquivo não pôde ser lido (não é `.xlsx` ou
   falta coluna obrigatória) **ou se alguma linha não pôde ser lida** (data, hora, quantidade ou

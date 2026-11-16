@@ -48,15 +48,17 @@ class Command(BaseCommand):
         com_erro = []
         for caminho in novas:
             try:
-                importacao = importar_planilha(caminho)
+                importacoes = importar_planilha(caminho)
             except ArquivoJaImportado:
                 self.stdout.write(f"{caminho.name}: as vendas desta planilha já tinham entrado.")
                 continue
-            self.stdout.write(
-                f"{caminho.name}: {importacao.get_status_display()} — {importacao.linhas_lidas} linha(s) "
-                f"lida(s), {importacao.linhas_erro} pendente(s) ou com erro."
-            )
-            if importacao.status == ImportacaoPdv.Status.ERRO:
+            for importacao in importacoes:
+                dia = f" ({importacao.data_referencia:%d/%m/%Y})" if len(importacoes) > 1 else ""
+                self.stdout.write(
+                    f"{caminho.name}{dia}: {importacao.get_status_display()} — {importacao.linhas_lidas} "
+                    f"linha(s) lida(s), {importacao.linhas_erro} pendente(s) ou com erro."
+                )
+            if any(importacao.status == ImportacaoPdv.Status.ERRO for importacao in importacoes):
                 com_erro.append(caminho.name)
         if com_erro:
             raise CommandError(f"Não foi possível ler: {', '.join(com_erro)}. O motivo está no log.")

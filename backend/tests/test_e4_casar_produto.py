@@ -189,7 +189,8 @@ def test_e4_ponta_a_ponta_planilha_com_nome_desconhecido_e_casada_depois(tmp_pat
     caminho = tmp_path / "vendas-2026-11-05.xlsx"
     livro.save(caminho)
 
-    assert importar_planilha(caminho).status == ImportacaoPdv.Status.PARCIAL
+    [importacao] = importar_planilha(caminho)
+    assert importacao.status == ImportacaoPdv.Status.PARCIAL
     assert saldo_do_produto(frango) == Decimal("5")
 
     casar_item(itens_pendentes().get().pk, frango)

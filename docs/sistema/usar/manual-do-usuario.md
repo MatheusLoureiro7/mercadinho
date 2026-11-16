@@ -64,6 +64,8 @@ rodada das 03h00 importa. Nesta tela:
   *Não foi lida* (essa é tentada de novo na madrugada seguinte). Basta uma linha fora do formato —
   hora "9h30" em vez de "09:30", por exemplo — para a planilha inteira não entrar: corrija a linha
   no Excel e salve de novo na pasta. Assim nenhuma venda some do fechamento de caixa.
+- Se uma planilha trouxer vendas de mais de um dia (a de ontem esquecida junto com a de hoje), ela
+  entra normalmente e aparece em **Planilhas lidas** uma vez para cada dia.
 - O nome do arquivo não importa: o sistema reconhece as vendas pelo dia. Um dia que já entrou não
   entra de novo, nem salvo com outro nome; e o caixa pode gravar sempre por cima do mesmo arquivo.
 - Para a mesma venda não ficar pendente todo dia, deixe o nome do produto no cadastro igual ao do caixa.

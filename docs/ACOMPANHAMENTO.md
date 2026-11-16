@@ -187,6 +187,24 @@ cronograma, a regra de negócio (quando houver) e o commit.
 
 ### 16/11/2026
 
+- **X1, item 4 — Planilha com dois dias travava o fechamento (correção da revisão, gravidade alta).**
+  **O problema:** cada planilha virava um registro de importação com uma data só, a da primeira
+  linha. Numa planilha com as vendas de 10/11 e 11/11, as vendas dos dois dias entravam, mas o
+  sistema achava que o dia 11 não tinha entrado: o fechamento de caixa do dia 11 era recusado, o
+  balanço marcava o dia como sem vendas, e uma cópia do dia 11 podia entrar de novo. Achado junto:
+  o caixa recomeça a numeração dos cupons a cada dia, e o cupom 1 de um dia se juntava ao cupom 1
+  do outro numa venda só.
+  **Decisão do grupo (16/11/2026):** a planilha com mais de um dia é aceita, e **cada dia ganha o
+  seu registro de importação**, com as linhas e as pendências dele; os cupons são agrupados dentro
+  de cada dia. A tela de importação mostra uma linha por dia. Registrado em
+  `docs/FORMATO-PLANILHA-CAIXA.md`. Nenhuma tabela mudou.
+  **Testes:** 3 novos (um registro por dia, com o cupom repetido virando duas vendas; o fechamento
+  do segundo dia liberado; a cópia do segundo dia recusada). Os 3 falharam antes da correção e passam
+  depois; os testes que esperavam um registro só passaram a receber a lista com um registro.
+  **1066 testes no total, todos aprovados.** Manual do usuário atualizado.
+  **Com isso, os quatro itens de gravidade alta da revisão estão corrigidos**, antes do teste de
+  sábado (J4, 21/11/2026), como combinado. Os 9 de gravidade média e os 9 de baixa continuam na lista.
+
 - **X1, item 3 — Saldo e lotes deixavam de bater (correção da revisão, gravidade alta).**
   **O problema:** o sistema guarda dois números por produto: o saldo (tudo que entrou menos tudo que
   saiu) e o que resta em cada lote. Quando o caixa vendia mais do que o sistema tinha (5 no estoque,
@@ -280,9 +298,8 @@ cronograma, a regra de negócio (quando houver) e o commit.
   21/11/2026)**. Os de gravidade média e baixa ficam para depois, na ordem da lista.
   Não muda as 51 tarefas, as 378 horas nem as porcentagens do resumo.
 
-**Próxima tarefa:** correção do item 4 da revisão (`docs/REVISAO-FABLE.md`) e, em seguida,
-J4 — teste em movimento real num sábado cheio (simulado, 21/11/2026). Depois, J5 (treinamento,
-23/11) e J6 (implantação, 23 a 27/11).
+**Próxima tarefa:** J4 — teste em movimento real num sábado cheio (simulado, 21/11/2026).
+Depois, J5 (treinamento, 23/11) e J6 (implantação, 23 a 27/11).
 
 ### 13/11/2026
 

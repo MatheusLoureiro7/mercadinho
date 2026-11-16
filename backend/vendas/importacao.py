@@ -1,7 +1,7 @@
 """
 Importação das vendas do caixa — tarefa E3. Operação 04 da Apostila IV (RN01, RN02, RN16).
 
-    importacao = importar_planilha(caminho)
+    importacoes = importar_planilha(caminho)   # uma por dia de venda da planilha
 
 1. Registra a importação como PENDENTE (passo 2) e lê a planilha (passo 3).
 2. Cada cupom vira uma `venda`; cada linha, um `item_venda` (passo 7). O valor total é a soma de
@@ -23,6 +23,10 @@ Importação das vendas do caixa — tarefa E3. Operação 04 da Apostila IV (RN
 7. Importar duas vezes (decisão do grupo, 16/11/2026, revisão X1 item 1): as vendas são reconhecidas
    pelo DIA, não pelo nome do arquivo. Linha de um dia que já entrou (OK ou PARCIAL) é ignorada; se
    todas forem assim, a planilha é recusada sem deixar registro (`ArquivoJaImportado`).
+8. Planilha com mais de um dia (decisão do grupo, 16/11/2026, revisão X1 item 4): cada dia ganha o
+   seu registro em `importacao_pdv` (mesmo `arquivo_nome`, `data_referencia` do dia), para o
+   fechamento de caixa e o balanço enxergarem todos. Os cupons são agrupados dentro de cada dia — o
+   caixa recomeça a numeração. A gravação continua tudo ou nada para a planilha inteira.
 
 `linhas_erro` conta as linhas que NÃO baixaram o estoque: as pendentes (PARCIAL) ou as com erro de
 leitura (ERRO).
@@ -107,9 +111,8 @@ def _movimentacao(produto, quantidade, preco, data_hora, lote):
     )
 
 
-def _gravar(linhas: list[LinhaDeVenda]) -> int:
-    """Grava vendas, itens e baixas; devolve quantas linhas ficaram pendentes (sem produto)."""
-    produtos = _produtos_por_nome()
+def _gravar(linhas: list[LinhaDeVenda], produtos: dict[str, Produto | None]) -> int:
+    """Grava as vendas de UM dia, itens e baixas; devolve quantas linhas ficaram pendentes (sem produto)."""
     por_cupom: dict[str, list[LinhaDeVenda]] = defaultdict(list)
     for linha in linhas:
         por_cupom[linha.cupom].append(linha)
@@ -135,7 +138,8 @@ def _gravar(linhas: list[LinhaDeVenda]) -> int:
     return pendentes
 
 
-def importar_planilha(caminho: Path, leitor: LeitorDeArquivoDoCaixa | None = None) -> ImportacaoPdv:
+def importar_planilha(caminho: Path, leitor: LeitorDeArquivoDoCaixa | None = None) -> list[ImportacaoPdv]:
+    """Devolve um registro de importação por dia de venda da planilha (X1, item 4)."""
     caminho = Path(caminho)
     importacao = ImportacaoPdv.objects.create(arquivo_nome=caminho.name, data_referencia=timezone.localdate())
 
@@ -143,7 +147,7 @@ def importar_planilha(caminho: Path, leitor: LeitorDeArquivoDoCaixa | None = Non
         leitura = (leitor or LeitorDePlanilhaExcel()).ler(caminho)
     except ArquivoIlegivel as erro:
         logger.warning("Importação %s com erro: %s", caminho.name, erro)
-        return _concluir(importacao, ImportacaoPdv.Status.ERRO)
+        return [_concluir(importacao, ImportacaoPdv.Status.ERRO)]
 
     if leitura.erros:
         for erro in leitura.erros:
@@ -151,28 +155,45 @@ def importar_planilha(caminho: Path, leitor: LeitorDeArquivoDoCaixa | None = Non
         if leitura.linhas:
             importacao.data_referencia = _dia(leitura.linhas[0])
         lidas = len(leitura.linhas) + len(leitura.erros)
-        return _concluir(importacao, ImportacaoPdv.Status.ERRO, lidas=lidas, com_erro=len(leitura.erros))
+        return [_concluir(importacao, ImportacaoPdv.Status.ERRO, lidas=lidas, com_erro=len(leitura.erros))]
 
     ja_importados = _dias_ja_importados({_dia(linha) for linha in leitura.linhas})
-    linhas = [linha for linha in leitura.linhas if _dia(linha) not in ja_importados]
-    if leitura.linhas and not linhas:
+    por_dia: dict = defaultdict(list)
+    for linha in leitura.linhas:
+        if _dia(linha) not in ja_importados:
+            por_dia[_dia(linha)].append(linha)
+    if leitura.linhas and not por_dia:
         importacao.delete()
         raise ArquivoJaImportado(f"As vendas da planilha {caminho.name} já tinham entrado.")
+    if not por_dia:  # planilha só com o cabeçalho
+        return [_concluir(importacao, ImportacaoPdv.Status.OK)]
 
-    lidas = len(linhas)
-    if linhas:
-        importacao.data_referencia = _dia(linhas[0])
+    dias = sorted(por_dia)
+    importacoes = {dias[0]: importacao}
+    for dia in dias[1:]:
+        importacoes[dia] = ImportacaoPdv.objects.create(arquivo_nome=caminho.name, data_referencia=dia)
+    importacao.data_referencia = dias[0]
 
     try:
         with transaction.atomic():
-            pendentes = _gravar(linhas)
+            produtos = _produtos_por_nome()
+            pendentes = {dia: _gravar(por_dia[dia], produtos) for dia in dias}
     except Exception:
         logger.exception("Importação %s interrompida; nada foi gravado.", caminho.name)
-        _concluir(importacao, ImportacaoPdv.Status.ERRO, lidas=lidas, com_erro=lidas)
+        for dia in dias:
+            lidas = len(por_dia[dia])
+            _concluir(importacoes[dia], ImportacaoPdv.Status.ERRO, lidas=lidas, com_erro=lidas)
         raise
 
-    situacao = ImportacaoPdv.Status.OK if pendentes == 0 else ImportacaoPdv.Status.PARCIAL
-    return _concluir(importacao, situacao, lidas=lidas, com_erro=pendentes)
+    return [
+        _concluir(
+            importacoes[dia],
+            ImportacaoPdv.Status.OK if pendentes[dia] == 0 else ImportacaoPdv.Status.PARCIAL,
+            lidas=len(por_dia[dia]),
+            com_erro=pendentes[dia],
+        )
+        for dia in dias
+    ]
 
 
 def _concluir(

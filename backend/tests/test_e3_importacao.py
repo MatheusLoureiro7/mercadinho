@@ -311,7 +311,7 @@ def test_e3_nome_que_existe_em_duas_categorias_fica_pendente(tmp_path, feijao):
     """O cadastro aceita o mesmo nome em categorias diferentes (B1); aí não se chuta qual é."""
     outra = Categoria.objects.create(nome="Hortifruti")
     Produto.objects.create(categoria=outra, nome="Feijão carioca 1 kg", unidade_medida="PCT")
-    importacao = importar_planilha(_planilha(tmp_path, [_linha(1, "Feijão carioca 1 kg", 1, 8.99)]))
+    [importacao] = importar_planilha(_planilha(tmp_path, [_linha(1, "Feijão carioca 1 kg", 1, 8.99)]))
     assert ItemVenda.objects.get().produto is None
     assert not Movimentacao.objects.filter(tipo="VENDA").exists()
     assert importacao.status == "PARCIAL"
@@ -323,7 +323,7 @@ def test_e3_produto_que_nao_casou_fica_pendente_e_nao_trava_as_demais(tmp_path, 
         tmp_path, [_linha(1, "Leite integral 1 L", 6, 5.49), _linha(1, "Feijão carioca 1 kg", 1, 8.99)]
     )
 
-    importacao = importar_planilha(caminho)
+    [importacao] = importar_planilha(caminho)
 
     pendente = ItemVenda.objects.get(produto__isnull=True)
     assert (pendente.quantidade, pendente.preco) == (Decimal("6"), Decimal("5.49"))
@@ -337,7 +337,7 @@ def test_e3_produto_que_nao_casou_fica_pendente_e_nao_trava_as_demais(tmp_path, 
 
 def test_e3_tudo_certo_fica_ok_com_a_data_das_vendas(tmp_path, feijao):
     _lote(feijao, "10", None)
-    importacao = importar_planilha(_planilha(tmp_path, [_linha(1, "Feijão carioca 1 kg", 1, 8.99)]))
+    [importacao] = importar_planilha(_planilha(tmp_path, [_linha(1, "Feijão carioca 1 kg", 1, 8.99)]))
     assert (importacao.status, importacao.linhas_lidas, importacao.linhas_erro) == ("OK", 1, 0)
     assert importacao.arquivo_nome == "vendas-2026-11-05.xlsx"
     assert importacao.data_referencia == DIA
@@ -350,7 +350,7 @@ def test_e3_linha_invalida_recusa_a_planilha_inteira_e_nada_e_gravado(tmp_path, 
     caminho = _planilha(
         tmp_path, [_linha(1, "Feijão carioca 1 kg", 1, 8.99), _linha(2, "Feijão carioca 1 kg", 0, 8.99)]
     )
-    importacao = importar_planilha(caminho)
+    [importacao] = importar_planilha(caminho)
     assert (importacao.status, importacao.linhas_lidas, importacao.linhas_erro) == ("ERRO", 2, 1)
     assert not Venda.objects.exists() and not ItemVenda.objects.exists()
     assert saldo_do_produto(feijao) == Decimal("10")
@@ -367,7 +367,7 @@ def test_e3_planilha_recusada_por_linha_invalida_entra_depois_de_corrigida(tmp_p
         _linha(1, "Feijão carioca 1 kg", 1, 8.99),
         _linha(2, "Feijão carioca 1 kg", 2, 8.99, hora=time(9, 30)),
     ]
-    importacao = importar_planilha(_planilha(tmp_path, corrigida))
+    [importacao] = importar_planilha(_planilha(tmp_path, corrigida))
     assert (importacao.status, importacao.linhas_lidas) == ("OK", 2)
     assert saldo_do_produto(feijao) == Decimal("7")
 
@@ -390,7 +390,7 @@ def test_e3_linha_invalida_nao_deixa_o_caixa_fechar_com_o_apurado_errado(tmp_pat
 def test_e3_arquivo_ilegivel_fica_com_erro_e_nada_e_gravado(tmp_path, db):
     caminho = tmp_path / "vendas-2026-11-05.xlsx"
     caminho.write_text("isto não é uma planilha")
-    importacao = importar_planilha(caminho)
+    [importacao] = importar_planilha(caminho)
     assert importacao.status == "ERRO"
     assert not Venda.objects.exists() and not ItemVenda.objects.exists()
 
@@ -419,7 +419,7 @@ def test_e3_mesmo_nome_de_arquivo_com_vendas_de_outro_dia_entra(tmp_path, feijao
     _lote(feijao, "10", None)
     importar_planilha(_planilha(tmp_path, [_linha(1, "Feijão carioca 1 kg", 1, 8.99)], nome="vendas.xlsx"))
     dia_seguinte = _linha(7, "Feijão carioca 1 kg", 2, 8.99, dia=DIA + timedelta(days=1))
-    importacao = importar_planilha(_planilha(tmp_path, [dia_seguinte], nome="vendas.xlsx"))
+    [importacao] = importar_planilha(_planilha(tmp_path, [dia_seguinte], nome="vendas.xlsx"))
     assert importacao.status == "OK" and importacao.data_referencia == DIA + timedelta(days=1)
     assert Venda.objects.count() == 2 and saldo_do_produto(feijao) == Decimal("7")
 
@@ -435,9 +435,59 @@ def test_e3_planilha_com_um_dia_ja_importado_e_um_novo_so_traz_o_dia_novo(tmp_pa
         ],
         nome="vendas-da-semana.xlsx",
     )
-    importacao = importar_planilha(caminho)
+    [importacao] = importar_planilha(caminho)
     assert (importacao.status, importacao.linhas_lidas) == ("OK", 1)
     assert Venda.objects.count() == 2 and saldo_do_produto(feijao) == Decimal("7")
+
+
+def test_e3_planilha_com_dois_dias_gera_uma_importacao_por_dia(tmp_path, feijao):
+    """X1, item 4 (decisão do grupo, 16/11/2026): cada dia da planilha tem o seu registro."""
+    _lote(feijao, "10", None)
+    amanha = DIA + timedelta(days=1)
+    caminho = _planilha(
+        tmp_path,
+        [
+            _linha(1, "Feijão carioca 1 kg", 1, 8.99),
+            _linha(1, "Feijão carioca 1 kg", 2, 8.99, dia=amanha),  # o caixa recomeça os cupons
+            _linha(2, "Produto que não existe", 1, 5, dia=amanha),
+        ],
+        nome="vendas-atrasadas.xlsx",
+    )
+    importacoes = importar_planilha(caminho)
+    resumo = [
+        (i.arquivo_nome, i.data_referencia, i.status, i.linhas_lidas, i.linhas_erro) for i in importacoes
+    ]
+    assert resumo == [
+        ("vendas-atrasadas.xlsx", DIA, "OK", 1, 0),
+        ("vendas-atrasadas.xlsx", amanha, "PARCIAL", 2, 1),
+    ]
+    assert Venda.objects.count() == 3 and saldo_do_produto(feijao) == Decimal("7")
+
+
+def test_e3_planilha_com_dois_dias_libera_o_fechamento_do_segundo(tmp_path, feijao):
+    _lote(feijao, "10", None)
+    amanha = DIA + timedelta(days=1)
+    linhas = [
+        _linha(1, "Feijão carioca 1 kg", 1, 8.99, pagamento="Dinheiro"),
+        _linha(5, "Feijão carioca 1 kg", 2, 10, dia=amanha, pagamento="Dinheiro"),
+    ]
+    importar_planilha(_planilha(tmp_path, linhas))
+    with patch("django.utils.timezone.now", return_value=datetime(2026, 11, 7, 9, 0, tzinfo=SAO_PAULO)):
+        assert apurado_do_fechamento() == (amanha, Decimal("20.00"))
+
+
+def test_e3_segundo_dia_de_uma_planilha_de_dois_dias_nao_entra_de_novo(tmp_path, feijao):
+    _lote(feijao, "10", None)
+    amanha = DIA + timedelta(days=1)
+    linhas = [
+        _linha(1, "Feijão carioca 1 kg", 1, 8.99),
+        _linha(5, "Feijão carioca 1 kg", 2, 8.99, dia=amanha),
+    ]
+    importar_planilha(_planilha(tmp_path, linhas))
+    copia = _planilha(tmp_path, [_linha(5, "Feijão carioca 1 kg", 2, 8.99, dia=amanha)], nome="copia.xlsx")
+    with pytest.raises(ArquivoJaImportado):
+        importar_planilha(copia)
+    assert saldo_do_produto(feijao) == Decimal("7")
 
 
 def test_e3_falha_no_meio_desfaz_tudo_e_a_importacao_fica_com_erro(tmp_path, feijao, monkeypatch):
@@ -465,7 +515,7 @@ def test_e3_planilha_de_exemplo_com_os_dados_de_demonstracao(db):
     from tests.test_e1_formato_planilha import EXEMPLO
 
     call_command("loaddata", "demonstracao", verbosity=0)
-    importacao = importar_planilha(EXEMPLO)
+    [importacao] = importar_planilha(EXEMPLO)
     assert Venda.objects.count() == 5 and ItemVenda.objects.count() == 10
     assert list(ItemVenda.objects.filter(produto__isnull=True).values_list("quantidade", flat=True)) == [
         Decimal("6")
