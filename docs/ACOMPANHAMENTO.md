@@ -187,6 +187,21 @@ cronograma, a regra de negócio (quando houver) e o commit.
 
 ### 16/11/2026
 
+- **X1, item 10 — Nenhuma tela mostrava a previsão (correção da revisão, gravidade média).**
+  **O problema:** a previsão (em quantos dias cada produto acaba) era calculada toda madrugada, mas
+  só aparecia no aviso do Telegram. A especificação pede o número em tela: o RF08 ("em quantos dias
+  o produto acaba", Essencial) e a RN09 ("ainda aprendendo" nas telas de consulta). O manual do
+  usuário já descrevia o "ainda aprendendo" na tela, que não existia.
+  **O que foi feito (sem decisão nova: a especificação já dizia):** a Consulta de estoque ganhou a
+  coluna **"Quando acaba"**, com as mesmas palavras do aviso: "Em 12 dias", "Amanhã", "Hoje",
+  "Acabou", "Ainda aprendendo" (RN09, nunca "0 dias" nem "—") e "Não está vendendo". A API de
+  consulta por produto ganhou os campos `previsao` e `dias_ate_acabar`, lidos de `previsao_produto`
+  na mesma ida ao banco — a consulta continua sem uma ida por produto (RNF06). A tela passou pela
+  UI UX Pro Max e foi conferida em captura no computador e no celular (375 px). Nenhuma tabela mudou.
+  **Testes:** 1 novo de API (as quatro situações) e 1 de tela, de ponta a ponta; 1 teste de API
+  ajustado para os campos novos. Os 3 falharam antes da correção e passam depois. **1092 testes no
+  total, todos aprovados.** Manual atualizado.
+
 - **X1, item 9 — Produto parado e zerado avisava "acabou" todo dia (correção da revisão,
   gravidade média).**
   **O problema:** o aviso sai quando o saldo é igual ou menor que o ponto de pedido (RN08). Um

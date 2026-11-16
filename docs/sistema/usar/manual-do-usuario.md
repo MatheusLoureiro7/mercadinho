@@ -74,11 +74,13 @@ rodada das 03h00 importa. Nesta tela:
 
 ## Tela de todos
 
-### Consulta de estoque (RF07, RN16)
+### Consulta de estoque (RF07, RF08, RN09, RN16)
 Saldo de cada produto, com três quadros no alto: **com lote vencido**, **perto de vencer** e
 **abaixo do mínimo** (toque para filtrar). Procure pelo nome ou pela categoria; **Ver lotes** mostra
 cada lote, do que vence primeiro ao último. Lote vencido aparece destacado e **não sai por venda**:
-só por Avarias e quebras. Produto novo aparece como "ainda aprendendo" até ter 14 dias de venda (RN09).
+só por Avarias e quebras. A coluna **Quando acaba** traz a previsão da madrugada: "Em 12 dias",
+"Amanhã", "Hoje" ou "Acabou". Produto novo aparece como "Ainda aprendendo" até ter 14 dias de
+venda (RN09), e o que não vende há um tempo, como "Não está vendendo".
 
 ## Telas da esposa
 

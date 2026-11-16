@@ -19,6 +19,7 @@ from cadastro.models import Categoria, Produto, Usuario
 from estoque.entrada import registrar_entrada
 from estoque.models import Lote
 from estoque.perda import registrar_perda
+from previsao.models import PrevisaoProduto
 from tests.conftest import abrir_tela, entrar_pelo_login
 
 FRONTEND = Path(__file__).resolve().parents[2] / "frontend"
@@ -134,6 +135,35 @@ def test_f3_rn16_lote_vencido_aparece_destacado(tela):
     expect(_linha(tela, "Iogurte natural")).to_contain_text("1 lote vencido")
     expect(_linha(tela, "Presunto")).to_contain_text("Perto de vencer")
     expect(_linha(tela, "Feijão carioca 1 kg")).not_to_contain_text("vencid")
+
+
+@pytest.mark.tela
+def test_x1_rf08_rn09_tela_mostra_quando_acaba_ou_ainda_aprendendo(page, painel, loja):
+    """X1, item 10: a previsão da rodada das 03h00 aparece na consulta, no vocabulário da loja."""
+    feijao = Produto.objects.get(nome="Feijão carioca 1 kg")
+    presunto = Produto.objects.get(nome="Presunto")
+    agora = timezone.now()
+    PrevisaoProduto.objects.create(
+        produto=feijao,
+        consumo_medio_diario=Decimal("1.6"),
+        dias_ate_acabar=Decimal("12.5"),
+        calculado_em=agora,
+    )
+    PrevisaoProduto.objects.create(
+        produto=presunto,
+        consumo_medio_diario=Decimal("1.8"),
+        dias_ate_acabar=Decimal("1.4"),
+        calculado_em=agora,
+    )
+    PrevisaoProduto.objects.create(produto=loja["arroz"])  # RN09: menos de 14 dias de venda
+
+    abrir_tela(page, painel, loja["sobrinho"], TELA)
+    expect(page.locator("#lista-estoque thead")).to_contain_text("Quando acaba")
+    expect(_linha(page, "Feijão carioca 1 kg")).to_contain_text("Em 12 dias")
+    expect(_linha(page, "Presunto")).to_contain_text("Amanhã")
+    expect(_linha(page, "Arroz 5 kg")).to_contain_text("Ainda aprendendo")
+    expect(_linha(page, "Iogurte natural")).to_contain_text("Ainda aprendendo")  # sem previsão
+    expect(_linha(page, "Arroz 5 kg")).not_to_contain_text("0 dias")
 
 
 @pytest.mark.tela

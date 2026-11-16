@@ -7,6 +7,10 @@
  * (RN01), e "vencido"/"perto de vencer" usam o parâmetro da RN05. A tela só lê — não grava nada —
  * e só escreve o que a API mandou, em palavra e cor.
  *
+ * "Quando acaba" (revisão X1, item 10 — RF08, RN09): a previsão da rodada das 03h00, nas mesmas
+ * palavras do aviso no celular ("Em 2 dias", "Amanhã", "Hoje"). Produto com pouco histórico mostra
+ * "Ainda aprendendo" — nunca "0 dias" nem "—" (RN09).
+ *
  * Um pedido só traz a lista inteira (a F2 faz no máximo 4 idas ao banco, tenha a loja 50 ou 2.000
  * produtos); procurar e filtrar acontecem aqui, sobre o que a API já calculou, para o computador
  * antigo da loja não esperar a rede a cada letra (RNF06).
@@ -19,7 +23,7 @@ import { celula, linhaVazia } from "./formulario.js";
 import { entrarNaTela } from "./sessao.js";
 import { etiquetaDaSituacao } from "./situacao.js";
 
-const COLUNAS = 5;
+const COLUNAS = 6;
 
 // Os três quadros do resumo: o que cada um conta e filtra (campos calculados pela API).
 const QUADROS = {
@@ -210,6 +214,7 @@ function linhaDoProduto(produto) {
   linha.append(
     nome,
     saldo,
+    quandoAcaba(produto),
     celula(produto.estoque_minimo === null ? "—" : quantidade(produto.estoque_minimo, produto.unidade_medida), "numero"),
     validade,
     acoes
@@ -300,6 +305,22 @@ function itemSimples(conteudo) {
   const item = document.createElement("li");
   item.textContent = conteudo;
   return item;
+}
+
+/** RF08/RN09: a situação da previsão, em palavras (a cor da etiqueta só reforça). */
+function quandoAcaba(produto) {
+  const td = celula();
+  if (produto.previsao === "ACABOU") {
+    td.append(etiqueta("Acabou", "erro"));
+  } else if (produto.previsao === "PREVISTO") {
+    const dias = Math.floor(Number(produto.dias_ate_acabar)); // mesmo arredondamento do aviso (RNF10)
+    td.textContent = dias === 0 ? "Hoje" : dias === 1 ? "Amanhã" : "Em " + dias + " dias";
+  } else if (produto.previsao === "SEM_VENDA") {
+    td.append(texto("Não está vendendo", "texto-suave"));
+  } else {
+    td.append(texto("Ainda aprendendo", "texto-suave")); // RN09
+  }
+  return td;
 }
 
 function etiqueta(conteudo, tipo) {

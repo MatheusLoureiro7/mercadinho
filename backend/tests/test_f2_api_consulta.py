@@ -17,6 +17,7 @@ from django.utils import timezone
 from cadastro.models import Categoria, Produto, Usuario
 from comum.autenticacao import gerar_token
 from estoque.models import Lote, Movimentacao
+from previsao.models import PrevisaoProduto
 
 URL_PRODUTOS = "/api/estoque/"
 URL_LOTES = "/api/estoque/lotes/"
@@ -150,6 +151,43 @@ def test_f2_posicao_por_produto(api, loja):
         "lotes_vencidos": 0,
         "lotes_vencendo": 1,
         "proxima_validade": "2026-09-23",
+        "previsao": "APRENDENDO",  # sem previsão calculada (RN09)
+        "dias_ate_acabar": None,
+    }
+
+
+# X1, item 10: RF08 ("em quantos dias o produto acaba") e RN09 ("ainda aprendendo" nas telas de
+# consulta). A previsão é a da rodada das 03h00 (previsao_produto); a consulta só lê.
+
+
+def _previsao(produto, *, dias, consumo="4", calculada=True):
+    PrevisaoProduto.objects.create(
+        produto=produto,
+        consumo_medio_diario=Decimal(consumo) if calculada else None,
+        dias_ate_acabar=Decimal(dias) if dias is not None else None,
+        calculado_em=timezone.now() if calculada else None,
+    )
+
+
+def test_rf08_rn09_consulta_mostra_em_quantos_dias_acaba_ou_ainda_aprendendo(api, loja):
+    produtos = loja["produtos"]
+    _previsao(produtos["arroz"], dias="12.5")
+    _previsao(produtos["presunto"], dias=None, calculada=False)  # RN09: menos de 14 dias de venda
+    _previsao(produtos["alcatra"], dias=None, consumo="0")  # parado: sem venda no período
+    Movimentacao.objects.create(
+        produto=produtos["iogurte"], tipo="PERDA", quantidade=Decimal("16"), motivo="estragou"
+    )
+    _previsao(produtos["iogurte"], dias="0")
+
+    corpo = {
+        item["nome"]: (item["previsao"], item["dias_ate_acabar"]) for item in api().get(URL_PRODUTOS).json()
+    }
+
+    assert corpo == {
+        "Arroz 5 kg": ("PREVISTO", "12.5"),
+        "Presunto": ("APRENDENDO", None),
+        "Alcatra": ("SEM_VENDA", None),
+        "Iogurte natural": ("ACABOU", None),
     }
 
 

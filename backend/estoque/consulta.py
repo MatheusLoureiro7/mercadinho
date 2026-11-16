@@ -6,6 +6,11 @@ está vencendo." O saldo vem da vw_estoque_atual (RN01); nada aqui grava coisa a
 
 Sem objeto novo no banco: o schema.sql tem uma única view, a de saldo. A visão por produto e por
 lote são consultas sobre ela e sobre `lote`, usadas pela API de consulta (F2) e pela tela (F3).
+
+Previsão na consulta (revisão X1, item 10 — RF08 e RN09 "telas de consulta"): a visão por produto lê
+o resultado da rodada das 03h00 em previsao_produto, sem calcular nada: APRENDENDO (sem previsão ou
+com menos dias de histórico que o mínimo, RN09 — nenhum número sai), ACABOU (saldo zero ou negativo),
+SEM_VENDA (sem venda no período: não acaba) ou PREVISTO, com `dias_ate_acabar`.
 """
 
 from datetime import date, timedelta
@@ -19,6 +24,7 @@ from django.db.models import (
     Func,
     IntegerField,
     OuterRef,
+    Q,
     QuerySet,
     Subquery,
     Value,
@@ -36,6 +42,13 @@ class Situacao(models.TextChoices):
     VENCENDO = "VENCENDO", "Vencendo"  # RN05/RF07: vence em dias_aviso_validade dias ou menos
     OK = "OK", "Dentro da validade"
     SEM_VALIDADE = "SEM_VALIDADE", "Sem validade"
+
+
+class Previsao(models.TextChoices):
+    APRENDENDO = "APRENDENDO", "Ainda aprendendo"  # RN09
+    ACABOU = "ACABOU", "Acabou"
+    SEM_VENDA = "SEM_VENDA", "Não está vendendo"
+    PREVISTO = "PREVISTO", "Acaba em tantos dias"
 
 
 def _limite_vencendo(hoje: date) -> date:
@@ -74,6 +87,20 @@ def posicao_por_produto(*, hoje: date) -> QuerySet[Produto]:
                 com_saldo.filter(data_validade__isnull=False)
                 .order_by("data_validade")
                 .values("data_validade")[:1]
+            ),
+            previsao_situacao=Case(
+                When(previsao__calculado_em__isnull=True, then=Value(Previsao.APRENDENDO)),
+                When(estoque_atual__saldo__lte=0, then=Value(Previsao.ACABOU)),
+                When(
+                    Q(previsao__dias_ate_acabar__isnull=True) | Q(previsao__consumo_medio_diario=0),
+                    then=Value(Previsao.SEM_VENDA),
+                ),
+                default=Value(Previsao.PREVISTO),
+                output_field=models.CharField(),
+            ),
+            dias_ate_acabar=Case(
+                When(previsao_situacao=Previsao.PREVISTO, then=F("previsao__dias_ate_acabar")),
+                default=None,
             ),
         )
         .order_by("categoria__nome", "nome")

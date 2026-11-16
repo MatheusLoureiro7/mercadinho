@@ -182,6 +182,8 @@ class PosicaoPorProdutoSerializer(serializers.Serializer):
     lotes_vencidos = serializers.IntegerField()
     lotes_vencendo = serializers.IntegerField()
     proxima_validade = serializers.DateField(allow_null=True)
+    previsao = serializers.CharField(source="previsao_situacao")  # X1, item 10 (RF08, RN09)
+    dias_ate_acabar = serializers.DecimalField(max_digits=8, decimal_places=1, allow_null=True)
 
 
 class PosicaoPorLoteSerializer(serializers.Serializer):
