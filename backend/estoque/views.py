@@ -7,7 +7,8 @@ Estoque — endpoints. Tarefa C2: entrada de mercadoria. Tarefa D1: perdas. Tare
     GET /api/lotes/{id}/
 
 Lote não se edita nem se apaga: mudar a quantidade dele desalinharia o saldo (RN01). Correção de
-estoque é por perda ou ajuste, que deixam rastro em movimentação.
+estoque é por entrada ou por perda, que deixam rastro em movimentação. Não há operação de ajuste
+(lacuna L10, aberta).
 """
 
 from datetime import date

@@ -187,6 +187,15 @@ cronograma, a regra de negócio (quando houver) e o commit.
 
 ### 16/11/2026
 
+- **X1, item 22 — Comentários desatualizados (correção da revisão, gravidade baixa).**
+  **O problema:** dois textos explicativos no código estavam errados: o da rodada diária não citava
+  o aviso de "vai acabar", e o da entrada de mercadoria falava em corrigir o estoque "por ajuste",
+  operação que não existe (lacuna L10, aberta).
+  **O que foi feito:** os dois textos foram corrigidos. Não muda o funcionamento, por isso não há
+  teste que falhe antes e passe depois; a suíte inteira continua passando (**1137 testes**).
+  **Com isso, os 22 itens da revisão (`docs/REVISAO-FABLE.md`) estão corrigidos**: 4 de gravidade
+  alta, 9 de média e 9 de baixa, um commit por item, todos em 16/11/2026.
+
 - **X1, item 21 — Uma leitura do prazo de validade por lote (correção da revisão, gravidade
   baixa).**
   **O problema:** na madrugada, o aviso de validade lia do banco o prazo de antecedência (RN05) de

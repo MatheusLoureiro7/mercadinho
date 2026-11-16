@@ -4,7 +4,8 @@ Rodada diária — tarefa G5. O que o cron chama às 03h00 (Apostila IV, comunic
     python backend/manage.py rodada_diaria
     python backend/manage.py rodada_diaria --se-faltar    de hora em hora: só se a de hoje não rodou
 
-Importação das vendas → consumo de cada dia → previsão → avisos de validade → envio pelo Telegram.
+Importação das vendas → consumo de cada dia → previsão → avisos de validade → avisos de "vai
+acabar" e de fim de semana → envio pelo Telegram (a ordem de comum.rodada.PASSOS).
 Um passo que falha não impede os outros; a rodada termina com erro (código 1) dizendo quais
 falharam, e o motivo fica no log.
 """
