@@ -1,12 +1,22 @@
 # Guias de migração
 
-*Atualizado em 13/11/2026.* Como passar de uma versão para outra, ou trocar uma peça, sem perder dado.
+*Atualizado em 16/11/2026.* Como passar de uma versão para outra, ou trocar uma peça, sem perder dado.
 
 ## De uma versão do sistema para a seguinte
 1. Cópia do banco (`sustentar/backup-e-continuidade.md`).
 2. `python publicar.py` — atualiza o código, roda todos os testes e só então aplica as migrações.
 3. Ler o `evoluir/changelog.md` da versão: se houver "Quebra", seguir o passo a passo que vem junto.
-Até a 0.3.1 nenhuma versão exigiu conversão de dado: as migrações só criaram tabelas novas.
+Nenhuma versão até a 0.4.0 exigiu conversão de dado: as migrações criaram tabelas novas ou, na
+0.4.0, acertaram o padrão de uma coluna.
+
+## Da 0.3.1 para a 0.4.0
+1. `python publicar.py` — aplica a migração `estoque.0003` e sobe a API sem modo de depuração.
+2. **Trocar o crontab:** `python backend/manage.py agenda_cron` agora escreve 4 linhas (a nova
+   recupera a rodada perdida, de hora em hora). Apagar as 3 antigas e colar as 4.
+3. Conferir que o caixa exporta a coluna **Pagamento** em todas as linhas: sem ela, o fechamento
+   daquele dia é recusado.
+4. Nada a fazer nos dados já gravados. Vendas importadas antes continuam valendo; o que muda é a
+   regra para as próximas planilhas (`docs/FORMATO-PLANILHA-CAIXA.md`).
 
 ## Scripts de dados
 
@@ -16,7 +26,7 @@ Até a 0.3.1 nenhuma versão exigiu conversão de dado: as migrações só criar
 | Lançar a contagem de partida | `python backend/manage.py carregar_contagem arquivo.xlsx` |
 | Recalcular o consumo depois de mudar uma regra (ex.: L27) | `python backend/manage.py agregar_consumo --desde AAAA-MM-DD` |
 | Recalcular a previsão | `python backend/manage.py calcular_previsao` |
-| Reimportar planilhas do caixa | `python backend/manage.py importar_vendas` |
+| Importar agora as planilhas da pasta | `python backend/manage.py importar_vendas` — dia que já entrou não entra de novo |
 
 Consumo, previsão e avisos são dados calculados: podem ser apagados e refeitos. As tabelas de
 origem (lote, movimentação, venda, fechamento) nunca são apagadas nem reescritas.

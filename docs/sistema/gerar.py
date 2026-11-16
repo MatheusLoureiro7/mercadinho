@@ -15,7 +15,9 @@ O teste backend/tests/test_documentacao.py roda a conferência: se alguém criar
 regra ou dependência sem regenerar, a suíte falha. Os demais documentos são escritos à mão e o
 índice (LEIA-ME.md) diz a situação e a data de cada um.
 
-O PDF (DOCUMENTACAO-DO-SISTEMA.pdf) junta tudo, com cabeçalho oficial, a partir dos mesmos .md.
+A página (DOCUMENTACAO-DO-SISTEMA.html) e o PDF juntam tudo, a partir dos mesmos .md: menu com os
+24 documentos, procura, tema claro e escuro, e os códigos citados no texto (RN05, ADR-013,
+`usar/faq.md`) levando até onde estão definidos. Estilo e script em docs/sistema/modelo/.
 """
 
 import argparse
@@ -23,15 +25,17 @@ import html
 import importlib.metadata as metadados
 import os
 import re
+import subprocess
 import sys
+import unicodedata
 from pathlib import Path
 
 PASTA = Path(__file__).resolve().parent
 RAIZ = PASTA.parents[1]
 BACKEND = RAIZ / "backend"
 DOCUMENTO = "MDGS-DOC-001"
-VERSAO = "1.0"
-EMISSAO = "13/11/2026"
+VERSAO = "1.1"
+EMISSAO = "16/11/2026"
 PILARES = [
     ("usar", "Usar", "Como faço meu trabalho com o sistema?", "ISO/IEC/IEEE 26514"),
     ("manter", "Manter", "Como o sistema funciona e por que é assim?", "ISO/IEC/IEEE 42010"),
@@ -379,19 +383,97 @@ def desatualizados() -> list[str]:
     ]
 
 
-# ------------------------------------------------------------------------------------------ PDF
+# ------------------------------------------------------------------------------------------ Página e PDF
+# A página (DOCUMENTACAO-DO-SISTEMA.html) e o PDF saem dos mesmos .md. O estilo e o script ficam em
+# docs/sistema/modelo/ e entram inteiros no HTML: é um arquivo só, sem internet e sem biblioteca.
+
+MODELO = PASTA / "modelo"
+SITUACOES = {"Pronto": "pronto", "Parcial": "parcial", "Gerado": "gerado"}
+_CODIGO_CITADO = re.compile(r"\b(RN\d{2}|RF\d{2}|ADR-\d{3})\b")
+_DOCUMENTO_CITADO = re.compile(r"^(?:docs/sistema/)?((?:usar|manter|sustentar|evoluir)/[\w-]+)\.md$")
+_destinos_conhecidos: set[str] | None = None
 
 
-def _inline(texto: str) -> str:
+def _ler(nome: str) -> str:
+    return (PASTA / nome).read_text(encoding="utf-8")
+
+
+def _slug(texto: str) -> str:
+    sem_acento = unicodedata.normalize("NFD", texto.lower()).encode("ascii", "ignore").decode()
+    return re.sub(r"[^a-z0-9]+", "-", sem_acento).strip("-")
+
+
+def _destinos() -> set[str]:
+    """O que pode ser citado no texto e virar link: regras e requisitos (rastreabilidade), ADRs, documentos."""
+    global _destinos_conhecidos
+    if _destinos_conhecidos is None:
+        _destinos_conhecidos = (
+            set(re.findall(r"^\| ((?:RN|RF)\d{2}) \|", _ler("manter/rastreabilidade.md"), re.M))
+            | set(re.findall(r"^#+ (ADR-\d{3})\b", _ler("manter/adrs.md"), re.M))
+            | {_slug(d.relative_to(PASTA).with_suffix("").as_posix()) for d in PASTA.glob("*/*.md")}
+        )
+    return _destinos_conhecidos
+
+
+def _inline(texto: str, refs: bool = True, exceto: str | None = None) -> str:
+    """Negrito, itálico e código; com `refs`, o código de regra, o ADR e o documento citados viram link."""
+    codigos: list[str] = []
+
+    def guardar(m):
+        conteudo = m.group(1)
+        # <wbr>: o caminho comprido pode quebrar depois de cada barra (na folha A4 não cabe inteiro).
+        marcado = f"<code>{html.escape(conteudo, quote=False).replace('/', '/<wbr>')}</code>"
+        documento = _DOCUMENTO_CITADO.match(conteudo)
+        if refs and documento and _slug(documento.group(1)) in _destinos():
+            marcado = f'<a href="#{_slug(documento.group(1))}">{marcado}</a>'
+        codigos.append(marcado)
+        return f"\x00{len(codigos) - 1}\x00"
+
+    texto = re.sub(r"`([^`]+)`", guardar, texto)
     texto = html.escape(texto, quote=False).replace("&lt;br&gt;", "<br>")
-    texto = re.sub(r"`([^`]+)`", r"<code>\1</code>", texto)
     texto = re.sub(r"\*\*([^*]+)\*\*", r"<b>\1</b>", texto)
     texto = re.sub(r"(?<![\w*])\*([^*]+)\*(?!\w)", r"<i>\1</i>", texto)
-    return re.sub(r"\[([^\]]+)\]\(([^)]+)\)", r"\1", texto)
+    texto = re.sub(r"\[([^\]]+)\]\(([^)]+)\)", r"\1", texto)
+    if refs:
+        texto = _CODIGO_CITADO.sub(
+            lambda m: (
+                f'<a class="ref" href="#{m.group(1)}">{m.group(1)}</a>'
+                if m.group(1) in _destinos() and m.group(1) != exceto
+                else m.group(1)
+            ),
+            texto,
+        )
+    return re.sub(r"\x00(\d+)\x00", lambda m: codigos[int(m.group(1))], texto)
 
 
-def markdown_para_html(texto: str, nivel_base: int = 2) -> str:
-    """O pedaço do Markdown que estes documentos usam: títulos, parágrafos, listas, tabelas, código, citação."""
+class _Pagina:
+    """Guarda o que a página inteira precisa saber: os ids já usados (não podem repetir)."""
+
+    def __init__(self):
+        self.ids: set[str] = set()
+
+    def novo_id(self, desejado: str) -> str:
+        candidato, n = desejado or "secao", 2
+        while candidato in self.ids:
+            candidato, n = f"{desejado}-{n}", n + 1
+        self.ids.add(candidato)
+        return candidato
+
+
+def markdown_para_html(
+    texto: str,
+    nivel_base: int = 2,
+    prefixo: str = "",
+    pagina: _Pagina | None = None,
+    define_codigos: bool = False,
+    secoes: list | None = None,
+) -> str:
+    """
+    O pedaço do Markdown que estes documentos usam: títulos, parágrafos, listas, tabelas, código,
+    citação. Cada título ganha um id (`prefixo`-título) e uma âncora; `secoes` recebe os de primeiro
+    nível, para o menu. Com `define_codigos`, a linha de tabela que começa por RN05 vira o destino #RN05.
+    """
+    pagina = pagina or _Pagina()
     saida, linhas, i = [], texto.splitlines(), 0
     while i < len(linhas):
         linha = linhas[i]
@@ -401,10 +483,20 @@ def markdown_para_html(texto: str, nivel_base: int = 2) -> str:
             while i < len(linhas) and not linhas[i].startswith("```"):
                 bloco.append(html.escape(linhas[i]))
                 i += 1
-            saida.append("<pre>" + "\n".join(bloco) + "</pre>")
+            saida.append("<div class='codigo'><pre>" + "\n".join(bloco) + "</pre></div>")
         elif m := re.match(r"(#+) (.*)", linha):
             nivel = min(6, len(m.group(1)) + nivel_base - 1)
-            saida.append(f"<h{nivel}>{_inline(m.group(2))}</h{nivel}>")
+            titulo = m.group(2)
+            adr = re.match(r"(ADR-\d{3})\b", titulo)
+            sem_marcacao = re.sub(r"[`*]", "", titulo)
+            desejado = adr.group(1) if adr else "-".join(filter(None, [prefixo, _slug(sem_marcacao)]))
+            ancora = pagina.novo_id(desejado)
+            if secoes is not None and len(m.group(1)) == 2:
+                secoes.append((ancora, sem_marcacao))
+            saida.append(
+                f'<h{nivel} id="{ancora}">{_inline(titulo, refs=False)}'
+                f'<a class="ancora" href="#{ancora}" aria-label="Link para esta seção">#</a></h{nivel}>'
+            )
         elif linha.startswith("|"):
             tabela = []
             while i < len(linhas) and linhas[i].startswith("|"):
@@ -412,12 +504,21 @@ def markdown_para_html(texto: str, nivel_base: int = 2) -> str:
                 i += 1
             i -= 1
             cabecalho, corpo = tabela[0], [t for t in tabela[1:] if not set("".join(t)) <= set("-: ")]
+            corpo_html = []
+            for celulas in corpo:
+                codigo = celulas[0] if define_codigos and re.fullmatch(r"(RN|RF)\d{2}", celulas[0]) else None
+                abre = f'<tr id="{pagina.novo_id(codigo)}">' if codigo else "<tr>"
+                corpo_html.append(
+                    abre + "".join(f"<td>{_inline(c, exceto=codigo)}</td>" for c in celulas) + "</tr>"
+                )
+            larga = " tabela--larga" if len(cabecalho) >= 5 else ""
+            larga += " tabela--rastro" if define_codigos else ""
             saida.append(
-                "<table><thead><tr>"
-                + "".join(f"<th>{_inline(c)}</th>" for c in cabecalho)
+                f"<div class='tabela{larga}'><table><thead><tr>"
+                + "".join(f"<th scope='col'>{_inline(c, refs=False)}</th>" for c in cabecalho)
                 + "</tr></thead><tbody>"
-                + "".join("<tr>" + "".join(f"<td>{_inline(c)}</td>" for c in t) + "</tr>" for t in corpo)
-                + "</tbody></table>"
+                + "".join(corpo_html)
+                + "</tbody></table></div>"
             )
         elif re.match(r"\s*([-*]|\d+\.) ", linha):
             ordenada = bool(re.match(r"\s*\d+\.", linha))
@@ -441,7 +542,14 @@ def markdown_para_html(texto: str, nivel_base: int = 2) -> str:
                 bloco.append(linhas[i].lstrip("> "))
                 i += 1
             i -= 1
-            saida.append("<blockquote>" + _inline(" ".join(bloco)) + "</blockquote>")
+            citacao = " ".join(bloco)
+            if citacao.startswith("Gerado automaticamente"):
+                citacao = citacao.removeprefix("Gerado automaticamente ")
+                saida.append(
+                    f"<blockquote class='do-codigo'>{_inline(citacao[0].upper() + citacao[1:])}</blockquote>"
+                )
+            else:
+                saida.append("<blockquote>" + _inline(citacao) + "</blockquote>")
         elif linha.strip():
             paragrafo = [linha]
             while (
@@ -451,66 +559,223 @@ def markdown_para_html(texto: str, nivel_base: int = 2) -> str:
             ):
                 i += 1
                 paragrafo.append(linhas[i])
+            # Pergunta em negrito numa linha e a resposta na seguinte (FAQ): a resposta desce uma linha.
+            if len(paragrafo) > 1 and re.fullmatch(r"\*\*[^*]+\*\*", paragrafo[0].strip()):
+                paragrafo[0] = paragrafo[0].strip() + "<br>"
             saida.append("<p>" + _inline(" ".join(paragrafo)) + "</p>")
         i += 1
     return "\n".join(saida)
 
 
-ESTILO = """
-@font-face { font-family: Plex; font-weight: 400; src: url(FONTES/ibm-plex-sans-400.woff2); }
-@font-face { font-family: Plex; font-weight: 600; src: url(FONTES/ibm-plex-sans-600.woff2); }
-* { box-sizing: border-box; }
-body { font-family: Plex, sans-serif; font-size: 9.4pt; line-height: 1.45; color: #1d2430; margin: 0; }
-header.capa { border-bottom: 1.5pt solid #12305a; padding-bottom: 4mm; margin-bottom: 5mm; }
-.sup { font-size: 8.4pt; color: #556; display: flex; justify-content: space-between; }
-h1 { font-size: 21pt; color: #12305a; margin: 3mm 0 1mm; font-weight: 600; }
-.sistema { font-size: 11pt; color: #33415a; }
-section.pilar { break-before: page; }
-section.pilar > h1 { font-size: 17pt; margin-top: 0; }
-.pergunta { font-style: italic; color: #33415a; margin-bottom: 4mm; }
-h2 { font-size: 13pt; color: #12305a; font-weight: 600; margin: 7mm 0 2mm; break-after: avoid; border-top: 0.5pt solid #b9c2d0; padding-top: 3mm; }
-h3 { font-size: 11pt; color: #12305a; font-weight: 600; margin: 4mm 0 1.5mm; break-after: avoid; }
-h4, h5 { font-size: 9.8pt; color: #12305a; margin: 3mm 0 1mm; }
-p { margin: 0 0 2mm; }
-table { width: 100%; border-collapse: collapse; margin: 1mm 0 3mm; font-size: 8.2pt; }
-th, td { border: 0.5pt solid #b9c2d0; padding: 1.2mm 1.8mm; text-align: left; vertical-align: top; overflow-wrap: break-word; }
-td code { overflow-wrap: anywhere; }
-thead th { background: #12305a; color: #fff; font-weight: 600; }
-tr { break-inside: avoid; }
-code { font-family: Menlo, Consolas, monospace; font-size: 7.8pt; background: #eef1f6; padding: 0 0.6mm; }
-pre { font-family: Menlo, Consolas, monospace; font-size: 7.6pt; background: #f2f5fa; border: 0.5pt solid #d5dbe5; padding: 2mm 3mm; white-space: pre-wrap; break-inside: avoid; }
-blockquote { border-left: 2pt solid #12305a; background: #f2f5fa; margin: 2mm 0; padding: 2mm 3mm; }
-ul, ol { margin: 0 0 2mm; padding-left: 5mm; } li { margin-bottom: 0.8mm; }
+def documentos_do_indice() -> dict[str, list[dict]]:
+    """Pasta → os documentos dela, na ordem do índice (LEIA-ME.md), com nome, situação e data."""
+    por_pasta: dict[str, list[dict]] = {pasta: [] for pasta, *_ in PILARES}
+    linhas = re.findall(
+        r"^\| (?:Usar|Manter|Sustentar|Evoluir) \| ([^|]+) \| ([^|]+) \| ([^|]+) \| ([^|]+) \|$",
+        _ler("LEIA-ME.md"),
+        re.M,
+    )
+    for nome, arquivos, situacao, data in linhas:
+        arquivo = next(a for a in re.findall(r"`([^`]+\.md)`", arquivos) if a.split("/")[0] in por_pasta)
+        tipo, _, detalhe = situacao.strip().partition(":")
+        por_pasta[arquivo.split("/")[0]].append(
+            {
+                "nome": nome.strip(),
+                "arquivo": arquivo,
+                "id": _slug(arquivo.removesuffix(".md")),
+                "tipo": SITUACOES[tipo.strip()],
+                "situacao": "Gerado do código" if tipo.strip() == "Gerado" else tipo.strip(),
+                "detalhe": detalhe.strip(),
+                "data": data.strip(),
+            }
+        )
+    return por_pasta
+
+
+def ficha() -> dict[str, str]:
+    """Os números da capa, tirados dos próprios documentos (e do git) na hora de gerar."""
+
+    def contar(padrao: str, nome: str) -> str:
+        return str(len(re.findall(padrao, _ler(nome), re.M)))
+
+    versao = re.search(r"^## (\d+\.\d+\.\d+)", _ler("evoluir/changelog.md"), re.M)
+    testes = re.search(r"\*\*([\d.]+) testes automáticos", _ler("evoluir/testes-de-regressao.md"))
+    try:
+        commit = subprocess.run(  # noqa: S603 — comando fixo
+            ["git", "rev-parse", "--short", "HEAD"],  # noqa: S607 — o git do PATH
+            cwd=RAIZ,
+            capture_output=True,
+            text=True,
+            check=False,
+        ).stdout.strip()
+    except OSError:
+        commit = ""
+    return {
+        "Documento": DOCUMENTO,
+        "Versão do documento": VERSAO,
+        "Emitido em": EMISSAO,
+        "Versão do sistema": versao.group(1) if versao else "—",
+        "Gerado sobre o commit": commit or "—",
+        "Testes automáticos": testes.group(1) if testes else "—",
+        "Regras de negócio": contar(r"^\| RN\d{2} \|", "manter/rastreabilidade.md"),
+        "Requisitos funcionais": contar(r"^\| RF\d{2} \|", "manter/rastreabilidade.md"),
+        "Tabelas": contar(r"^## `", "manter/dicionario-de-dados.md"),
+        "Endereços da API": contar(r"^\| `/api", "manter/contratos-da-api.md"),
+        "Decisões de arquitetura": contar(r"^#+ ADR-\d{3}", "manter/adrs.md"),
+        "Documentos": str(sum(len(docs) for docs in documentos_do_indice().values())),
+    }
+
+
+def _marca(tipo: str) -> str:
+    return f"<span class='marca marca--{tipo}' aria-hidden='true'></span>"
+
+
+def montar_html() -> str:
+    pagina = _Pagina()
+    for fixo in ("inicio", "conteudo", "mapa", "mapa-titulo", "sobre", "menu", "lateral"):
+        pagina.novo_id(fixo)
+    indice = documentos_do_indice()
+    numeros = ficha()
+    e = html.escape
+
+    mapa, menu, corpo = [], [], []
+    for pasta, titulo, pergunta, referencia in PILARES:
+        pagina.novo_id(pasta)
+        itens_mapa, itens_menu, artigos = [], [], []
+        for doc in indice[pasta]:
+            pagina.novo_id(doc["id"])
+            texto = _ler(doc["arquivo"])
+            titulo_doc = re.match(r"# (.*)", texto).group(1)
+            secoes: list[tuple[str, str]] = []
+            # O título e a data vão para o cabeçalho do documento; no texto seriam repetição.
+            texto = re.sub(r"\*Atualizado em \d{2}/\d{2}/\d{4}\.\*\s*", "", texto, count=1)
+            conteudo = markdown_para_html(
+                re.sub(r"^# .*\n", "", texto, count=1),
+                nivel_base=3,
+                prefixo=doc["id"],
+                pagina=pagina,
+                define_codigos=doc["arquivo"] == "manter/rastreabilidade.md",
+                secoes=secoes,
+            )
+            detalhe = f" — {e(doc['detalhe'])}" if doc["detalhe"] else ""
+            selo = f"<span class='selo selo--{doc['tipo']}'>{e(doc['situacao'])}{detalhe}</span>"
+            atualizado = "a cada geração" if doc["tipo"] == "gerado" else e(doc["data"])
+            artigos.append(
+                f'<article class="doc" id="{doc["id"]}"><header class="doc__cabeca">'
+                f'<h3 class="doc__titulo">{_inline(titulo_doc, refs=False)}</h3><dl class="doc__meta">'
+                f"<div><dt>Arquivo</dt><dd><code>docs/sistema/{e(doc['arquivo'])}</code></dd></div>"
+                f"<div><dt>Situação</dt><dd>{selo}</dd></div>"
+                f"<div><dt>Atualizado</dt><dd>{atualizado}</dd></div></dl></header>"
+                f'<div class="texto">{conteudo}</div></article>'
+            )
+            itens_mapa.append(
+                f'<li><a class="mapa__doc mapa__doc--{doc["tipo"]}" href="#{doc["id"]}">'
+                f"<span class='mapa__titulo'>{e(doc['nome'])}</span>"
+                f"<span class='mapa__situacao'>{_marca(doc['tipo'])}{e(doc['situacao'])}</span></a></li>"
+            )
+            sub = "".join(f'<li><a href="#{a}">{e(t)}</a></li>' for a, t in secoes)
+            itens_menu.append(
+                f'<li data-doc="{doc["id"]}"><a class="menu__doc" href="#{doc["id"]}">{_marca(doc["tipo"])}'
+                f"<span>{e(doc['nome'])}<span class='oculto'>, {e(doc['situacao'])}</span></span></a>"
+                + (f'<ul class="menu__secoes">{sub}</ul>' if sub else "")
+                + "</li>"
+            )
+        mapa.append(
+            f'<div class="mapa__pilar"><h3><a href="#{pasta}">{titulo}</a></h3>'
+            f'<p class="mapa__pergunta">{e(pergunta)}</p><ol>{"".join(itens_mapa)}</ol></div>'
+        )
+        menu.append(
+            f'<div class="menu__grupo"><p class="menu__pilar"><a href="#{pasta}">{titulo}</a></p>'
+            f'<ul class="menu__lista">{"".join(itens_menu)}</ul></div>'
+        )
+        corpo.append(
+            f'<section class="pilar" id="{pasta}"><h2 class="pilar__titulo">{titulo}</h2>'
+            f'<p class="pilar__pergunta">{e(pergunta)} Referência: {e(referencia)}.</p>{"".join(artigos)}</section>'
+        )
+
+    # O índice (LEIA-ME.md) sem o título e sem a tabela dos 24: o mapa da capa é essa tabela.
+    sobre = re.sub(r"^# .*\n", "", _ler("LEIA-ME.md"), count=1)
+    sobre = re.sub(r"## Os 24 documentos\n.*?(?=^## )", "", sobre, flags=re.S | re.M)
+    sobre = re.sub(r"\*Atualizado em \d{2}/\d{2}/\d{4}\.\*\s*", "", sobre, count=1)
+    sobre_html = markdown_para_html(sobre, nivel_base=3, prefixo="sobre", pagina=pagina)
+
+    legenda = "".join(
+        f"<li>{_marca(tipo)}{texto}</li>"
+        for tipo, texto in [
+            ("pronto", "Pronto: cobre o sistema de hoje"),
+            ("parcial", "Parcial: existe, com a lacuna declarada no próprio documento"),
+            ("gerado", "Gerado do código: um teste falha se ficar velho"),
+        ]
+    )
+    itens_ficha = "".join(f"<div><dt>{e(k)}</dt><dd>{e(v)}</dd></div>" for k, v in numeros.items())
+    estilo = (MODELO / "estilo.css").read_text(encoding="utf-8")
+    script = (MODELO / "pagina.js").read_text(encoding="utf-8")
+    return f"""<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Documentação do Sistema — Mercado do Sr. João</title>
+<style>{estilo}</style>
+</head>
+<body>
+<a class="pular" href="#conteudo">Pular para o conteúdo</a>
+<button type="button" class="botao abrir-menu" id="abrir-menu" aria-expanded="false" aria-controls="lateral">Menu</button>
+<aside class="lateral" id="lateral" aria-label="Navegação da documentação">
+<div class="lateral__topo">
+<p class="lateral__nome"><a href="#inicio">Documentação do Sistema</a></p>
+<p class="lateral__versao">Mercado do Sr. João, versão {e(numeros["Versão do sistema"])}</p>
+<div class="busca"><label class="oculto" for="campo-busca">Procurar nos documentos</label>
+<input id="campo-busca" type="search" placeholder="Procurar" autocomplete="off" aria-describedby="resultado-busca"><kbd aria-hidden="true">/</kbd></div>
+<p class="busca__resultado" id="resultado-busca" aria-live="polite"></p>
+</div>
+<nav id="menu" aria-label="Documentos">
+<div><a class="menu__atalho" href="#mapa">Os 24 documentos</a><a class="menu__atalho" href="#sobre">Como esta documentação é mantida</a></div>
+{"".join(menu)}
+</nav>
+<div class="lateral__pe"><button type="button" class="botao" id="botao-tema">Tema escuro</button></div>
+</aside>
+<main id="conteudo" tabindex="-1">
+<header class="capa" id="inicio">
+<p class="capa__grupo">Engenharia de Software, Grupo MDGS</p>
+<h1>Documentação do Sistema</h1>
+<p class="capa__sistema">Sistema de Gestão de Estoque e Compras do Mercado do Sr. João</p>
+<dl class="ficha">{itens_ficha}</dl>
+</header>
+<section id="mapa" aria-labelledby="mapa-titulo">
+<h2 id="mapa-titulo">Os 24 documentos</h2>
+<ul class="mapa__legenda">{legenda}</ul>
+<div class="mapa">{"".join(mapa)}</div>
+</section>
+<section class="pilar" id="sobre"><h2 class="pilar__titulo">Como esta documentação é mantida</h2>
+<div class="texto">{sobre_html}</div></section>
+{"".join(corpo)}
+<p class="pe">Gerado por <code>python docs/sistema/gerar.py</code> a partir dos arquivos de <code>docs/sistema/</code>.</p>
+</main>
+<script>{script}</script>
+</body>
+</html>
 """
 
 
 def gerar_pdf() -> Path:
     from playwright.sync_api import sync_playwright
 
-    indice = (PASTA / "LEIA-ME.md").read_text(encoding="utf-8")
-    partes = [
-        f"<header class='capa'><div class='sup'><span>Engenharia de Software · Grupo MDGS</span><span>{DOCUMENTO} · versão {VERSAO} · {EMISSAO}</span></div>"
-        "<h1>Documentação do Sistema</h1><div class='sistema'>Sistema de Gestão de Estoque e Compras — Mercado do Sr. João</div></header>",
-        markdown_para_html(re.sub(r"^# .*\n", "", indice, count=1)),
-    ]
-    for pasta, titulo, pergunta, referencia in PILARES:
-        partes.append(
-            f"<section class='pilar'><h1>{titulo}</h1><p class='pergunta'>{pergunta} · Referência: {referencia}</p>"
-        )
-        for arquivo in sorted((PASTA / pasta).glob("*.md")):
-            partes.append(markdown_para_html(arquivo.read_text(encoding="utf-8")))
-        partes.append("</section>")
-    estilo = ESTILO.replace("FONTES", (RAIZ / "frontend" / "fontes").as_uri())
-    pagina = f"<!doctype html><html lang='pt-BR'><head><meta charset='utf-8'><title>Documentação do Sistema</title><style>{estilo}</style></head><body>{''.join(partes)}</body></html>"
     saida_html = PASTA / "DOCUMENTACAO-DO-SISTEMA.html"
-    saida_html.write_text(pagina, encoding="utf-8")
+    saida_html.write_text(montar_html(), encoding="utf-8")
     saida_pdf = PASTA / "DOCUMENTACAO-DO-SISTEMA.pdf"
-    rodape = f"<div style='font-size:7pt;color:#667;width:100%;text-align:center'>{DOCUMENTO} · versão {VERSAO} · emitido em {EMISSAO} · página <span class='pageNumber'></span> de <span class='totalPages'></span></div>"
+    rodape = (
+        "<div style='font:7pt Helvetica,Arial,sans-serif;color:#4a5a52;width:100%;padding:0 15mm;"
+        "display:flex;justify-content:space-between'>"
+        f"<span>{DOCUMENTO}, versão {VERSAO}, emitido em {EMISSAO}</span>"
+        "<span>página <span class='pageNumber'></span> de <span class='totalPages'></span></span></div>"
+    )
     with sync_playwright() as p:
         navegador = p.chromium.launch()
         aba = navegador.new_page()
         aba.goto(saida_html.as_uri())
         aba.wait_for_load_state("networkidle")
+        aba.evaluate("document.fonts.ready")
         aba.pdf(
             path=str(saida_pdf),
             format="A4",
@@ -518,7 +783,9 @@ def gerar_pdf() -> Path:
             display_header_footer=True,
             header_template="<span></span>",
             footer_template=rodape,
-            margin={"top": "14mm", "bottom": "16mm", "left": "15mm", "right": "15mm"},
+            margin={"top": "16mm", "bottom": "18mm", "left": "15mm", "right": "15mm"},
+            outline=True,  # marcadores do PDF a partir dos títulos
+            tagged=True,
         )
         navegador.close()
     return saida_pdf

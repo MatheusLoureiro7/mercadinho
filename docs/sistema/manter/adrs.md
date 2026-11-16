@@ -19,6 +19,9 @@ ADR novo no fim da lista; decisão substituída fica, marcada como *substituída
 | 010 | Contagem de partida como entrada de mercadoria | 12/11/2026 | Aceita |
 | 011 | Publicação com o servidor do próprio Django | 13/11/2026 | Aceita (para a demonstração) |
 | 012 | Documentação versionada com o código ("docs as code") | 13/11/2026 | Aceita |
+| 013 | Trava do PostgreSQL contra duas rodadas ao mesmo tempo | 16/11/2026 | Aceita |
+| 014 | Detalhes do banco criados pelo Django, aceitos e conferidos por teste | 16/11/2026 | Aceita |
+| 015 | Página navegável e PDF da documentação gerados dos mesmos arquivos | 16/11/2026 | Aceita |
 
 ### ADR-001 — PostgreSQL como banco
 **Contexto:** a Apostila IV, figura 2 e seção 3, fixa o banco. **Decisão:** PostgreSQL 17, também
@@ -102,3 +105,13 @@ chaves estrangeiras `DEFERRABLE` e 16 índices automáticos que o `schema.sql` n
 aceitar e registrar (lacuna L28); um teste falha se surgir outra diferença. A migração `estoque.0003`
 acerta o padrão `NOW()` de `movimentacao.data_hora` no banco antigo. **Consequência:** o modelo de
 dados entregue continua valendo coluna por coluna; os três detalhes são infraestrutura do framework.
+
+### ADR-015 — Página navegável e PDF gerados dos mesmos arquivos
+**Contexto:** a documentação tinha um PDF e um HTML corrido, sem navegação, com o caminho das fontes
+preso ao computador de quem gerou (X2, 16/11/2026). **Decisão:** `gerar.py` monta uma página só, sem
+biblioteca e sem internet (estilo e script em `docs/sistema/modelo/`, embutidos), com menu, procura e
+tema claro e escuro; o código de regra, o ADR e o documento citados no texto viram link até onde
+estão definidos; o PDF sai da mesma página, com marcadores. Testes conferem que todo link interno
+tem destino e que a página não depende de caminho local. **Consequência:** quem lê chega de "RN11"
+ao código e aos testes em um clique; o renderizador de Markdown é próprio e cobre só o que estes
+documentos usam.

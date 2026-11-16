@@ -1,5 +1,5 @@
 """
-RN14 — três perfis de acesso. Tarefa A4.
+RN14 — três perfis de acesso (requisito RF14: controlar o acesso por perfil). Tarefa A4.
 
 A verificação acontece na camada de autenticação da API, ANTES de qualquer operação e antes de
 tocar no banco (Apostila IV, operação 01, passo 3) — nunca dentro da regra de negócio.

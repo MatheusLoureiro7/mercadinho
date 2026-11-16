@@ -1,6 +1,6 @@
 # Backup e continuidade
 
-*Atualizado em 13/11/2026.* **Situação: o backup automático ainda NÃO existe.** A especificação pede
+*Atualizado em 16/11/2026.* **Situação: o backup automático ainda NÃO existe.** A especificação pede
 **backup diário fora do servidor** (RNF09; Apostila IV, comunicação nº 10: "rotina de backup →
 armazenamento externo, 1× por dia"). Nenhuma tarefa do cronograma o implementou; está no roadmap e
 precisa de decisão do grupo sobre onde guardar a cópia.
@@ -25,7 +25,7 @@ docker compose exec -T banco psql -U mercadinho mercadinho < backup-AAAA-MM-DD.s
 |---|---|---|
 | Banco: tabelas de origem (produto, lote, movimentação, venda, fechamento…) | **Sim** | É o registro do que aconteceu; não se recria |
 | Banco: consumo diário, previsão e avisos | Não | São recalculados (`agregar_consumo --desde`, `calcular_previsao`) |
-| Planilhas do caixa na pasta | Sim | Permitem reimportar um dia |
+| Planilhas do caixa na pasta | Sim | Permitem importar, num banco restaurado, os dias depois da cópia (dia que já está no banco não entra de novo) |
 | Arquivo `.env` | Sim, guardado à parte | Segredos; nunca no git |
 | Código | Não | Está no GitHub |
 

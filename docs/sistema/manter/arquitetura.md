@@ -1,16 +1,16 @@
 # Arquitetura (modelo C4)
 
-*Atualizado em 13/11/2026.* Base: Apostila IV, seções 3 a 5 (`docs/ARQUITETURA.md`). Aqui, em três
+*Atualizado em 16/11/2026.* Base: Apostila IV, seções 3 a 5 (`docs/ARQUITETURA.md`). Aqui, em três
 níveis de zoom: o sistema no mundo, as peças que rodam e os módulos de dentro da API.
 
 ## Nível 1 — Contexto
 
 ```
-   Sobrinho, Esposa ──(navegador)──▶ ┌─────────────────────────────┐ ──(HTTPS de saída)──▶ Telegram ──▶ celular
-   Sr. João (consulta)               │  Sistema de Gestão de       │ ◀─(webhook "Sim, pedir")──         do Sr. João
-                                     │  Estoque e Compras          │
-   Caixa da loja ──(planilha .xlsx   │                             │
-     numa pasta, 1× por dia)──────▶  └─────────────────────────────┘
+  Sobrinho, Esposa ──(navegador)────────▶ ┌───────────────────────┐ ──(HTTPS de saída)──▶ Telegram
+  Sr. João (consulta)                     │  Sistema de Gestão    │                          │
+                                          │  de Estoque e Compras │ ◀──(webhook)──── "Sim, pedir"
+  Caixa da loja ──(planilha .xlsx numa ──▶│                       │                          │
+                   pasta, 1× por dia)     └───────────────────────┘                 celular do Sr. João
 ```
 
 - **O caixa não é chamado nem alterado** (R05): o sistema só lê a planilha que ele exporta.
@@ -22,7 +22,7 @@ níveis de zoom: o sistema no mundo, as peças que rodam e os módulos de dentro
 |---|---|---|---|
 | Painel | HTML, CSS e JavaScript puros (`frontend/`), servido por `frontend/servir.py` | 127.0.0.1:8090 | Só com a API, por `fetch` em `/api/...` (mesma origem, L25) |
 | API REST | Django 5.2 + Django REST Framework (`backend/`) | 127.0.0.1:8000 | Banco; Telegram (saída) |
-| Rodada da madrugada | Comandos `manage.py` disparados pelo cron (`rodada_diaria`) | Mesmo computador, 03h00, 13h00, 18h00 | Pasta das planilhas; banco; Telegram |
+| Rodada da madrugada | Comandos `manage.py` disparados pelo cron (`rodada_diaria`) | Mesmo computador, 03h00, 13h00, 18h00 e, para recuperar a rodada perdida, de hora em hora | Pasta das planilhas; banco; Telegram |
 | Banco de dados | PostgreSQL 17 em contêiner Docker | 127.0.0.1:5432, sem acesso externo | — |
 
 **A regra das camadas (Apostila IV, seção 3):** apresentação (painel e Telegram) → aplicação (API)
@@ -34,7 +34,7 @@ rodam no clique** — rodam de madrugada, mesmo sem ninguém usando o sistema.
 
 | Módulo | Responsabilidade | Regras |
 |---|---|---|
-| `comum` | Autenticação por token, permissão por tela (RN14), formato de erro, parâmetros, rodada diária e cron | RN14 |
+| `comum` | Autenticação por token, permissão por tela (RN14), formato de erro, parâmetros, rodada diária e cron, trava entre processos (`trava.py`, ADR-013) | RN14 |
 | `cadastro` | Categoria, fornecedor, produto, usuário; carga por planilha (J2) | RN03 |
 | `estoque` | Lote, movimentação, saldo derivado (view `vw_estoque_atual`), FIFO, entrada, perda, consulta, contagem de partida (J3) | RN01, RN02, RN04, RN16 |
 | `vendas` | Venda, item, importação da planilha (leitor atrás da interface `LeitorDeArquivoDoCaixa`), conciliação das pendentes | RN01, RN02 |
@@ -57,10 +57,32 @@ rodam no clique** — rodam de madrugada, mesmo sem ninguém usando o sistema.
 ## A rodada da madrugada
 
 ```
-03h00  importar_vendas → agregar_consumo → calcular_previsao → avisos de validade → avisos de ruptura → enviar_avisos
-13h00 e 18h00                                                                                       enviar_avisos (solta os segurados)
+03h00   rodada_diaria
+          1  importar_vendas       planilhas novas da pasta do caixa
+          2  agregar_consumo       o que vendeu em cada dia (só VENDA, RN11)
+          3  calcular_previsao     dias até acabar, ponto de pedido, sugestão
+          4  avisos de validade    RN05
+          5  avisos de ruptura     RN08; na quinta, fim de semana (RN10)
+          6  enviar_avisos         uma mensagem por pessoa (RN13)
+
+13h00   enviar_avisos              solta o que o horário de movimento segurou (RN12)
+18h00   enviar_avisos
+
+hh:30   rodada_diaria --se-faltar  só roda se a de hoje não aconteceu
+                                   (logs/ultima-rodada.txt)
 ```
 
 A ordem importa: cada passo usa o resultado do anterior. Um passo que falha não impede os outros
 (`comum/rodada.py`). Os dados calculados (`consumo_diario`, `previsao_produto`, `alerta`) podem ser
 apagados e recalculados a partir das tabelas de origem, que nunca se apagam.
+
+**O que a rodada garante (revisão X1, 16/11/2026):**
+
+- **Não duplica.** A importação reconhece as vendas pelo dia, não pelo nome do arquivo; os avisos
+  conferem "já avisei hoje?". As duas conferências acontecem sob uma trava do PostgreSQL
+  (`pg_advisory_xact_lock`), então duas rodadas ao mesmo tempo não gravam em dobro (ADR-013).
+- **Não perde o dia.** Computador desligado às 03h00: a verificação de hora em hora faz a rodada
+  quando ele volta. Quinta perdida: o aviso de fim de semana (RN10) sai na sexta ou no sábado.
+- **Não grava pela metade.** Planilha com linha ilegível é recusada inteira; a gravação de uma
+  planilha é uma transação só. Mensagem maior que o limite do Telegram é dividida entre avisos, e
+  cada parte que sai marca os seus avisos como enviados.

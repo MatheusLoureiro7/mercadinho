@@ -2,8 +2,9 @@
 
 *Atualizado em 16/11/2026.* Organizada como nos slides "Documentação de Software" do professor:
 **cada documento responde a uma pergunta**, e são quatro perguntas. Tudo fica versionado junto com
-o código ("docs as code") e é atualizado na mesma entrega que muda o sistema. O PDF
-`DOCUMENTACAO-DO-SISTEMA.pdf` é gerado a partir destes arquivos (`python docs/sistema/gerar.py`).
+o código ("docs as code") e é atualizado na mesma entrega que muda o sistema. A página
+`DOCUMENTACAO-DO-SISTEMA.html` (abra no navegador: menu, procura e links entre regra, código e
+teste) e o `DOCUMENTACAO-DO-SISTEMA.pdf` são gerados destes arquivos por `python docs/sistema/gerar.py`.
 
 | Pergunta | Quem lê | Pasta |
 |---|---|---|
@@ -23,25 +24,25 @@ documento) · **Gerado** (sai do código; um teste falha se ficar velho).
 | Usar | Guia de início rápido | `usar/inicio-rapido.md` | Pronto | 16/11/2026 |
 | Usar | FAQ | `usar/faq.md` | Pronto | 16/11/2026 |
 | Usar | Glossário de negócio | `usar/glossario.md` | Pronto | 16/11/2026 |
-| Usar | Release notes do usuário | `usar/novidades.md` | Pronto | 13/11/2026 |
-| Usar | Material de treinamento | `usar/treinamento.md` | Parcial: sessões e vídeos na J5 (23/11/2026) | 13/11/2026 |
-| Manter | Requisitos e regras de negócio | `docs/REGRAS-NEGOCIO.md`, `docs/ESPECIFICACAO.md` e `manter/rastreabilidade.md` | Gerado | 13/11/2026 |
-| Manter | Arquitetura (C4) | `manter/arquitetura.md` | Pronto | 13/11/2026 |
+| Usar | Release notes do usuário | `usar/novidades.md` | Pronto | 16/11/2026 |
+| Usar | Material de treinamento | `usar/treinamento.md` | Parcial: sessões e vídeos na J5 (23/11/2026) | 16/11/2026 |
+| Manter | Requisitos e regras de negócio | `docs/REGRAS-NEGOCIO.md`, `docs/ESPECIFICACAO.md` e `manter/rastreabilidade.md` | Gerado | 16/11/2026 |
+| Manter | Arquitetura (C4) | `manter/arquitetura.md` | Pronto | 16/11/2026 |
 | Manter | ADRs | `manter/adrs.md` | Pronto | 16/11/2026 |
-| Manter | Modelo e dicionário de dados | `manter/dicionario-de-dados.md` | Gerado | 13/11/2026 |
-| Manter | Contratos de API | `manter/contratos-da-api.md` | Gerado | 13/11/2026 |
-| Manter | README e guia de dev + testes | `README.md`, `COMO-RODAR.md` e `manter/guia-do-desenvolvedor.md` | Pronto | 13/11/2026 |
+| Manter | Modelo e dicionário de dados | `manter/dicionario-de-dados.md` | Gerado | 16/11/2026 |
+| Manter | Contratos de API | `manter/contratos-da-api.md` | Gerado | 16/11/2026 |
+| Manter | README e guia de dev + testes | `README.md`, `COMO-RODAR.md` e `manter/guia-do-desenvolvedor.md` | Pronto | 16/11/2026 |
 | Sustentar | Deploy e infraestrutura | `sustentar/deploy-e-infraestrutura.md` | Pronto | 16/11/2026 |
 | Sustentar | Runbooks | `sustentar/runbooks.md` | Pronto | 16/11/2026 |
-| Sustentar | Monitoramento | `sustentar/monitoramento.md` | Parcial: sem alerta automático para a equipe | 13/11/2026 |
+| Sustentar | Monitoramento | `sustentar/monitoramento.md` | Parcial: sem alerta automático para a equipe | 16/11/2026 |
 | Sustentar | Matriz de suporte e SLA | `sustentar/suporte-e-sla.md` | Parcial: proposta, contatos na J6 (23 a 27/11/2026) | 13/11/2026 |
-| Sustentar | Backup e continuidade | `sustentar/backup-e-continuidade.md` | Parcial: backup automático ainda não existe (RNF09) | 13/11/2026 |
-| Sustentar | Segurança e base de conhecimento | `sustentar/seguranca-e-lgpd.md` | Pronto | 13/11/2026 |
-| Evoluir | Inventário de dependências (SBOM) | `evoluir/dependencias.md` | Gerado | 13/11/2026 |
+| Sustentar | Backup e continuidade | `sustentar/backup-e-continuidade.md` | Parcial: backup automático ainda não existe (RNF09) | 16/11/2026 |
+| Sustentar | Segurança e base de conhecimento | `sustentar/seguranca-e-lgpd.md` | Pronto | 16/11/2026 |
+| Evoluir | Inventário de dependências (SBOM) | `evoluir/dependencias.md` | Gerado | 16/11/2026 |
 | Evoluir | Roadmap e dívida técnica | `evoluir/roadmap-e-divida-tecnica.md` | Pronto | 16/11/2026 |
 | Evoluir | Changelog e versionamento | `evoluir/changelog.md` | Pronto | 16/11/2026 |
-| Evoluir | Guias de migração | `evoluir/guia-de-migracao.md` | Pronto | 13/11/2026 |
-| Evoluir | Matriz de compatibilidade | `evoluir/compatibilidade.md` | Pronto | 13/11/2026 |
+| Evoluir | Guias de migração | `evoluir/guia-de-migracao.md` | Pronto | 16/11/2026 |
+| Evoluir | Matriz de compatibilidade | `evoluir/compatibilidade.md` | Pronto | 16/11/2026 |
 | Evoluir | Testes de regressão | `evoluir/testes-de-regressao.md` | Pronto | 16/11/2026 |
 
 ## Critérios de aceite (slide 7)

@@ -24,6 +24,7 @@
 | Véspera de feriado nos críticos de fim de semana | Fora do escopo desta versão, declarado | L03 |
 | Antecedência do aviso de validade por categoria | Hoje é um valor só para todas | L01 |
 | Telas de usuários e de parâmetros | Hoje pelo terminal e pelo banco | L14 |
+| Operação de ajuste de estoque | Contagem que acha menos do que o sistema só se acerta como perda | L10 |
 
 ## Dívida técnica
 
@@ -33,4 +34,7 @@
 | Registrar numa versão 1.1 da Apostila IV o que o código precisou acrescentar sem mudar tabela: tabelas internas do Django (L09), valores de severidade (L11), origem `INVENTARIO` (J3) | Divergência de documentação | Versão 1.1 da apostila |
 | Sugestão de compra ignora o pedido mínimo do fornecedor | Pode sugerir pedido menor que o mínimo | Decisão do grupo (L15) |
 | Produto que o caixa escreve com outro nome fica pendente todo dia | Trabalho repetido para o sobrinho | Acertar o nome no cadastro; ou um campo de apelido (mudaria o modelo de dados, L05) |
+| Motivo da planilha recusada só aparece no log | A tela diz "Não foi lida" e quantas linhas; a linha e o motivo ficam em `logs/` | Mostrar na tela pediria coluna nova em `importacao_pdv` (modelo de dados) |
+| Dia importado sem a coluna Pagamento fica sem fechamento | O dia não entra de novo, então o caixa daquele dia não fecha | Garantir a coluna na exportação do caixa; ou a operação de reimportar um dia (decisão do grupo) |
+| Venda ligada ao produto errado não tem desfazer | A tela confirma antes, mas o erro confirmado só se acerta com entrada e perda | Depende da L10 |
 | Datas e números do relatório semanal digitados à mão | Risco de divergir do acompanhamento | Gerar do `docs/ACOMPANHAMENTO.md` |

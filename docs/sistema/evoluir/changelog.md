@@ -11,6 +11,31 @@ Enquanto a versão começar com 0, o sistema está em construção; a **1.0.0** 
 01/12/2026. Cada versão aponta o commit. A versão para quem usa, em linguagem da loja, está em
 `usar/novidades.md`.
 
+## 0.4.0 — 16/11/2026 — commit `f4104c2`
+Revisão geral do código contra a especificação (tarefa extra X1): 22 achados, todos corrigidos, um
+commit por item (`fa2866e` a `f4104c2`). Lista completa em `docs/REVISAO-FABLE.md`.
+
+- **Novo:** coluna "Quando acaba" na Consulta de estoque e campos `previsao` e `dias_ate_acabar` em
+  `/api/estoque/` (RF08, RN09). Campo "Dia do caixa" no Fechamento; `?data=` em
+  `/api/fechamentos/apurado/` e `data` opcional no registro. `rodada_diaria --se-faltar`.
+  Confirmação antes de ligar a venda pendente.
+- **Corrigido — importação:** vendas reconhecidas pelo dia, não pelo nome do arquivo; linha ilegível
+  recusa a planilha; um registro de importação por dia; total do cupom arredondado por item; venda a
+  mais descontada da carga seguinte.
+- **Corrigido — avisos:** silêncio do "Sim, pedir" limitado ao prazo de entrega; produto sem
+  fornecedor avisa ao acabar; produto sem venda não avisa; mensagem dividida entre avisos.
+- **Corrigido — caixa e cadastro:** "espécie" conta como dinheiro; venda sem forma de pagamento
+  recusa o fechamento; nome de produto comparado sem maiúscula nem acento; durabilidade até 3650
+  dias; número ambíguo ("1.000") recusado nas telas.
+- **Robustez:** trava do PostgreSQL contra duas rodadas juntas (ADR-013); API publicada sempre com
+  `DJANGO_DEBUG=false`; detalhes do banco criados pelo Django registrados (L28, ADR-014).
+- Banco: migração `estoque.0003_padrao_data_hora_now` (só o padrão de uma coluna em banco antigo;
+  nada a converter). Nenhuma coluna nova.
+- **Atenção ao atualizar:** gerar o crontab de novo (4 linhas). Ver `evoluir/guia-de-migracao.md`.
+- **Documentação (versão 1.1 do MDGS-DOC-001):** os documentos atualizados para esta versão; página
+  navegável e PDF gerados dos mesmos arquivos (ADR-015); a rastreabilidade passou a mostrar o RF14
+  como coberto (ele é a RN14; faltava a sigla no código).
+
 ## 0.3.1 — 13/11/2026 — commit `756a65f`
 - **Corrigido:** sugestão de compra de produto em UN ou PCT arredonda para o inteiro seguinte.
 - **Novo:** esteira de publicação `publicar.py` (A5). Documentação do sistema em `docs/sistema/`.

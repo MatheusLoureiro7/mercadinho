@@ -1,7 +1,25 @@
 # Novidades para quem usa (release notes)
 
-*Atualizado em 13/11/2026.* O que mudou no dia a dia de cada pessoa, da mais nova para a mais
+*Atualizado em 16/11/2026.* O que mudou no dia a dia de cada pessoa, da mais nova para a mais
 antiga. A lista técnica, com as mudanças no banco, está em `evoluir/changelog.md`.
+
+## Versão 0.4.0 — 16/11/2026
+Revisão geral do sistema antes da entrega: 22 pontos corrigidos. O que muda no dia a dia:
+
+- **Todos:** a **Consulta de estoque** ganhou a coluna **Quando acaba** ("Em 12 dias", "Amanhã",
+  "Acabou"); produto novo aparece como "Ainda aprendendo". Número digitado como "1.000" agora é
+  recusado com a pergunta "é mil ou um?", em vez de gravar 1 no lugar de mil.
+- **Esposa:** o **Fechamento de caixa** tem o campo **Dia do caixa**: dá para fechar o sábado na
+  segunda. "Espécie" passou a contar como dinheiro. Se a planilha do caixa vier sem a forma de
+  pagamento, o fechamento daquele dia é recusado, com a explicação.
+- **Sobrinho:** na **Importação de vendas**, a tela **confirma antes de ligar** a venda a um produto
+  (não tem como desfazer). A planilha pode ter qualquer nome e mais de um dia; o mesmo dia nunca entra
+  duas vezes. Uma linha fora do formato faz a planilha inteira não entrar: corrija e salve de novo.
+  Não dá mais para cadastrar "Arroz 5 kg" e "arroz 5 KG" como dois produtos.
+- **Sr. João:** depois do "Sim, pedir", se a mercadoria não chegar no prazo do fornecedor, o aviso
+  volta com "O pedido ainda não chegou". Produto sem fornecedor avisa quando acaba. Produto parado e
+  zerado não avisa mais todo dia. Mensagem grande não chega repetida.
+- **Equipe:** se o computador estava desligado às 03h00, a rodada acontece sozinha assim que ele liga.
 
 ## Versão 0.3.1 — 13/11/2026
 - **Sugestão de compra em número inteiro** para produto vendido por unidade ou pacote: o aviso dizia

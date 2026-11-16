@@ -177,6 +177,7 @@ resumo.**
 | ID | TAREFA | SITUAÇÃO | CONCLUÍDA EM | RESULTADO |
 |---|---|---|---|---|
 | ~~X1~~ | ~~Revisão geral do código contra a especificação~~ | ✅ Concluída | 16/11/2026 | `docs/REVISAO-FABLE.md` |
+| ~~X2~~ | ~~Documentação do sistema atualizada e redesenhada (página navegável e PDF)~~ | ✅ Concluída | 16/11/2026 | `docs/sistema/DOCUMENTACAO-DO-SISTEMA.html` e `.pdf` |
 
 ---
 
@@ -186,6 +187,32 @@ O que foi feito em cada dia, do mais recente para o mais antigo. Cada linha apon
 cronograma, a regra de negócio (quando houver) e o commit.
 
 ### 16/11/2026
+
+- **X2 — Documentação do sistema atualizada e redesenhada (tarefa extra, fora do cronograma).**
+  **Conteúdo:** depois das 22 correções da revisão, treze dos documentos escritos à mão ainda
+  descreviam o sistema de antes. Foram atualizados: novidades e changelog (nova **versão 0.4.0** do
+  sistema), guia de migração (como passar da 0.3.1 para a 0.4.0: trocar o crontab e conferir a coluna
+  Pagamento), arquitetura (o que a rodada garante: não duplica, não perde o dia, não grava pela
+  metade), monitoramento (as mensagens novas do registro), testes de regressão (1.144 testes),
+  treinamento, segurança, backup, compatibilidade, roadmap e guia do desenvolvedor. A tabela-resumo
+  dos ADRs estava sem as decisões 013 e 014 (esquecimento das correções da manhã) e foi completada.
+  **Erro antigo corrigido:** a rastreabilidade dizia que o RF14 (controle de acesso por perfil) "não
+  estava coberto". Estava: é a RN14, com 19 testes com o nome da regra; o documento é gerado procurando a sigla no
+  código, e a sigla RF14 não aparecia em lugar nenhum.
+  **Desenho:** a página `DOCUMENTACAO-DO-SISTEMA.html` era um texto corrido, sem navegação, e com o
+  caminho das fontes preso ao computador de quem gerou. Agora é uma página só, sem internet e sem
+  biblioteca, com: capa com os números tirados dos próprios documentos (regras, tabelas, endereços
+  da API, testes); mapa dos 24 documentos pelas quatro perguntas dos slides, com a situação de cada
+  um; menu lateral com procura (tecla "/"); tema claro e escuro; e **os códigos citados no texto
+  viram link** — de "RN11" chega-se à linha da rastreabilidade com o código e os testes, de
+  "ADR-013" à decisão. Mesma identidade do painel (cores e fontes). O PDF sai da mesma página, com
+  capa, rodapé numerado e marcadores; documento MDGS-DOC-001 **versão 1.1**. Registrado como ADR-015.
+  **Conferência:** capturas no computador (claro e escuro) e no celular, e páginas reais do PDF.
+  Foi assim que apareceram, e foram corrigidos, caminhos de arquivo quebrados letra a letra na
+  rastreabilidade impressa e um desenho mais largo que a folha.
+  **Testes:** 7 novos (a página não depende de caminho local nem de internet, todo link interno tem
+  destino, os 24 documentos estão no menu com a situação do índice, os códigos viram link), escritos
+  antes do código; **1144 testes no total, todos aprovados**. Não muda as 51 tarefas, as 378 horas nem as porcentagens do resumo.
 
 - **X1, item 22 — Comentários desatualizados (correção da revisão, gravidade baixa).**
   **O problema:** dois textos explicativos no código estavam errados: o da rodada diária não citava

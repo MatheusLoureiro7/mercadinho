@@ -1,5 +1,5 @@
 """
-Tarefa A4 — autenticação e os três perfis de acesso (RN14).
+Tarefa A4 — autenticação e os três perfis de acesso (RN14, requisito RF14).
 
 - Login pela tela de Login: devolve um token assinado (decisão da L09) e o menu do papel.
 - RN14: o papel é verificado na camada de autenticação, ANTES de qualquer operação e antes de

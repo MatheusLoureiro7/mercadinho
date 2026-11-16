@@ -1,6 +1,6 @@
 # Segurança e LGPD
 
-*Atualizado em 13/11/2026.* Base: RNF12 (segurança básica), RN14 (perfis) e a Lei Geral de Proteção
+*Atualizado em 16/11/2026.* Base: RNF12 (segurança básica), RN14 (perfis) e a Lei Geral de Proteção
 de Dados (Lei 13.709/2018).
 
 ## Acessos
@@ -14,6 +14,8 @@ de Dados (Lei 13.709/2018).
 | Banco | Só aceita conexão da própria máquina (127.0.0.1); sem acesso externo | `docker-compose.yml` |
 | Webhook do Telegram | Só aceita quem traz o segredo combinado, comparado em tempo constante; só grava resposta do chat do dono | `comum/permissoes.py`, `alertas/respostas.py` |
 | Segredos | Só no `.env`, fora do git | ver deploy |
+| Página técnica de erro | Nunca aparece no sistema publicado: o `publicar.py` sobe a API com `DJANGO_DEBUG=false`, qualquer que seja o `.env` | `publicar.py` |
+| Endereço ou número inválido | Responde erro de validação ou "não encontrado" em JSON, nunca erro interno | `comum/erros.py` |
 
 ## Dados pessoais (LGPD)
 
@@ -29,5 +31,6 @@ usados para operar a loja (base legal: execução do trabalho e legítimo intere
 é desativado, não apagado, porque o rastro das operações precisa continuar (RN15).
 
 ## Base de conhecimento — incidentes recorrentes
-Nenhum incidente de segurança registrado até 13/11/2026. Os problemas de operação conhecidos estão
+Nenhum incidente de segurança registrado até 16/11/2026. A revisão X1 (16/11/2026) encontrou e
+corrigiu um ponto de exposição: o modelo de configuração vinha com o modo de depuração ligado. Os problemas de operação conhecidos estão
 nos runbooks (`sustentar/runbooks.md`); as dúvidas de uso, na FAQ.

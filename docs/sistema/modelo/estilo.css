@@ -1,0 +1,306 @@
+/*
+ * Documentação do Sistema — estilo da página e do PDF (X2, 16/11/2026).
+ * Entra inteiro dentro do HTML gerado por docs/sistema/gerar.py: a página é um arquivo só.
+ *
+ * Mesma identidade do painel: verde da loja, amarelo só para marcar o que sai do código e onde a
+ * pessoa está, Unbounded nos títulos e IBM Plex Sans no texto (frontend/fontes). Tema claro ou
+ * escuro conforme o sistema, com botão para trocar; o PDF é sempre claro. Sem biblioteca.
+ */
+
+@font-face { font-family: "Plex"; font-weight: 400; font-display: swap; src: url("../../frontend/fontes/ibm-plex-sans-400.woff2") format("woff2"); }
+@font-face { font-family: "Plex"; font-weight: 500; font-display: swap; src: url("../../frontend/fontes/ibm-plex-sans-500.woff2") format("woff2"); }
+@font-face { font-family: "Plex"; font-weight: 600; font-display: swap; src: url("../../frontend/fontes/ibm-plex-sans-600.woff2") format("woff2"); }
+@font-face { font-family: "Unbounded"; font-weight: 500; font-display: swap; src: url("../../frontend/fontes/unbounded-500.woff2") format("woff2"); }
+@font-face { font-family: "Unbounded"; font-weight: 600; font-display: swap; src: url("../../frontend/fontes/unbounded-600.woff2") format("woff2"); }
+
+:root {
+  --fundo: #f6f7f4;
+  --superficie: #ffffff;
+  --superficie-2: #eef1ec;
+  --tinta: #0f1f18;
+  --tinta-suave: #4a5a52;
+  --linha: #dbe1da;
+  --marca: #0a6847;
+  --amarelo: #ffd43b;
+  --sobre-amarelo: #2a2200;
+  --aviso: #8a4b00;
+  --aviso-fundo: #fff3d1;
+  --foco: #1d4ed8;
+
+  --texto: "Plex", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --titulo: "Unbounded", "Plex", system-ui, sans-serif;
+  --mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+  --menu: 300px;
+  --medida: 74ch;
+}
+
+:root[data-tema="escuro"] {
+  --fundo: #0f1f19;
+  --superficie: #15281f;
+  --superficie-2: #1b3228;
+  --tinta: #e7efe9;
+  --tinta-suave: #a3b6ab;
+  --linha: #284035;
+  --marca: #62d4a4;
+  --aviso: #ffcf70;
+  --aviso-fundo: #3a2c0c;
+  --foco: #9db9ff;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-tema="claro"]) {
+    --fundo: #0f1f19;
+    --superficie: #15281f;
+    --superficie-2: #1b3228;
+    --tinta: #e7efe9;
+    --tinta-suave: #a3b6ab;
+    --linha: #284035;
+    --marca: #62d4a4;
+    --aviso: #ffcf70;
+    --aviso-fundo: #3a2c0c;
+    --foco: #9db9ff;
+  }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 24px; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+body {
+  margin: 0;
+  background: var(--fundo);
+  color: var(--tinta);
+  font: 400 1rem/1.6 var(--texto);
+  -webkit-text-size-adjust: 100%;
+}
+a { color: var(--marca); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 2px solid var(--foco); outline-offset: 2px; border-radius: 3px; }
+[hidden] { display: none !important; }
+.oculto { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+.pular { position: absolute; left: -999px; top: 8px; z-index: 30; padding: 8px 12px; background: var(--amarelo); color: var(--sobre-amarelo); font-weight: 600; }
+.pular:focus { left: 8px; }
+
+/* ------------------------------------------------------------------ Menu lateral */
+
+.lateral {
+  position: fixed; inset: 0 auto 0 0; width: var(--menu);
+  display: flex; flex-direction: column;
+  background: var(--superficie); border-right: 1px solid var(--linha);
+}
+.lateral__topo { padding: 20px 20px 12px; border-bottom: 1px solid var(--linha); }
+.lateral__nome { font: 600 0.95rem/1.25 var(--titulo); margin: 0 0 4px; }
+.lateral__nome a { color: inherit; text-decoration: none; }
+.lateral__versao { margin: 0 0 14px; font-size: 0.8125rem; color: var(--tinta-suave); }
+.busca { position: relative; }
+.busca input {
+  width: 100%; height: 40px; padding: 0 40px 0 12px;
+  font: inherit; font-size: 0.9375rem; color: var(--tinta);
+  background: var(--fundo); border: 1px solid var(--tinta-suave); border-radius: 8px;
+}
+.busca kbd {
+  position: absolute; right: 10px; top: 9px; padding: 0 7px; pointer-events: none;
+  font: 0.75rem/20px var(--mono); color: var(--tinta-suave);
+  border: 1px solid var(--linha); border-radius: 5px; background: var(--superficie);
+}
+.busca__resultado { margin: 8px 0 0; min-height: 1.2em; font-size: 0.8125rem; color: var(--tinta-suave); }
+
+#menu { flex: 1; overflow-y: auto; padding: 8px 12px 24px; overscroll-behavior: contain; }
+.menu__pilar { margin: 16px 8px 4px; font: 600 0.8125rem/1.3 var(--titulo); }
+.menu__pilar a { color: var(--tinta); text-decoration: none; }
+.menu__lista, .menu__secoes { list-style: none; margin: 0; padding: 0; }
+.menu__doc {
+  display: flex; align-items: baseline; gap: 8px; padding: 6px 8px;
+  border-radius: 6px; border-left: 3px solid transparent;
+  color: var(--tinta); text-decoration: none; font-size: 0.9375rem; line-height: 1.35;
+}
+.menu__doc:hover { background: var(--superficie-2); }
+.menu__doc[aria-current="true"] { border-left-color: var(--amarelo); background: var(--superficie-2); font-weight: 600; }
+.menu__atalho { display: block; padding: 6px 8px 6px 11px; border-radius: 6px; color: var(--tinta-suave); text-decoration: none; font-size: 0.9375rem; }
+.menu__atalho:hover { background: var(--superficie-2); color: var(--tinta); }
+.menu__secoes { display: none; margin: 2px 0 6px 19px; border-left: 1px solid var(--linha); }
+.menu__doc[aria-current="true"] + .menu__secoes, .buscando .menu__secoes { display: block; }
+.menu__secoes a { display: block; padding: 3px 10px; color: var(--tinta-suave); text-decoration: none; font-size: 0.8438rem; line-height: 1.35; overflow-wrap: anywhere; }
+.menu__secoes a:hover { color: var(--tinta); }
+
+.marca { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--marca); transform: translateY(-1px); }
+.marca--parcial { background: none; border: 2px solid var(--aviso); }
+.marca--gerado { border-radius: 2px; background: var(--amarelo); outline: 1px solid var(--sobre-amarelo); }
+
+.lateral__pe { display: flex; gap: 8px; padding: 12px 20px; border-top: 1px solid var(--linha); }
+.botao {
+  min-height: 36px; padding: 0 12px; cursor: pointer;
+  font: 500 0.875rem var(--texto); color: var(--tinta);
+  background: var(--superficie); border: 1px solid var(--tinta-suave); border-radius: 8px;
+}
+.botao:hover { background: var(--superficie-2); }
+.abrir-menu { display: none; }
+
+/* ------------------------------------------------------------------ Conteúdo */
+
+main { margin-left: var(--menu); padding: 0 clamp(20px, 5vw, 72px) 96px; }
+main > * { max-width: 1120px; }
+
+.capa { padding: clamp(40px, 8vh, 96px) 0 40px; border-bottom: 1px solid var(--linha); }
+.capa__grupo { margin: 0 0 20px; color: var(--tinta-suave); }
+.capa h1 { margin: 0; font: 600 clamp(2rem, 4.6vw, 3.5rem)/1.08 var(--titulo); letter-spacing: -0.02em; text-wrap: balance; }
+.capa__sistema { margin: 16px 0 0; max-width: 60ch; font-size: 1.1875rem; color: var(--tinta-suave); text-wrap: balance; }
+
+/* A ficha: os números saem dos próprios documentos na hora de gerar. */
+.ficha { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0; margin: 40px 0 0; padding: 0; border-top: 1px solid var(--linha); }
+.ficha div { padding: 14px 16px 14px 0; border-bottom: 1px solid var(--linha); }
+.ficha dt { font-size: 0.8125rem; color: var(--tinta-suave); }
+.ficha dd { margin: 2px 0 0; font: 500 1.0625rem/1.3 var(--mono); font-variant-numeric: tabular-nums; }
+
+/* O mapa: quatro perguntas, seis documentos cada. É a estrutura dos slides, e é o índice. */
+#mapa { padding: 40px 0 8px; }
+#mapa h2 { margin: 0 0 4px; border: 0; padding: 0; font: 600 1.25rem/1.3 var(--titulo); }
+.mapa__legenda { display: flex; flex-wrap: wrap; gap: 6px 20px; margin: 0 0 20px; padding: 0; list-style: none; font-size: 0.875rem; color: var(--tinta-suave); }
+.mapa__legenda li { display: flex; align-items: baseline; gap: 8px; }
+.mapa { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0 24px; }
+.mapa__pilar { border-top: 3px solid var(--tinta); padding-top: 12px; }
+.mapa__pilar h3 { margin: 0; font: 600 1.125rem/1.2 var(--titulo); }
+.mapa__pilar h3 a { color: inherit; text-decoration: none; }
+.mapa__pergunta { margin: 6px 0 12px; min-height: 3.2em; font-size: 0.9063rem; line-height: 1.4; color: var(--tinta-suave); }
+.mapa__pilar ol { list-style: none; margin: 0; padding: 0; }
+.mapa__doc { display: block; padding: 9px 0; border-top: 1px solid var(--linha); color: var(--tinta); text-decoration: none; line-height: 1.35; }
+.mapa__doc:hover .mapa__titulo { text-decoration: underline; text-underline-offset: 3px; }
+.mapa__titulo { display: block; font-weight: 500; }
+.mapa__situacao { display: flex; align-items: baseline; gap: 7px; margin-top: 2px; font-size: 0.8125rem; color: var(--tinta-suave); }
+
+.pilar { padding-top: 72px; }
+.pilar__titulo { margin: 0; font: 600 clamp(1.75rem, 3.4vw, 2.5rem)/1.1 var(--titulo); letter-spacing: -0.015em; }
+.pilar__pergunta { margin: 10px 0 0; max-width: var(--medida); font-size: 1.125rem; color: var(--tinta-suave); }
+
+.doc { padding-top: 56px; }
+.doc__cabeca { padding-bottom: 14px; border-bottom: 1px solid var(--linha); }
+.doc__titulo { margin: 0; font: 600 1.5rem/1.2 var(--titulo); letter-spacing: -0.01em; }
+.doc__meta { display: flex; flex-wrap: wrap; gap: 4px 24px; margin: 12px 0 0; font-size: 0.875rem; }
+.doc__meta div { display: flex; gap: 8px; align-items: baseline; }
+.doc__meta dt { color: var(--tinta-suave); }
+.doc__meta dd { margin: 0; }
+.doc__meta code { background: none; padding: 0; }
+.selo { display: inline-flex; align-items: baseline; gap: 7px; }
+.selo--gerado { padding: 0 7px; border-radius: 4px; background: var(--amarelo); color: var(--sobre-amarelo); font-weight: 500; }
+.selo--parcial { color: var(--aviso); font-weight: 500; }
+
+/* ------------------------------------------------------------------ Texto */
+
+.texto > p, .texto > ul, .texto > ol, .texto > blockquote, .texto > h3, .texto > h4, .texto > h5, .texto > h6 { max-width: var(--medida); }
+.texto h4 { margin: 40px 0 10px; font: 600 1.25rem/1.3 var(--texto); }
+.texto h5 { margin: 28px 0 8px; font: 600 1.0625rem/1.35 var(--texto); }
+.texto h6 { margin: 20px 0 6px; font: 600 1rem/1.4 var(--texto); }
+.ancora { margin-left: 8px; color: var(--tinta-suave); text-decoration: none; opacity: 0; font-weight: 400; }
+.texto h4:hover .ancora, .texto h5:hover .ancora, .ancora:focus-visible { opacity: 1; }
+.texto p { margin: 0 0 14px; }
+.texto ul, .texto ol { margin: 0 0 14px; padding-left: 22px; }
+.texto li { margin-bottom: 6px; }
+.texto li::marker { color: var(--tinta-suave); }
+.atualizado { color: var(--tinta-suave); }
+
+code { font: 0.875em var(--mono); background: var(--superficie-2); padding: 1px 4px; border-radius: 4px; overflow-wrap: break-word; }
+a > code { color: inherit; }
+.ref { font-weight: 500; white-space: nowrap; }
+
+.codigo { position: relative; margin: 0 0 18px; }
+pre {
+  margin: 0; padding: 14px 16px; overflow-x: auto;
+  font: 0.8438rem/1.55 var(--mono); tab-size: 4;
+  background: var(--superficie); border: 1px solid var(--linha); border-left: 3px solid var(--tinta); border-radius: 0 6px 6px 0;
+}
+.copiar { position: absolute; top: 8px; right: 8px; min-height: 28px; padding: 0 9px; font-size: 0.75rem; opacity: 0; }
+.codigo:hover .copiar, .copiar:focus-visible { opacity: 1; }
+
+blockquote { margin: 0 0 18px; padding: 10px 14px; border-left: 3px solid var(--tinta-suave); background: var(--superficie-2); border-radius: 0 6px 6px 0; }
+blockquote.do-codigo { border-left-color: var(--amarelo); font-size: 0.9063rem; }
+blockquote.do-codigo::before { content: "Gerado do código"; display: inline-block; margin-right: 10px; padding: 0 7px; border-radius: 4px; background: var(--amarelo); color: var(--sobre-amarelo); font-weight: 600; font-size: 0.8125rem; }
+
+.tabela { margin: 0 0 22px; overflow-x: auto; border: 1px solid var(--linha); border-radius: 8px; background: var(--superficie); }
+table { width: 100%; border-collapse: collapse; font-size: 0.875rem; line-height: 1.45; }
+th, td { padding: 9px 12px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--linha); }
+thead th { font-weight: 600; color: var(--tinta-suave); white-space: nowrap; border-bottom: 1px solid var(--tinta-suave); background: var(--superficie-2); }
+tbody tr:last-child td { border-bottom: 0; }
+tbody tr:target { background: var(--aviso-fundo); box-shadow: inset 3px 0 0 var(--amarelo); }
+td:first-child { font-weight: 500; }
+/* Tabela larga (rastreabilidade, dicionário): o caminho do arquivo não quebra; a tabela rola de lado. */
+.tabela--larga td { min-width: 9ch; }
+.tabela--larga td code { white-space: nowrap; }
+.tabela--larga td:nth-child(2) { min-width: 22ch; }
+:target { scroll-margin-top: 24px; }
+h4:target, h5:target, .doc:target .doc__titulo { box-shadow: -12px 0 0 var(--fundo), -15px 0 0 var(--amarelo); }
+
+.pe { margin-top: 96px; padding-top: 16px; border-top: 1px solid var(--linha); font-size: 0.875rem; color: var(--tinta-suave); }
+
+/* ------------------------------------------------------------------ Telas estreitas */
+
+@media (max-width: 1100px) {
+  .mapa { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 24px; }
+  .mapa__pergunta { min-height: 0; }
+}
+@media (max-width: 860px) {
+  .lateral { transform: translateX(-100%); width: min(88vw, 340px); z-index: 20; box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0); transition: transform 0.18s ease; }
+  .menu-aberto .lateral { transform: none; box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.45); }
+  @media (prefers-reduced-motion: reduce) { .lateral { transition: none; } }
+  main { margin-left: 0; padding-top: 56px; }
+  .abrir-menu { display: inline-flex; align-items: center; position: fixed; top: 10px; left: 12px; z-index: 10; min-height: 40px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18); }
+  .busca kbd { display: none; }
+}
+@media (max-width: 560px) {
+  .mapa { grid-template-columns: 1fr; }
+}
+
+/* ------------------------------------------------------------------ Impressão (o PDF) */
+
+@page { size: A4; margin: 16mm 15mm 18mm; }
+@media print {
+  :root, :root[data-tema="escuro"], :root:not([data-tema="claro"]) {
+    --fundo: #fff; --superficie: #fff; --superficie-2: #f1f3ef; --tinta: #0f1f18; --tinta-suave: #4a5a52;
+    --linha: #cfd6ce; --marca: #0a6847; --aviso: #8a4b00; --aviso-fundo: #fff3d1;
+  }
+  html { font-size: 9.6pt; }
+  body { background: #fff; line-height: 1.45; }
+  .lateral, .abrir-menu, .copiar, .ancora, .pular, .pe { display: none !important; }
+  main { margin: 0; padding: 0; }
+  main > * { max-width: none; }
+  a { color: inherit; text-decoration: none; }
+  .texto a.ref, .texto a:has(> code) { color: var(--marca); }
+
+  .capa { min-height: 245mm; display: flex; flex-direction: column; padding: 30mm 0 0; border: 0; break-after: page; }
+  .capa h1 { font-size: 34pt; }
+  .capa__sistema { font-size: 13pt; }
+  .ficha { margin-top: auto; grid-template-columns: repeat(4, 1fr); }
+  .ficha dd { font-size: 11pt; }
+
+  #mapa { padding: 0; }
+  #sobre { break-before: auto; padding-top: 12mm; }
+  #sobre .pilar__titulo { font-size: 15pt; }
+  .mapa { grid-template-columns: repeat(4, 1fr); gap: 0 5mm; }
+  .mapa__pergunta { min-height: 4.4em; }
+
+  .pilar { padding-top: 0; break-before: page; }
+  .pilar__titulo { font-size: 24pt; }
+  .doc { padding-top: 9mm; }
+  .doc__cabeca { break-after: avoid; }
+  .doc__titulo { font-size: 15pt; }
+  .texto > * { max-width: none !important; }
+  .texto h4 { margin-top: 6mm; font-size: 11.5pt; }
+  .texto h5 { font-size: 10.2pt; }
+  h2, h3, h4, h5, h6 { break-after: avoid; }
+
+  .tabela { overflow: visible; border-radius: 0; border-width: 0.5pt; }
+  table { font-size: 8.2pt; }
+  th, td { padding: 1.3mm 1.8mm; border-bottom-width: 0.5pt; }
+  thead { display: table-header-group; }
+  thead th { white-space: normal; }
+  tr, .codigo, blockquote { break-inside: avoid; }
+  pre { white-space: pre-wrap; font-size: 7.8pt; border-width: 0.5pt; border-left-width: 2pt; }
+  /* Caminho de arquivo inteiro na linha: a coluna dele fica com a largura que precisa. */
+  code { font-size: 0.86em; }
+  td { overflow-wrap: break-word; }
+  td code { overflow-wrap: break-word; }
+  .tabela--larga td code { white-space: normal; }
+  .tabela--larga td:nth-child(2) { min-width: 26mm; }
+  .tabela--rastro td:has(> code) { width: 47%; }
+  .tabela--rastro td:last-child { font-size: 7.6pt; }
+  .selo--gerado, blockquote.do-codigo::before, .marca--gerado, .marca { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
