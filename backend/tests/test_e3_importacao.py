@@ -14,6 +14,7 @@ Losangos da operação 04, pelo "sim" e pelo "não":
     lote vencido na data?       sim → *_rn16_*_nao_sai_na_venda        não → *_rn16_*_ainda_valia_*
 """
 
+import os
 from datetime import date, datetime, time, timedelta
 from decimal import Decimal
 from io import StringIO
@@ -327,6 +328,42 @@ def test_e3_o_mesmo_arquivo_nao_e_importado_duas_vezes(tmp_path, feijao):
     assert Venda.objects.count() == 1 and saldo_do_produto(feijao) == Decimal("9")
 
 
+def test_e3_mesmas_vendas_com_outro_nome_de_arquivo_nao_entram_de_novo(tmp_path, feijao):
+    """X1, item 1: o que identifica as vendas é o dia delas, não o nome do arquivo."""
+    _lote(feijao, "10", None)
+    importar_planilha(_planilha(tmp_path, [_linha(1, "Feijão carioca 1 kg", 1, 8.99)]))
+    copia = _planilha(tmp_path, [_linha(1, "Feijão carioca 1 kg", 1, 8.99)], nome="copia.xlsx")
+    with pytest.raises(ArquivoJaImportado):
+        importar_planilha(copia)
+    assert Venda.objects.count() == 1 and saldo_do_produto(feijao) == Decimal("9")
+    assert ImportacaoPdv.objects.count() == 1  # a cópia recusada não deixa registro
+
+
+def test_e3_mesmo_nome_de_arquivo_com_vendas_de_outro_dia_entra(tmp_path, feijao):
+    _lote(feijao, "10", None)
+    importar_planilha(_planilha(tmp_path, [_linha(1, "Feijão carioca 1 kg", 1, 8.99)], nome="vendas.xlsx"))
+    dia_seguinte = _linha(7, "Feijão carioca 1 kg", 2, 8.99, dia=DIA + timedelta(days=1))
+    importacao = importar_planilha(_planilha(tmp_path, [dia_seguinte], nome="vendas.xlsx"))
+    assert importacao.status == "OK" and importacao.data_referencia == DIA + timedelta(days=1)
+    assert Venda.objects.count() == 2 and saldo_do_produto(feijao) == Decimal("7")
+
+
+def test_e3_planilha_com_um_dia_ja_importado_e_um_novo_so_traz_o_dia_novo(tmp_path, feijao):
+    _lote(feijao, "10", None)
+    importar_planilha(_planilha(tmp_path, [_linha(1, "Feijão carioca 1 kg", 1, 8.99)]))
+    caminho = _planilha(
+        tmp_path,
+        [
+            _linha(1, "Feijão carioca 1 kg", 1, 8.99),
+            _linha(7, "Feijão carioca 1 kg", 2, 8.99, dia=DIA + timedelta(days=1)),
+        ],
+        nome="vendas-da-semana.xlsx",
+    )
+    importacao = importar_planilha(caminho)
+    assert (importacao.status, importacao.linhas_lidas) == ("OK", 1)
+    assert Venda.objects.count() == 2 and saldo_do_produto(feijao) == Decimal("7")
+
+
 def test_e3_falha_no_meio_desfaz_tudo_e_a_importacao_fica_com_erro(tmp_path, feijao, monkeypatch):
     _lote(feijao, "10", None)
     caminho = _planilha(
@@ -366,7 +403,11 @@ def test_e3_planilha_de_exemplo_com_os_dados_de_demonstracao(db):
 def test_e3_comando_importa_as_planilhas_novas_da_pasta(tmp_path, feijao, settings):
     _lote(feijao, "10", None)
     settings.PASTA_VENDAS_CAIXA = str(tmp_path)
-    _planilha(tmp_path, [_linha(1, "Feijão carioca 1 kg", 1, 8.99)], nome="vendas-2026-11-04.xlsx")
+    _planilha(
+        tmp_path,
+        [_linha(1, "Feijão carioca 1 kg", 1, 8.99, dia=DIA - timedelta(days=1))],
+        nome="vendas-2026-11-04.xlsx",
+    )
     _planilha(tmp_path, [_linha(2, "Feijão carioca 1 kg", 2, 8.99)], nome="vendas-2026-11-05.xlsx")
     (tmp_path / "anotacoes.txt").write_text("não é planilha")
     saida = StringIO()
@@ -380,6 +421,38 @@ def test_e3_comando_importa_as_planilhas_novas_da_pasta(tmp_path, feijao, settin
     ]
     assert Venda.objects.count() == 2
     assert "Nenhuma planilha nova" in saida.getvalue()
+
+
+def test_e3_comando_importa_a_planilha_regravada_com_o_mesmo_nome(tmp_path, feijao, settings):
+    """X1, item 1: o caixa que grava sempre vendas.xlsx por cima do arquivo anterior."""
+    _lote(feijao, "10", None)
+    settings.PASTA_VENDAS_CAIXA = str(tmp_path)
+    _planilha(tmp_path, [_linha(1, "Feijão carioca 1 kg", 1, 8.99)], nome="vendas.xlsx")
+    call_command("importar_vendas", stdout=StringIO())
+
+    caminho = _planilha(
+        tmp_path, [_linha(7, "Feijão carioca 1 kg", 2, 8.99, dia=DIA + timedelta(days=1))], nome="vendas.xlsx"
+    )
+    depois = ImportacaoPdv.objects.get().processado_em.timestamp() + 60
+    os.utime(caminho, (depois, depois))
+    call_command("importar_vendas", stdout=StringIO())
+
+    assert ImportacaoPdv.objects.count() == 2
+    assert saldo_do_produto(feijao) == Decimal("7")
+
+
+def test_e3_comando_avisa_e_segue_quando_a_planilha_repete_vendas_ja_importadas(tmp_path, feijao, settings):
+    _lote(feijao, "10", None)
+    settings.PASTA_VENDAS_CAIXA = str(tmp_path)
+    _planilha(tmp_path, [_linha(1, "Feijão carioca 1 kg", 1, 8.99)], nome="vendas-2026-11-05.xlsx")
+    call_command("importar_vendas", stdout=StringIO())
+    _planilha(tmp_path, [_linha(1, "Feijão carioca 1 kg", 1, 8.99)], nome="copia.xlsx")
+    saida = StringIO()
+
+    call_command("importar_vendas", stdout=saida)
+
+    assert "copia.xlsx: as vendas desta planilha já tinham entrado" in saida.getvalue()
+    assert ImportacaoPdv.objects.count() == 1 and saldo_do_produto(feijao) == Decimal("9")
 
 
 def test_e3_comando_sem_pasta_configurada_avisa(db, settings):

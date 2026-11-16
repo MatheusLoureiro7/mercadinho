@@ -1,6 +1,6 @@
 # Manual do usuário
 
-*Atualizado em 13/11/2026.* Quem lê: o Sr. João, a esposa e o sobrinho. Base: Apostila II (as 10
+*Atualizado em 16/11/2026.* Quem lê: o Sr. João, a esposa e o sobrinho. Base: Apostila II (as 10
 telas) e RN14 (três perfis).
 
 O sistema controla o que entra, o que sai e o que está vencendo, e avisa o Sr. João no celular
@@ -62,6 +62,8 @@ rodada das 03h00 importa. Nesta tela:
   procure e toque em **Ligar a este produto**. A venda sai do estoque no dia em que aconteceu.
 - **Planilhas lidas** — as últimas 30, com a situação: *Lida*, *Lida, com vendas a conferir* ou
   *Não foi lida* (essa é tentada de novo na madrugada seguinte).
+- O nome do arquivo não importa: o sistema reconhece as vendas pelo dia. Um dia que já entrou não
+  entra de novo, nem salvo com outro nome; e o caixa pode gravar sempre por cima do mesmo arquivo.
 - Para a mesma venda não ficar pendente todo dia, deixe o nome do produto no cadastro igual ao do caixa.
 
 ## Tela de todos

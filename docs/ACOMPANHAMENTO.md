@@ -187,6 +187,21 @@ cronograma, a regra de negócio (quando houver) e o commit.
 
 ### 16/11/2026
 
+- **X1, item 1 — Planilha repetida ou regravada (correção da revisão, gravidade alta).**
+  **O problema:** para saber se uma planilha do caixa já tinha entrado, o sistema olhava só o nome
+  do arquivo. Uma cópia com outro nome (`copia.xlsx`) entrava de novo e baixava o estoque em dobro;
+  e, se o caixa gravasse sempre `vendas.xlsx` por cima, a partir do segundo dia as vendas não
+  entravam mais, sem nenhum aviso.
+  **Decisão do grupo (16/11/2026):** as vendas são reconhecidas **pelo dia**, não pelo nome do
+  arquivo. Linha de um dia que já entrou é ignorada; se a planilha inteira for de dias que já
+  entraram, ela é recusada sem deixar registro, e a rodada avisa "as vendas desta planilha já
+  tinham entrado". O arquivo com o nome de um já lido volta a ser lido se foi regravado depois da
+  última leitura. Registrado também em `docs/FORMATO-PLANILHA-CAIXA.md`. Nenhuma tabela mudou.
+  **Testes:** 5 novos (cópia com outro nome, mesmo nome com dia novo, planilha com um dia antigo e
+  um novo, e os dois casos no comando da madrugada). Os 5 falharam antes da correção e passam
+  depois; **1058 testes no total, todos aprovados**. Manual do usuário, FAQ e runbook R2
+  atualizados.
+
 - **J1 — Testes automatizados de todas as regras (concluída).** A J1 vinha em andamento desde
   09/10: cada regra ganhou teste junto com a sua tarefa, e a J1 é o fechamento. Hoje:
   - **As 16 regras de negócio estão construídas, testadas e aprovadas**, inclusive as da previsão
@@ -234,7 +249,7 @@ cronograma, a regra de negócio (quando houver) e o commit.
   21/11/2026)**. Os de gravidade média e baixa ficam para depois, na ordem da lista.
   Não muda as 51 tarefas, as 378 horas nem as porcentagens do resumo.
 
-**Próxima tarefa:** correção dos itens 1 a 4 da revisão (`docs/REVISAO-FABLE.md`) e, em seguida,
+**Próxima tarefa:** correção dos itens 2 a 4 da revisão (`docs/REVISAO-FABLE.md`) e, em seguida,
 J4 — teste em movimento real num sábado cheio (simulado, 21/11/2026). Depois, J5 (treinamento,
 23/11) e J6 (implantação, 23 a 27/11).
 

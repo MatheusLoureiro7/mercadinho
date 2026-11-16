@@ -43,6 +43,10 @@ ordem das colunas não importa.
   de revisão na tela de importação (E5), e **não trava as demais** (operação 04, passo 6).
 - **Baixa no estoque:** só as linhas que casaram geram `movimentacao` tipo `VENDA`, saindo do lote
   de validade mais próxima (RN01, RN02).
+- **Importar duas vezes — decisão do grupo, 16/11/2026 (revisão X1, item 1):** as vendas são
+  reconhecidas **pelo dia**, não pelo nome do arquivo. Linha de um dia que já entrou é ignorada; se
+  a planilha inteira for de dias que já entraram, ela é recusada e não deixa registro. O caixa pode
+  gravar sempre o mesmo nome (`vendas.xlsx`): o arquivo regravado depois da última leitura é lido.
 - **Situação da importação:** `OK` se todas as linhas foram lidas e casaram; `PARCIAL` se alguma
   ficou pendente ou com erro; `ERRO` se o arquivo não pôde ser lido (não é `.xlsx` ou falta coluna
   obrigatória).

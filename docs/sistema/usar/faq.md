@@ -1,12 +1,17 @@
 # Perguntas frequentes
 
-*Atualizado em 13/11/2026.* Dúvidas e erros comuns, com o que fazer. Problema técnico (sistema fora
+*Atualizado em 16/11/2026.* Dúvidas e erros comuns, com o que fazer. Problema técnico (sistema fora
 do ar, aviso que não sai) está nos runbooks: `sustentar/runbooks.md`.
 
 **A venda de ontem não apareceu.**
 As vendas entram de madrugada, às 03h00, a partir da planilha do caixa salva na pasta combinada.
 Veja em **Importação de vendas → Planilhas lidas**: se a planilha "Não foi lida", confira se é do
 Excel (.xlsx) e tem as colunas combinadas; ela é tentada de novo na madrugada seguinte.
+
+**Salvei a planilha do mesmo dia duas vezes, com nomes diferentes. A venda vai contar em dobro?**
+Não. O sistema reconhece as vendas pelo dia, não pelo nome do arquivo: o dia que já entrou é
+ignorado na cópia. Na madrugada, o registro da rodada diz "as vendas desta planilha já tinham
+entrado". Pode apagar a cópia da pasta.
 
 **Apareceu "venda para conferir". O que é?**
 O caixa escreveu o produto com um nome que o cadastro não tem. Ache a linha na planilha pela data,

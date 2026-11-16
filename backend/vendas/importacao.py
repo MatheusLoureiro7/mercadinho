@@ -17,6 +17,9 @@ Importação das vendas do caixa — tarefa E3. Operação 04 da Apostila IV (RN
    negativo na consulta — é a contagem do estoque que está errada, e o consumo da previsão é o real.
 6. Situação (passo 9): OK, se toda linha foi lida e casou; PARCIAL, se alguma ficou pendente ou com
    erro; ERRO, se a planilha não abriu ou se a gravação falhou — e aí nada fica gravado.
+7. Importar duas vezes (decisão do grupo, 16/11/2026, revisão X1 item 1): as vendas são reconhecidas
+   pelo DIA, não pelo nome do arquivo. Linha de um dia que já entrou (OK ou PARCIAL) é ignorada; se
+   todas forem assim, a planilha é recusada sem deixar registro (`ArquivoJaImportado`).
 
 `linhas_erro` conta as linhas que NÃO baixaram o estoque: as com erro de leitura e as pendentes.
 """
@@ -43,7 +46,19 @@ ORIGEM = "IMPORTACAO_PDV"
 
 
 class ArquivoJaImportado(Exception):
-    """A mesma planilha já entrou (OK ou PARCIAL): importar de novo duplicaria as vendas."""
+    """Os dias de venda da planilha já entraram (OK ou PARCIAL): importar de novo duplicaria as vendas."""
+
+
+def _dias_ja_importados(dias: set) -> set:
+    return set(
+        ImportacaoPdv.objects.filter(
+            data_referencia__in=dias, status__in=[ImportacaoPdv.Status.OK, ImportacaoPdv.Status.PARCIAL]
+        ).values_list("data_referencia", flat=True)
+    )
+
+
+def _dia(linha: LinhaDeVenda):
+    return timezone.localtime(linha.data_hora).date()
 
 
 def _nome_simples(nome: str) -> str:
@@ -118,11 +133,6 @@ def _gravar(linhas: list[LinhaDeVenda]) -> int:
 
 def importar_planilha(caminho: Path, leitor: LeitorDeArquivoDoCaixa | None = None) -> ImportacaoPdv:
     caminho = Path(caminho)
-    if ImportacaoPdv.objects.filter(
-        arquivo_nome=caminho.name, status__in=[ImportacaoPdv.Status.OK, ImportacaoPdv.Status.PARCIAL]
-    ).exists():
-        raise ArquivoJaImportado(f"A planilha {caminho.name} já foi importada.")
-
     importacao = ImportacaoPdv.objects.create(arquivo_nome=caminho.name, data_referencia=timezone.localdate())
 
     try:
@@ -131,15 +141,21 @@ def importar_planilha(caminho: Path, leitor: LeitorDeArquivoDoCaixa | None = Non
         logger.warning("Importação %s com erro: %s", caminho.name, erro)
         return _concluir(importacao, ImportacaoPdv.Status.ERRO)
 
-    lidas = len(leitura.linhas) + len(leitura.erros)
+    ja_importados = _dias_ja_importados({_dia(linha) for linha in leitura.linhas})
+    linhas = [linha for linha in leitura.linhas if _dia(linha) not in ja_importados]
+    if leitura.linhas and not linhas:
+        importacao.delete()
+        raise ArquivoJaImportado(f"As vendas da planilha {caminho.name} já tinham entrado.")
+
+    lidas = len(linhas) + len(leitura.erros)
     for erro in leitura.erros:
         logger.warning("%s, linha %s: %s", caminho.name, erro.numero_linha, erro.mensagem)
-    if leitura.linhas:
-        importacao.data_referencia = timezone.localtime(leitura.linhas[0].data_hora).date()
+    if linhas:
+        importacao.data_referencia = _dia(linhas[0])
 
     try:
         with transaction.atomic():
-            pendentes = _gravar(leitura.linhas)
+            pendentes = _gravar(linhas)
     except Exception:
         logger.exception("Importação %s interrompida; nada foi gravado.", caminho.name)
         _concluir(importacao, ImportacaoPdv.Status.ERRO, lidas=lidas, com_erro=lidas)

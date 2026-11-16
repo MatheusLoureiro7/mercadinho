@@ -1,6 +1,6 @@
 # Runbooks — o que fazer quando algo dá errado
 
-*Atualizado em 13/11/2026.* Incidentes conhecidos, com sintoma, causa provável e passos. Todos os
+*Atualizado em 16/11/2026.* Incidentes conhecidos, com sintoma, causa provável e passos. Todos os
 comandos rodam na raiz do projeto com o `.venv` ativado. **Lembrete: o caixa da loja nunca para por
 causa do sistema (RNF07)** — o pior caso é o aviso atrasar.
 
@@ -15,7 +15,9 @@ causa do sistema (RNF07)** — o pior caso é o aviso atrasar.
 **Sintoma:** Importação de vendas mostra "Não foi lida", ou o fechamento diz que as vendas não entraram.
 1. Conferir se o arquivo é `.xlsx` e tem as colunas de `docs/FORMATO-PLANILHA-CAIXA.md`.
 2. Salvar a planilha corrigida na pasta (`PASTA_VENDAS_CAIXA`). Ela entra na próxima madrugada, ou
-   agora: `python backend/manage.py importar_vendas`. Planilha já importada não entra de novo.
+   agora: `python backend/manage.py importar_vendas`. Dia de venda que já entrou não
+   entra de novo, qualquer que seja o nome do arquivo; a planilha com o nome de uma já lida entra se
+   foi regravada depois daquela leitura.
 3. Depois, recalcular: `python backend/manage.py agregar_consumo` e `python backend/manage.py calcular_previsao`.
 
 ## R3 — O aviso não chegou no celular

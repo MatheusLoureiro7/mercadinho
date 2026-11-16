@@ -1,6 +1,6 @@
 # Documentação do sistema
 
-*Atualizado em 13/11/2026.* Organizada como nos slides "Documentação de Software" do professor:
+*Atualizado em 16/11/2026.* Organizada como nos slides "Documentação de Software" do professor:
 **cada documento responde a uma pergunta**, e são quatro perguntas. Tudo fica versionado junto com
 o código ("docs as code") e é atualizado na mesma entrega que muda o sistema. O PDF
 `DOCUMENTACAO-DO-SISTEMA.pdf` é gerado a partir destes arquivos (`python docs/sistema/gerar.py`).
@@ -19,9 +19,9 @@ documento) · **Gerado** (sai do código; um teste falha se ficar velho).
 
 | Pergunta | Documento (slides) | Arquivo | Situação | Atualizado em |
 |---|---|---|---|---|
-| Usar | Manual do usuário | `usar/manual-do-usuario.md` | Pronto | 13/11/2026 |
+| Usar | Manual do usuário | `usar/manual-do-usuario.md` | Pronto | 16/11/2026 |
 | Usar | Guia de início rápido | `usar/inicio-rapido.md` | Pronto | 13/11/2026 |
-| Usar | FAQ | `usar/faq.md` | Pronto | 13/11/2026 |
+| Usar | FAQ | `usar/faq.md` | Pronto | 16/11/2026 |
 | Usar | Glossário de negócio | `usar/glossario.md` | Pronto | 13/11/2026 |
 | Usar | Release notes do usuário | `usar/novidades.md` | Pronto | 13/11/2026 |
 | Usar | Material de treinamento | `usar/treinamento.md` | Parcial: sessões e vídeos na J5 (23/11/2026) | 13/11/2026 |
@@ -32,7 +32,7 @@ documento) · **Gerado** (sai do código; um teste falha se ficar velho).
 | Manter | Contratos de API | `manter/contratos-da-api.md` | Gerado | 13/11/2026 |
 | Manter | README e guia de dev + testes | `README.md`, `COMO-RODAR.md` e `manter/guia-do-desenvolvedor.md` | Pronto | 13/11/2026 |
 | Sustentar | Deploy e infraestrutura | `sustentar/deploy-e-infraestrutura.md` | Pronto | 13/11/2026 |
-| Sustentar | Runbooks | `sustentar/runbooks.md` | Pronto | 13/11/2026 |
+| Sustentar | Runbooks | `sustentar/runbooks.md` | Pronto | 16/11/2026 |
 | Sustentar | Monitoramento | `sustentar/monitoramento.md` | Parcial: sem alerta automático para a equipe | 13/11/2026 |
 | Sustentar | Matriz de suporte e SLA | `sustentar/suporte-e-sla.md` | Parcial: proposta, contatos na J6 (23 a 27/11/2026) | 13/11/2026 |
 | Sustentar | Backup e continuidade | `sustentar/backup-e-continuidade.md` | Parcial: backup automático ainda não existe (RNF09) | 13/11/2026 |

@@ -4,7 +4,9 @@ Importação das vendas do caixa — tarefa E3. Operação 04; primeiro passo da
     python backend/manage.py importar_vendas
 
 Importa, em ordem de nome, as planilhas .xlsx da pasta PASTA_VENDAS_CAIXA (.env) que ainda não
-entraram. A ordem da rodada das 03h00 (G5) é: importação → previsão → regras → notificação.
+entraram: as de nome novo e as regravadas depois da última importação com o mesmo nome (o caixa que
+salva sempre `vendas.xlsx`). Planilha cujas vendas já entraram é avisada e pulada (X1, item 1).
+A ordem da rodada das 03h00 (G5) é: importação → previsão → regras → notificação.
 Termina com erro (código 1) se alguma planilha não pôde ser lida — as outras entram mesmo assim.
 """
 
@@ -12,8 +14,9 @@ from pathlib import Path
 
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
+from django.db.models import Max
 
-from vendas.importacao import importar_planilha
+from vendas.importacao import ArquivoJaImportado, importar_planilha
 from vendas.models import ImportacaoPdv
 
 
@@ -27,19 +30,28 @@ class Command(BaseCommand):
         if not pasta.is_dir():
             raise CommandError(f"A pasta {pasta} não existe (PASTA_VENDAS_CAIXA).")
 
-        ja_importadas = set(
-            ImportacaoPdv.objects.filter(
-                status__in=[ImportacaoPdv.Status.OK, ImportacaoPdv.Status.PARCIAL]
-            ).values_list("arquivo_nome", flat=True)
+        ultima_importacao = dict(
+            ImportacaoPdv.objects.filter(status__in=[ImportacaoPdv.Status.OK, ImportacaoPdv.Status.PARCIAL])
+            .values_list("arquivo_nome")
+            .annotate(Max("processado_em"))
         )
-        novas = sorted(p for p in pasta.glob("*.xlsx") if p.name not in ja_importadas)
+
+        def nova(caminho: Path) -> bool:
+            importada_em = ultima_importacao.get(caminho.name)
+            return importada_em is None or caminho.stat().st_mtime > importada_em.timestamp()
+
+        novas = sorted(p for p in pasta.glob("*.xlsx") if nova(p))
         if not novas:
             self.stdout.write("Nenhuma planilha nova para importar.")
             return
 
         com_erro = []
         for caminho in novas:
-            importacao = importar_planilha(caminho)
+            try:
+                importacao = importar_planilha(caminho)
+            except ArquivoJaImportado:
+                self.stdout.write(f"{caminho.name}: as vendas desta planilha já tinham entrado.")
+                continue
             self.stdout.write(
                 f"{caminho.name}: {importacao.get_status_display()} — {importacao.linhas_lidas} linha(s) "
                 f"lida(s), {importacao.linhas_erro} pendente(s) ou com erro."
