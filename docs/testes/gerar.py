@@ -24,8 +24,8 @@ SAIDA_HTML = PASTA / "RELATORIO-DE-TESTES.html"
 SAIDA_PDF = PASTA / "RELATORIO-DE-TESTES.pdf"
 
 DOCUMENTO = "MDGS-TST-001"
-VERSAO = "1.2"
-COMMIT = "416b7b8"
+VERSAO = "1.3"
+COMMIT = "f802807"
 
 BLOCOS = {
     "a": "A · Fundação: banco, API, login e perfis",
@@ -34,22 +34,26 @@ BLOCOS = {
     "d": "D · Perdas e avarias",
     "e": "E · Importação das vendas do caixa",
     "f": "F · Consulta de estoque",
-    "h": "H · Aviso de validade pelo Telegram",
-    "i": "I · Fechamento de caixa",
-    "j": "J · Cobertura das regras",
+    "g": "G · Previsão de consumo e rodada das 03h00",
+    "h": "H · Avisos pelo Telegram: validade e vai acabar",
+    "i": "I · Fechamento de caixa e balanço da semana",
+    "j": "J · Cobertura das regras e carga inicial",
     "telas": "Telas no celular e no tablet",
+    "doc": "Documentação do sistema em dia com o código",
 }
 TESTADO_EM = {
-    "a": "06/10/2026",
+    "a": "06/10 e 13/11/2026",
     "b": "06 a 08/10/2026",
     "c": "06 a 08/10/2026",
     "d": "07 e 08/10/2026",
-    "e": "05/11/2026",
+    "e": "05 e 12/11/2026",
     "f": "07 e 08/10/2026",
-    "h": "08 e 09/10/2026",
-    "i": "09/10 e 05/11/2026",
-    "j": "09/10/2026",
-    "telas": "09/10/2026",
+    "g": "12/11/2026",
+    "h": "08/10 a 12/11/2026",
+    "i": "09/10 a 12/11/2026",
+    "j": "09/10 a 16/11/2026",
+    "telas": "09/10 e 12/11/2026",
+    "doc": "13 e 16/11/2026",
 }
 # data em que cada regra foi testada (conclusão da tarefa dela) ou, se ainda não construída, a prevista
 DATA_DA_REGRA = {
@@ -58,11 +62,11 @@ DATA_DA_REGRA = {
     "RN03": "06/10/2026",
     "RN04": "07/10/2026",
     "RN05": "08/10/2026",
-    "RN06": "09 a 10/11/2026",
-    "RN07": "09 a 10/11/2026",
-    "RN08": "11 a 13/11/2026",
-    "RN09": "11/11/2026",
-    "RN10": "12 e 13/11/2026",
+    "RN06": "12/11/2026",
+    "RN07": "12/11/2026",
+    "RN08": "12 e 13/11/2026",
+    "RN09": "12/11/2026",
+    "RN10": "12/11/2026",
     "RN11": "07/10/2026",
     "RN12": "08/10/2026",
     "RN13": "08/10/2026",
@@ -82,6 +86,9 @@ DEFEITOS = [
     ("09/10/2026", "Código de vínculo do celular com um dígito a mais era aceito"),
     ("09/10/2026", "Tela de fechamento apagava o que a pessoa estava digitando"),
     ("09/10/2026", 'No celular, quantidade, validade e "Editar" ficavam escondidos'),
+    ("12/11/2026", "Aviso de validade pronto, mas nenhuma rotina da madrugada o chamava"),
+    ("13/11/2026", 'Sugestão de compra quebrada em pacote ("pedir 14,531 PCT")'),
+    ("16/11/2026", "Documento da API mudava conforme a ordem em que os testes rodavam"),
 ]
 
 REGRAS = [
@@ -110,11 +117,31 @@ REGRAS = [
         "Aviso de validade próxima",
         "Avisa dentro do prazo; um dia além, não; rodar duas vezes não duplica",
     ),
-    ("RN06", "Consumo médio diário", ""),
-    ("RN07", "Consumo por dia da semana", ""),
-    ("RN08", "Ponto de pedido e aviso de ruptura", ""),
-    ("RN09", "Histórico mínimo para prever", ""),
-    ("RN10", "Produtos que não podem faltar no fim de semana", ""),
+    (
+        "RN06",
+        "Consumo médio diário",
+        "Vendas dos últimos 30 dias divididas por 30, contando os dias sem venda; perda fica de fora",
+    ),
+    (
+        "RN07",
+        "Consumo por dia da semana",
+        "Dia da semana que vende 1,5 vez a média ou mais vira dia de venda forte",
+    ),
+    (
+        "RN08",
+        "Ponto de pedido e aviso de ruptura",
+        "Saldo igual ou abaixo do ponto avisa; acima, não; acaba antes da entrega → urgência alta",
+    ),
+    (
+        "RN09",
+        "Histórico mínimo para prever",
+        "13 dias de venda: ainda aprendendo, sem número nem aviso; 14 dias: projeta",
+    ),
+    (
+        "RN10",
+        "Produtos que não podem faltar no fim de semana",
+        "Na quinta, crítico dentro da folga avisa; na quarta, ou não crítico, não",
+    ),
     ("RN11", "Perda não conta como consumo", "Frango jogado fora baixa o saldo, mas não aumenta o consumo"),
     ("RN12", "Janela de silêncio nos horários de pico", "Aviso das 11h15 fica segurado e sai às 13h05"),
     (
@@ -130,18 +157,20 @@ REGRAS = [
     ),
     ("RN16", "Lote vencido é bloqueado", "Vencido não sai na venda, só como perda, e aparece destacado"),
 ]
-SEM_CODIGO = {"RN06": "G2", "RN07": "G2", "RN08": "G3 e H3", "RN09": "G4", "RN10": "H3"}
+SEM_CODIGO = {}
+# soma dos "defeitos de propósito" do diário (docs/ACOMPANHAMENTO.md): 49 até 05/11, 80 de 06 a 13/11, 1 em 16/11
+DEFEITOS_DE_PROPOSITO = 130
 PARCIAL = {}
 
 NAO_TESTADO = [
-    ("Revisão das linhas pendentes da importação e tela de importação", "E4, E5", "06 a 09/11/2026"),
+    ("Teste em movimento real: um sábado cheio simulado, do caixa ao aviso", "J4", "21/11/2026"),
+    ("Aviso chegando no celular de verdade, pelo bot real do Telegram", "J4 e J6", "21 a 27/11/2026"),
+    ("Facilidade de uso com as três pessoas (RNF02, RNF03)", "J5", "23/11/2026"),
     (
-        'Previsão de consumo, ponto de pedido e aviso "vai acabar" (RN06 a RN10)',
-        "G1 a G5, H3",
-        "06 a 13/11/2026",
+        "Computador da loja ligado de madrugada e cópia de segurança diária (RNF08, RNF09)",
+        "J6",
+        "23 a 27/11/2026",
     ),
-    ("Balanço da semana", "I3", "09 a 11/11/2026"),
-    ("Teste em movimento real e aviso no celular de verdade", "J4", "21/11/2026"),
 ]
 
 e = html.escape
@@ -161,6 +190,8 @@ def ler_execucao():
 def bloco_do_arquivo(arquivo):
     if arquivo == "test_telas_no_celular":
         return "telas"
+    if arquivo == "test_documentacao":
+        return "doc"
     return re.match(r"test_([a-z])\d", arquivo).group(1)
 
 
@@ -227,23 +258,23 @@ def montar():
 @font-face {{ font-family: Plex; font-weight: 500; src: url({fontes}/ibm-plex-sans-500.woff2); }}
 @font-face {{ font-family: Plex; font-weight: 600; src: url({fontes}/ibm-plex-sans-600.woff2); }}
 * {{ box-sizing: border-box; }}
-body {{ font-family: Plex, sans-serif; font-size: 9.6pt; line-height: 1.45; color: #1d2430; margin: 0;
+body {{ font-family: Plex, sans-serif; font-size: 9.2pt; line-height: 1.4; color: #1d2430; margin: 0;
         counter-reset: secao; }}
 header {{ border-bottom: 1.5pt solid #12305a; padding-bottom: 4mm; margin-bottom: 6mm; }}
 .sup {{ font-size: 8.4pt; color: #556; display: flex; justify-content: space-between; }}
 h1 {{ font-size: 21pt; color: #12305a; margin: 3mm 0 1mm; font-weight: 600; }}
 .sistema {{ font-size: 11pt; color: #33415a; }}
-h2 {{ font-size: 12.5pt; color: #12305a; font-weight: 600; margin: 7mm 0 2.5mm; break-after: avoid;
+h2 {{ font-size: 12.5pt; color: #12305a; font-weight: 600; margin: 5mm 0 2mm; break-after: avoid;
       counter-increment: secao; }}
 h2::before {{ content: counter(secao) ". "; }}
 p {{ margin: 0 0 2.5mm; }}
-table {{ width: 100%; border-collapse: collapse; margin: 1mm 0 3mm; font-size: 8.8pt; }}
-th, td {{ border: 0.5pt solid #b9c2d0; padding: 1.5mm 2mm; text-align: left; vertical-align: top; }}
+table {{ width: 100%; border-collapse: collapse; margin: 1mm 0 3mm; font-size: 8.5pt; }}
+th, td {{ border: 0.5pt solid #b9c2d0; padding: 1.1mm 2mm; text-align: left; vertical-align: top; }}
 thead th {{ background: #12305a; color: #fff; font-weight: 500; }}
 tr {{ break-inside: avoid; }}
 .num {{ text-align: right; width: 18mm; }}
 .id {{ font-weight: 500; white-space: nowrap; }}
-.regras td:nth-child(2) {{ width: 44mm; }} .regras td:last-child {{ width: 22mm; }}
+.regras td:nth-child(2) {{ width: 34mm; }} .regras .num {{ width: 13mm; }} .regras td:last-child {{ width: 22mm; }}
 .data {{ white-space: nowrap; width: 26mm; }}
 .selo {{ display: inline-block; padding: 0.3mm 1.6mm; border-radius: 1mm; font-size: 7.6pt;
          font-weight: 600; white-space: nowrap; border: 0.5pt solid; }}
@@ -275,7 +306,7 @@ regras de negócio da Apostila I, fluxogramas da Apostila II e requisitos da Apo
 </tbody></table>
 <p>Todos os testes são automáticos (pytest e Playwright), rodam no mesmo banco do sistema
 (PostgreSQL) e cada decisão dos fluxogramas é testada pelo caminho "sim" e pelo "não". Cada teste
-foi escrito junto com a sua tarefa, entre 06/10/2026 e 05/11/2026, e a suíte inteira é executada
+foi escrito junto com a sua tarefa, entre 06/10/2026 e {inicio:%d/%m/%Y}, e a suíte inteira é executada
 de novo a cada entrega — a última vez em {inicio:%d/%m/%Y}.</p>
 
 <h2>Resultado</h2>
@@ -293,25 +324,28 @@ código do commit <code>{COMMIT}</code>.</p>
 <h2>Regras de negócio testadas</h2>
 <table class="regras"><thead><tr><th>Regra</th><th>Descrição</th><th>Exemplo verificado</th><th class="num">Testes</th><th>Data</th><th>Situação</th></tr></thead>
 <tbody>{"".join(linhas_regra)}</tbody></table>
-<p>{regras_ok} de 16 regras aprovadas e 5 ainda não construídas. Nas regras
-não testadas, a data é a prevista.</p>
+<p><b>As {regras_ok} regras de negócio estão construídas, testadas e aprovadas.</b> Cada uma tem
+o exemplo da Apostila I e os casos de borda; um teste de guarda falha se alguma regra ficar sem
+teste com o código dela no nome.</p>
 
 <h2>Defeitos</h2>
-<p>Os testes encontraram <b>11 defeitos</b>. Todos foram corrigidos no mesmo dia e ganharam teste
+<p>Foram encontrados <b>{len(DEFEITOS)} defeitos</b>, pelos testes ou na conferência do sistema rodando. Todos foram corrigidos no mesmo dia e ganharam teste
 próprio. <b>Nenhum defeito em aberto em {inicio:%d/%m/%Y}.</b></p>
 <table><thead><tr><th>Encontrado em</th><th>Defeito</th><th>Corrigido em</th></tr></thead>
 <tbody>{linhas_defeito}</tbody></table>
-<p>Entre 08/10/2026 e 05/11/2026, para provar que os testes detectam erro, a equipe inseriu
-<b>49 defeitos de propósito</b> no código; os testes detectaram os 49.</p>
+<p>Entre 08/10/2026 e {inicio:%d/%m/%Y}, para provar que os testes detectam erro, a equipe inseriu
+<b>{DEFEITOS_DE_PROPOSITO} defeitos de propósito</b> no código; os testes detectaram os {DEFEITOS_DE_PROPOSITO}.</p>
 
 <h2>O que ainda não foi testado</h2>
-<p>Partes que ainda não foram construídas; o teste de cada uma é feito junto com ela.</p>
+<p>Todo o código está testado de forma automática. Fica o que depende de gente, do celular
+de verdade ou do computador da loja: será conferido à mão, nas tarefas finais.</p>
 <table><thead><tr><th>Item</th><th>Tarefa</th><th>Data prevista</th></tr></thead><tbody>{linhas_falta}</tbody></table>
 
 <h2>Conclusão</h2>
-<p class="conclusao">Tudo o que foi construído até {inicio:%d/%m/%Y} passou nos testes: <b>{aprovados}
-de {total} aprovados</b>, sem defeito em aberto. O sistema completo será aprovado quando as partes
-da seção 6 forem construídas e testadas, até a entrega de 01/12/2026.</p>
+<p class="conclusao">O sistema está completo e passou nos testes: <b>{aprovados} de {total}
+aprovados</b>, as 16 regras de negócio aprovadas e nenhum defeito em aberto em {inicio:%d/%m/%Y}.
+Com isso fecha a tarefa J1. Os itens da seção 6 serão conferidos à mão no teste do sábado cheio
+(J4), no treinamento (J5) e na implantação (J6), antes da entrega de 01/12/2026.</p>
 </body></html>"""
 
 

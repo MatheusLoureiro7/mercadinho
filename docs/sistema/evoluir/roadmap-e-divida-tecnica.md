@@ -1,12 +1,11 @@
 # Roadmap e dívida técnica
 
-*Atualizado em 13/11/2026.* O que ainda precisa ser feito ou melhorado, e por quê.
+*Atualizado em 16/11/2026.* O que ainda precisa ser feito ou melhorado, e por quê.
 
 ## Até a entrega (01/12/2026)
 
 | Tarefa | O quê | Data prevista |
 |---|---|---|
-| J1 | Relatório de testes versão 1.3: fechamento da cobertura | até 18/11/2026 |
 | J4 | Teste em movimento real, num sábado cheio (simulado) | 21/11/2026 |
 | J5 | Treinamento das três pessoas (`usar/treinamento.md`) | 23/11/2026 |
 | J6 | Implantação no computador do Matheus e primeira semana simulada | 23 a 27/11/2026 |

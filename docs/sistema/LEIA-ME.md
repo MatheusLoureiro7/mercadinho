@@ -38,11 +38,11 @@ documento) · **Gerado** (sai do código; um teste falha se ficar velho).
 | Sustentar | Backup e continuidade | `sustentar/backup-e-continuidade.md` | Parcial: backup automático ainda não existe (RNF09) | 13/11/2026 |
 | Sustentar | Segurança e base de conhecimento | `sustentar/seguranca-e-lgpd.md` | Pronto | 13/11/2026 |
 | Evoluir | Inventário de dependências (SBOM) | `evoluir/dependencias.md` | Gerado | 13/11/2026 |
-| Evoluir | Roadmap e dívida técnica | `evoluir/roadmap-e-divida-tecnica.md` | Pronto | 13/11/2026 |
-| Evoluir | Changelog e versionamento | `evoluir/changelog.md` | Pronto | 13/11/2026 |
+| Evoluir | Roadmap e dívida técnica | `evoluir/roadmap-e-divida-tecnica.md` | Pronto | 16/11/2026 |
+| Evoluir | Changelog e versionamento | `evoluir/changelog.md` | Pronto | 16/11/2026 |
 | Evoluir | Guias de migração | `evoluir/guia-de-migracao.md` | Pronto | 13/11/2026 |
 | Evoluir | Matriz de compatibilidade | `evoluir/compatibilidade.md` | Pronto | 13/11/2026 |
-| Evoluir | Testes de regressão | `evoluir/testes-de-regressao.md` | Pronto | 13/11/2026 |
+| Evoluir | Testes de regressão | `evoluir/testes-de-regressao.md` | Pronto | 16/11/2026 |
 
 ## Critérios de aceite (slide 7)
 

@@ -1,6 +1,6 @@
 # Changelog e versionamento
 
-*Atualizado em 13/11/2026.* Versionamento semântico (SemVer), adotado pelo grupo em 13/11/2026:
+*Atualizado em 16/11/2026.* Versionamento semântico (SemVer), adotado pelo grupo em 13/11/2026:
 
 - **MAIOR** (1.0.0, 2.0.0): mudança que quebra algo — dado que precisa ser convertido, tela que some,
   formato da planilha do caixa que muda. Vem sempre com guia de migração.
@@ -35,4 +35,4 @@ Enquanto a versão começar com 0, o sistema está em construção; a **1.0.0** 
   perdas, consulta de estoque, aviso de validade pelo Telegram, tela de fechamento de caixa.
 
 ## A fazer na 1.0.0 (01/12/2026)
-Fechar J1, J4, J5 e J6; marcar a versão no git (`git tag v1.0.0`).
+Fechar J4, J5 e J6 (J1 fechada em 16/11/2026); marcar a versão no git (`git tag v1.0.0`).

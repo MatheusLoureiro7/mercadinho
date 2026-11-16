@@ -17,16 +17,16 @@ O diário, no fim do arquivo, conta o que foi feito em cada dia.
 
 ## Resumo
 
-*Atualizado em 13/11/2026.*
+*Atualizado em 16/11/2026.*
 
 | | Concluído | Total | % |
 |---|---|---|---|
-| **Tarefas** | 47 | 51 | 92,2 % |
-| **Horas estimadas** | 346 h | 378 h | 91,5 % |
+| **Tarefas** | 48 | 51 | 94,1 % |
+| **Horas estimadas** | 362 h | 378 h | 95,8 % |
 
 | Etapa | Blocos | Horas concluídas | Total | % |
 |---|---|---|---|---|
-| 1 · Aviso de validade | A, B, C, D, F, J | 180 h | 212 h | 84,9 % |
+| 1 · Aviso de validade | A, B, C, D, F, J | 196 h | 212 h | 92,5 % |
 | 2 · Aviso de ruptura | E, G, H | 136 h | 136 h | 100,0 % ✅ |
 | 3 · Gestão | I | 30 h | 30 h | 100,0 % ✅ |
 
@@ -59,7 +59,7 @@ na demonstração são de exemplo, criados pelo grupo.
 | 11/11 | G3, G4 | |
 | 12 e 13/11 | G5, H3 | |
 | 17/11 | J3 | Contagem de partida simulada com os produtos de exemplo |
-| até 18/11 | J1 | Em andamento desde 09/10; fecha com as regras da previsão |
+| até 18/11 | J1 | Concluída em 16/11/2026 |
 | **21/11** (sábado) | J4 | Teste em movimento real |
 | 23/11 | J5 | Treinamento |
 | 23 a 27/11 | J6 | Implantação no computador do Matheus e primeira semana simulada |
@@ -158,11 +158,11 @@ na demonstração são de exemplo, criados pelo grupo.
 | ~~I2~~ | ~~Tela de fechamento de caixa~~ | A3 | 10 | ✅ Concluída (API na I1) | 09/10/2026 | `4184da1` |
 | ~~I3~~ | ~~Relatório de balanço semanal~~ | E2, D1 | 12 | ✅ Concluída | 12/11/2026 | `f1e319e` |
 
-## Bloco J — Qualidade e implantação · 46 h  ·  14 de 46 h concluídas
+## Bloco J — Qualidade e implantação · 46 h  ·  30 de 46 h concluídas
 
 | ID | TAREFA | DEPENDE DE | H | SITUAÇÃO | CONCLUÍDA EM | COMMIT |
 |---|---|---|---|---|---|---|
-| J1 | Testes automatizados de todas as regras | todas as regras | 16 | 🔄 Em andamento (faltam RN06–RN10) | — | `ab6424c` |
+| ~~J1~~ | ~~Testes automatizados de todas as regras~~ | todas as regras | 16 | ✅ Concluída | 16/11/2026 | `f802807` |
 | ~~J2~~ | ~~Carga inicial dos produtos, junto com o cliente~~ | B3 | 8 | ✅ Concluída | 12/11/2026 | `261ce90` |
 | ~~J3~~ | ~~Inventário de partida: contagem física~~ | J2 | 6 | ✅ Concluída | 12/11/2026 | `d1b72b5` |
 | J4 | Teste em movimento real, num sábado cheio | todos | 6 | ⬜ A fazer | — | — |
@@ -175,6 +175,34 @@ na demonstração são de exemplo, criados pelo grupo.
 
 O que foi feito em cada dia, do mais recente para o mais antigo. Cada linha aponta a tarefa do
 cronograma, a regra de negócio (quando houver) e o commit.
+
+### 16/11/2026
+
+- **J1 — Testes automatizados de todas as regras (concluída).** A J1 vinha em andamento desde
+  09/10: cada regra ganhou teste junto com a sua tarefa, e a J1 é o fechamento. Hoje:
+  - **As 16 regras de negócio estão construídas, testadas e aprovadas**, inclusive as da previsão
+    (RN06 a RN10), que ficaram prontas em 12/11. O teste de guarda não tem mais nenhuma regra na
+    lista de "ainda sem código".
+  - **Os seis fluxogramas da Apostila II** têm cada losango de decisão testado pelo "sim" e pelo
+    "não" — faltavam o 04 (importação), o ramo de "vai acabar" do 05 (rodada da madrugada) e a
+    gravação do 06 (fechamento), que agora estão cobertos.
+  - **Defeito achado ao rodar a suíte inteira:** o teste que confere a documentação do sistema
+    passava sozinho e falhava junto com os outros. Causa: na primeira vez que uma tela chama a
+    API, o framework acrescenta um método técnico ("HEAD") na lista daquela rota, e o documento
+    gerado mudava conforme a ordem dos testes. O gerador passou a ignorar esse método, e um teste
+    novo reproduz o caso sem depender da ordem. **Foi provado que o teste pega o erro:** com o
+    gerador antigo, ele falha; com a correção, passa. Commit `f802807`.
+  - **Relatório de testes versão 1.3** (`docs/testes/RELATORIO-DE-TESTES.pdf`, 3 páginas):
+    **1053 testes, 1053 aprovados**, sobre o commit `f802807`; 14 defeitos encontrados desde
+    06/10, nenhum em aberto; 130 defeitos inseridos de propósito, todos detectados. O material de
+    trabalho do grupo (`docs/TESTES.md`) foi atualizado junto.
+  - **O que fica para conferir à mão:** o sábado cheio simulado (J4), o aviso chegando no celular
+    de verdade (J4 e J6), a facilidade de uso com as três pessoas (J5) e o computador ligado de
+    madrugada com cópia de segurança (J6; o backup diário, RNF09, ainda não existe).
+  Concluída em 16/11/2026 (prevista para até 18/11/2026).
+
+**Próxima tarefa:** J4 — teste em movimento real num sábado cheio (simulado, 21/11/2026). Depois,
+J5 (treinamento, 23/11) e J6 (implantação, 23 a 27/11).
 
 ### 13/11/2026
 
@@ -194,10 +222,6 @@ cronograma, a regra de negócio (quando houver) e o commit.
   no que está no ar), que um passo reprovado não migra nem troca os servidores, a troca dos
   servidores antigos pelos novos, servidor que não respondeu e o `--parar`. Total do projeto:
   1046, todos passando. Concluída em 13/11/2026 (prevista para 03 e 04/11/2026).
-
-**Próxima tarefa:** J1 — fechamento dos testes automatizados de todas as regras (as 16 já têm
-teste; falta o relatório de testes versão 1.3 com a previsão e os avisos de ruptura). Depois, J4
-(teste num sábado cheio, simulado), J5 (treinamento) e J6 (implantação).
 
 ### 12/11/2026
 

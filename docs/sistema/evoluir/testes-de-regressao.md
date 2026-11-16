@@ -1,12 +1,13 @@
 # Testes de regressão
 
-*Atualizado em 13/11/2026.* A suíte que prova que uma mudança ou atualização não quebrou nada.
+*Atualizado em 16/11/2026.* A suíte que prova que uma mudança ou atualização não quebrou nada.
 
 ## A suíte
 
-**1.047 testes automáticos, todos aprovados em 13/11/2026**, no PostgreSQL de verdade (num banco
+**1.053 testes automáticos, todos aprovados em 16/11/2026**, no PostgreSQL de verdade (num banco
 próprio), com pytest e Playwright. Cada tarefa entrou com os seus testes; as 16 regras de negócio
-têm teste com o nome da regra (ver `manter/rastreabilidade.md`).
+têm teste com o nome da regra (ver `manter/rastreabilidade.md`). A cobertura foi fechada na J1
+(16/11/2026).
 
 | Tipo | O que prova |
 |---|---|
@@ -32,5 +33,11 @@ pytest -m "not tela"      # sem os testes no navegador
 ## Como sabemos que os testes pegam erro
 Ao fim de cada tarefa, o grupo coloca **defeitos de propósito** no código (perda somada às vendas,
 semana contada errada, aviso repetido…) e confere que algum teste falha. Quando um defeito passou, o
-teste foi reforçado antes da entrega. O relatório para o professor está em
-`docs/testes/RELATORIO-DE-TESTES.pdf` (versão 1.2, de 05/11/2026; a 1.3 sai na J1).
+teste foi reforçado antes da entrega: 130 defeitos de propósito até 16/11/2026, todos pegos. O
+relatório para o professor está em `docs/testes/RELATORIO-DE-TESTES.pdf` (versão 1.3, de
+16/11/2026); o material de trabalho, em `docs/TESTES.md`.
+
+## Teste que só falha na suíte inteira
+Se um teste passa sozinho e falha junto com os outros, algum estado está vazando de um teste para
+outro. Caso já visto (J1, 16/11/2026): o DRF acrescenta `head` nas ações de uma rota na primeira
+chamada, e o documento da API gerado mudava; o gerador passou a ignorar `head`.
