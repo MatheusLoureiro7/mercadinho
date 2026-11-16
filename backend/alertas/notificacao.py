@@ -9,9 +9,15 @@ Serviço de notificação — tarefa H4. Operação 03, passos 9 a 12.
   mesmo enviado_em.
 
 O canal é qualquer objeto com enviar(destinatario, mensagem) — a interface CanalDeAviso da D04
-(Telegram: alertas/telegram.py, H5). Se o canal falhar com FalhaNoEnvio, a transação daquela pessoa
-é desfeita — nada fica marcado como enviado, a próxima rodada tenta de novo — e as outras pessoas
-recebem normalmente. Qualquer outro erro é defeito e não é engolido.
+(Telegram: alertas/telegram.py, H5). Se o canal falhar com FalhaNoEnvio, o que não saiu fica para a
+próxima rodada, e as outras pessoas recebem normalmente. Qualquer outro erro é defeito e não é
+engolido.
+
+Mensagem maior que o limite do canal (`limite_da_mensagem`; Telegram, 4096 caracteres) é dividida
+AQUI, sempre entre um aviso e outro, e cada parte que sai marca os seus avisos como enviados (revisão
+X1, item 17). Antes, o canal dividia: se a parte 1 saía e a 2 falhava, nada ficava marcado e a parte
+1 era repetida na rodada seguinte. Para quem lê, nada muda: o título na primeira parte e a
+numeração seguida.
 """
 
 import logging
@@ -36,7 +42,7 @@ JANELAS_DE_SILENCIO = ("janela_silencio_manha", "janela_silencio_tarde")
 @dataclass(frozen=True)
 class ResultadoDoEnvio:
     enviados: int = 0  # avisos marcados ENVIADO
-    mensagens: int = 0  # chamadas ao canal (uma por pessoa — RN13)
+    mensagens: int = 0  # chamadas ao canal: uma por pessoa (RN13), uma por parte se passar do limite
     segurados: int = 0  # avisos retidos na janela de silêncio (RN12)
     falhas: int = 0  # pessoas cuja mensagem não saiu (os avisos ficam para a próxima rodada)
 
@@ -55,11 +61,29 @@ def em_silencio(momento: datetime) -> bool:
     return any(inicio <= hora < fim for inicio, fim in (_faixa(parametro(c)) for c in JANELAS_DE_SILENCIO))
 
 
+def _titulo(quantos: int) -> str:
+    return "Aviso do mercado:" if quantos == 1 else f"Avisos do mercado ({quantos}):"
+
+
 def montar_mensagem(itens: list[str]) -> str:
     """RN13: um texto só, com os avisos numerados na ordem de urgência (vocabulário da loja, RNF10)."""
     linhas = [f"{posicao}. {item}" for posicao, item in enumerate(itens, start=1)]
-    titulo = "Aviso do mercado:" if len(itens) == 1 else f"Avisos do mercado ({len(itens)}):"
-    return "\n".join([titulo, *linhas])
+    return "\n".join([_titulo(len(itens)), *linhas])
+
+
+def _partes(avisos: list[Alerta], limite: int | None) -> list[tuple[str, list[Alerta]]]:
+    """A mensagem da RN13 em partes de até `limite` caracteres, cortadas só entre avisos."""
+    partes: list[tuple[str, list[Alerta]]] = []
+    texto, da_parte = _titulo(len(avisos)), []
+    for posicao, aviso in enumerate(avisos, start=1):
+        linha = f"{posicao}. {aviso.mensagem}"
+        if limite and da_parte and len(texto) + 1 + len(linha) > limite:
+            partes.append((texto, da_parte))
+            texto, da_parte = linha, [aviso]
+        else:
+            texto, da_parte = f"{texto}\n{linha}", [*da_parte, aviso]
+    partes.append((texto, da_parte))
+    return partes
 
 
 def enviar_avisos(canal: CanalDeAviso) -> ResultadoDoEnvio:
@@ -74,27 +98,29 @@ def enviar_avisos(canal: CanalDeAviso) -> ResultadoDoEnvio:
             return ResultadoDoEnvio(segurados=estados.segurar(pendentes))
 
     enviados = mensagens = falhas = 0
+    limite = getattr(canal, "limite_da_mensagem", None)
     for destinatario_id in abertos.values_list("destinatario_id", flat=True).distinct().order_by():
-        try:
-            with transaction.atomic():
-                # Trava os avisos desta pessoa: uma entrada de mercadoria que queira cancelar um deles
-                # espera o envio terminar, e nada sai pela metade.
-                avisos = list(
-                    abertos.filter(destinatario_id=destinatario_id)
-                    .select_related("produto", "destinatario")
-                    .select_for_update(of=("self",))  # trava só os avisos, não o produto nem a pessoa
-                    .por_urgencia()
-                )
-                if not avisos:
-                    continue
-                canal.enviar(
-                    avisos[0].destinatario,
-                    montar_mensagem([aviso.mensagem for aviso in avisos]),
-                    botoes=botoes_da_mensagem(avisos),  # H7: "Sim, pedir" nos avisos de ruptura
-                )
-                enviados += estados.enviar(avisos, quando=agora)
+        with transaction.atomic():
+            # Trava os avisos desta pessoa: uma entrada de mercadoria que queira cancelar um deles
+            # espera o envio terminar.
+            avisos = list(
+                abertos.filter(destinatario_id=destinatario_id)
+                .select_related("produto", "destinatario")
+                .select_for_update(of=("self",))  # trava só os avisos, não o produto nem a pessoa
+                .por_urgencia()
+            )
+            for texto, da_parte in _partes(avisos, limite) if avisos else []:
+                try:
+                    canal.enviar(
+                        avisos[0].destinatario,
+                        texto,
+                        botoes=botoes_da_mensagem(da_parte),  # H7: "Sim, pedir" na parte do aviso
+                    )
+                except FalhaNoEnvio as erro:
+                    # O que já saiu fica marcado; desta parte em diante, na próxima rodada.
+                    falhas += 1
+                    logger.warning("Avisos não enviados para o usuário %s: %s", destinatario_id, erro)
+                    break
+                enviados += estados.enviar(da_parte, quando=agora)
                 mensagens += 1
-        except FalhaNoEnvio as erro:
-            falhas += 1
-            logger.warning("Avisos não enviados para o usuário %s: %s", destinatario_id, erro)
     return ResultadoDoEnvio(enviados=enviados, mensagens=mensagens, falhas=falhas)

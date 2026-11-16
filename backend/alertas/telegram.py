@@ -48,6 +48,10 @@ def dividir(texto: str, limite: int = LIMITE_DA_MENSAGEM) -> list[str]:
 
 
 class CanalTelegram:
+    # O serviço de notificação divide a mensagem entre avisos neste limite (revisão X1, item 17); o
+    # `dividir` abaixo fica só para o aviso que sozinho passe do limite.
+    limite_da_mensagem = LIMITE_DA_MENSAGEM
+
     def __init__(self, token: str, endereco: str = "https://api.telegram.org"):
         self._token = (token or "").strip()
         if not endereco.startswith(("https://", "http://")):  # nada de file:// ou esquema estranho

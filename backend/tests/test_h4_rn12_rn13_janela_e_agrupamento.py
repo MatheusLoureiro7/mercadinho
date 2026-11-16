@@ -22,6 +22,7 @@ from alertas.estados import cancelar, enviar
 from alertas.models import Alerta
 from alertas.notificacao import FalhaNoEnvio, enviar_avisos, montar_mensagem
 from alertas.servicos import criar_aviso
+from alertas.telegram import dividir
 from cadastro.models import Categoria, Produto, Usuario
 from comum.models import Parametro
 
@@ -336,3 +337,56 @@ def test_h4_devolve_quantos_sairam_e_quantos_ficaram_segurados(frios, dono, cana
 
     assert segurou.segurados == 2 and segurou.enviados == 0
     assert saiu.enviados == 2 and saiu.mensagens == 1
+
+
+# --- Mensagem grande dividida (X1, item 17) -------------------------------------------------------
+# O Telegram aceita até 4096 caracteres por mensagem. Quando a parte 1 saía e a 2 falhava, nada
+# ficava marcado como enviado e a rodada seguinte repetia a parte 1. Agora quem divide é o serviço
+# de notificação, sempre entre avisos, e cada parte que sai marca os seus avisos.
+
+
+class CanalQueCaiNaSegundaParte:
+    """Como o Telegram: divide o que passa do limite e manda parte por parte; a 2ª chamada cai."""
+
+    limite_da_mensagem = 300
+
+    def __init__(self, cair=True):
+        self.cair = cair
+        self.chamadas = 0
+        self.entregues: list[str] = []
+
+    def enviar(self, destinatario, mensagem, botoes=()):
+        for parte in dividir(mensagem, self.limite_da_mensagem):
+            self.chamadas += 1
+            if self.cair and self.chamadas == 2:
+                raise FalhaNoEnvio("O Telegram não respondeu.")
+            self.entregues.append(parte)
+
+
+def test_x1_parte_que_saiu_nao_e_repetida_quando_a_seguinte_falha(frios, dono):
+    produtos = [_produto(frios, f"Produto de nome comprido número {n:02d}") for n in range(12)]
+    avisos = [_aviso(produto, dono) for produto in produtos]
+
+    caindo = CanalQueCaiNaSegundaParte()
+    resultado = _rodar("14:00", caindo)
+    enviados = [aviso for aviso in avisos if _status(aviso) == "ENVIADO"]
+    assert resultado.falhas == 1 and 0 < len(enviados) < len(avisos)
+
+    de_volta = CanalQueCaiNaSegundaParte(cair=False)
+    _rodar("15:00", de_volta)
+    entregue = "\n".join(caindo.entregues + de_volta.entregues)
+    for aviso in avisos:
+        assert entregue.count(aviso.mensagem) == 1, aviso.mensagem  # cada aviso chega uma vez só
+    assert all(_status(aviso) == "ENVIADO" for aviso in avisos)
+    assert all(len(parte) <= 300 for parte in caindo.entregues + de_volta.entregues)
+
+
+def test_x1_mensagem_dividida_continua_com_titulo_e_numeracao_seguida(frios, dono):
+    for n in range(12):
+        _aviso(_produto(frios, f"Produto de nome comprido número {n:02d}"), dono)
+    canal = CanalQueCaiNaSegundaParte(cair=False)
+    _rodar("14:00", canal)
+    assert len(canal.entregues) > 1
+    texto = "\n".join(canal.entregues)
+    assert texto.startswith("Avisos do mercado (12):\n1. ")
+    assert "\n12. " in texto and texto.count("Avisos do mercado") == 1

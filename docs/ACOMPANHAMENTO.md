@@ -187,6 +187,19 @@ cronograma, a regra de negócio (quando houver) e o commit.
 
 ### 16/11/2026
 
+- **X1, item 17 — Mensagem dividida podia chegar repetida (correção da revisão, gravidade baixa).**
+  **O problema:** os avisos do dia vão numa mensagem só (RN13), e o Telegram aceita até 4096
+  caracteres; num dia de muitos avisos, a mensagem era dividida pelo canal. Se a parte 1 saía e a 2
+  falhava, nada ficava marcado como enviado, e a rodada seguinte mandava a parte 1 de novo. (Falha
+  sem divisão continua como antes, de propósito: nada é marcado e a rodada seguinte tenta de novo.)
+  **O que foi feito (técnico, sem decisão nova):** quem divide agora é o serviço de notificação,
+  sempre entre um aviso e outro, e cada parte que sai marca os seus avisos como enviados; o que não
+  saiu fica para a próxima rodada. Para quem lê nada muda: título só na primeira parte, numeração
+  seguida, e o botão "Sim, pedir" junto da parte que tem o aviso.
+  **Testes:** 2 novos — cada aviso chega uma vez só mesmo com a parte 2 caindo (falhou antes da
+  correção e passa depois) e a mensagem dividida mantém título e numeração (guarda). **1128 testes
+  no total, todos aprovados.**
+
 - **X1, item 16 — Duas rodadas ao mesmo tempo duplicavam (correção da revisão, gravidade baixa).**
   **O problema:** a importação confere se o dia já entrou e depois grava; os avisos conferem se já
   avisaram hoje e depois gravam. Duas rodadas ao mesmo tempo (o cron e alguém rodando o comando à
