@@ -29,7 +29,9 @@ from openpyxl import Workbook
 from cadastro.models import Categoria, Produto
 from caixa.fechamento import apurado_do_fechamento
 from comum.erros import ErroDeRegraDeNegocio
+from estoque.entrada import registrar_entrada
 from estoque.models import Lote, Movimentacao
+from estoque.perda import registrar_perda
 from estoque.saldo import saldo_do_produto
 from previsao.consumo import vendido_no_periodo
 from vendas.importacao import ArquivoJaImportado, importar_planilha
@@ -229,6 +231,45 @@ def test_e3_venda_maior_que_o_estoque_grava_a_venda_inteira_e_o_saldo_fica_negat
     baixas = Movimentacao.objects.filter(tipo="VENDA").order_by("id")
     assert [(b.lote, b.quantidade) for b in baixas] == [(lote, Decimal("3")), (None, Decimal("2"))]
     assert saldo_do_produto(frango) == Decimal("-2")  # mostra que a contagem do estoque está errada
+
+
+def _soma_dos_lotes(produto):
+    return sum(Lote.objects.filter(produto=produto).values_list("quantidade_atual", flat=True), Decimal(0))
+
+
+def test_e3_venda_a_mais_e_descontada_da_proxima_carga_e_saldo_e_lotes_batem(tmp_path, frango):
+    """X1, item 3: 5 no estoque, venda de 8, carga de 10 — o lote novo nasce com 7, não com 10."""
+    _lote(frango, "5", DIA + timedelta(days=3))
+    importar_planilha(_planilha(tmp_path, [_linha(1, "Frango resfriado 1 kg", 8, 21.9)]))
+
+    lote = registrar_entrada(produto=frango, quantidade=Decimal("10"), usuario=None)
+
+    lote.refresh_from_db()
+    assert (lote.quantidade_inicial, lote.quantidade_atual) == (Decimal("10"), Decimal("7"))
+    assert saldo_do_produto(frango) == _soma_dos_lotes(frango) == Decimal("7")
+
+
+def test_e3_depois_da_venda_a_mais_a_perda_maior_que_o_saldo_e_recusada(tmp_path, frango):
+    _lote(frango, "5", DIA + timedelta(days=3))
+    importar_planilha(_planilha(tmp_path, [_linha(1, "Frango resfriado 1 kg", 8, 21.9)]))
+    registrar_entrada(produto=frango, quantidade=Decimal("10"), usuario=None)
+
+    with pytest.raises(ErroDeRegraDeNegocio):
+        registrar_perda(produto=frango, quantidade=Decimal("10"), motivo="estragou", usuario=None)
+    assert saldo_do_produto(frango) == Decimal("7")
+
+
+def test_e3_carga_menor_que_a_venda_a_mais_fica_zerada_e_a_seguinte_desconta_o_resto(tmp_path, frango):
+    _lote(frango, "5", DIA + timedelta(days=3))
+    importar_planilha(_planilha(tmp_path, [_linha(1, "Frango resfriado 1 kg", 8, 21.9)]))
+
+    pequena = registrar_entrada(produto=frango, quantidade=Decimal("2"), usuario=None)
+    grande = registrar_entrada(produto=frango, quantidade=Decimal("10"), usuario=None)
+
+    pequena.refresh_from_db()
+    grande.refresh_from_db()
+    assert (pequena.quantidade_atual, grande.quantidade_atual) == (Decimal("0"), Decimal("9"))
+    assert saldo_do_produto(frango) == _soma_dos_lotes(frango) == Decimal("9")
 
 
 def test_e3_rn16_lote_vencido_na_data_da_venda_nao_sai_na_venda(tmp_path, frango):

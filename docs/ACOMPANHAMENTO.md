@@ -187,6 +187,21 @@ cronograma, a regra de negócio (quando houver) e o commit.
 
 ### 16/11/2026
 
+- **X1, item 3 — Saldo e lotes deixavam de bater (correção da revisão, gravidade alta).**
+  **O problema:** o sistema guarda dois números por produto: o saldo (tudo que entrou menos tudo que
+  saiu) e o que resta em cada lote. Quando o caixa vendia mais do que o sistema tinha (5 no estoque,
+  venda de 8), a sobra era gravada sem lote, como decidido em 05/11. Mas a carga seguinte de 10
+  entrava inteira no lote: o saldo dizia 7 e os lotes, 10. A tela de perdas confere pelos lotes, então
+  aceitava uma perda de 10, e o saldo ia a −3. E não havia operação que consertasse.
+  **Decisão do grupo (16/11/2026):** na entrada de mercadoria, o que foi vendido a mais é
+  **descontado do lote novo** — aquelas unidades já tinham sido vendidas. No exemplo, o lote de 10
+  nasce com 7 restantes; saldo e lotes batem e a perda de 10 é recusada. A movimentação de entrada
+  continua com 10, e o saldo continua sendo só a soma das movimentações (RN01). Nenhuma tabela
+  mudou. A operação de ajuste de estoque (lacuna L10) continua em aberto, para depois da entrega.
+  **Testes:** 3 novos (a carga desconta a venda a mais; a perda maior que o saldo é recusada; uma
+  carga pequena fica zerada e a seguinte desconta o resto). Os 3 falharam antes da correção e passam
+  depois; **1063 testes no total, todos aprovados**. FAQ atualizado.
+
 - **X1, item 2 — Linha com erro sumia do caixa (correção da revisão, gravidade alta).**
   **O problema:** quando uma linha da planilha não podia ser lida (por exemplo, a hora escrita
   "9h30"), o sistema importava as outras e descartava essa. A venda dela sumia do valor apurado, e
@@ -265,7 +280,7 @@ cronograma, a regra de negócio (quando houver) e o commit.
   21/11/2026)**. Os de gravidade média e baixa ficam para depois, na ordem da lista.
   Não muda as 51 tarefas, as 378 horas nem as porcentagens do resumo.
 
-**Próxima tarefa:** correção dos itens 3 e 4 da revisão (`docs/REVISAO-FABLE.md`) e, em seguida,
+**Próxima tarefa:** correção do item 4 da revisão (`docs/REVISAO-FABLE.md`) e, em seguida,
 J4 — teste em movimento real num sábado cheio (simulado, 21/11/2026). Depois, J5 (treinamento,
 23/11) e J6 (implantação, 23 a 27/11).
 

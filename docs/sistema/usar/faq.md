@@ -23,7 +23,8 @@ cadastro igual ao do caixa.
 **O estoque de um produto ficou negativo.**
 A planilha mostrou uma venda maior do que o estoque registrado. A venda é gravada inteira, porque
 ela aconteceu: o negativo mostra que faltou registrar uma entrada ou que a contagem estava errada.
-Registre a entrada que faltou.
+Registre a entrada que faltou. Quando a mercadoria chegar, a parte que já tinha sido vendida é
+descontada do lote novo: uma carga de 10 depois de 3 vendidos a mais aparece com 7 restantes.
 
 **O produto aparece "ainda aprendendo".**
 O sistema só calcula quando acaba depois de 14 dias de venda daquele produto (RN09). Até lá, não
