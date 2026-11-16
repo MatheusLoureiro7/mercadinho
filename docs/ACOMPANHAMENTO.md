@@ -187,6 +187,19 @@ cronograma, a regra de negócio (quando houver) e o commit.
 
 ### 16/11/2026
 
+- **X1, item 5 — Depois do "Sim, pedir", o produto ficava calado para sempre (correção da revisão,
+  gravidade média).**
+  **O problema:** depois que o Sr. João toca em "Sim, pedir", o sistema para de avisar sobre aquele
+  produto até a mercadoria chegar (decisão de 12/11). Mas não havia limite: se o fornecedor não
+  entregasse, o aviso nunca mais voltava — na revisão, a carne zerada ficou 90 dias sem aviso.
+  **Decisão do grupo (16/11/2026):** o silêncio dura o **prazo de entrega do fornecedor**, que já
+  está no cadastro. "Sim, pedir" no dia 9 com entrega em 2 dias espera até o dia 11; sem lote novo,
+  no dia 12 o aviso volta, começando por "O pedido ainda não chegou:". Nenhuma tabela nem parâmetro
+  novo.
+  **Testes:** 2 novos — o pedido atrasado volta a avisar (falhou antes da correção e passa depois) e
+  no dia previsto para a entrega ainda não avisa (o outro lado da decisão). **1068 testes no total,
+  todos aprovados.** Manual e FAQ atualizados.
+
 - **X1, item 4 — Planilha com dois dias travava o fechamento (correção da revisão, gravidade alta).**
   **O problema:** cada planilha virava um registro de importação com uma data só, a da primeira
   linha. Numa planilha com as vendas de 10/11 e 11/11, as vendas dos dois dias entravam, mas o
@@ -298,7 +311,7 @@ cronograma, a regra de negócio (quando houver) e o commit.
   21/11/2026)**. Os de gravidade média e baixa ficam para depois, na ordem da lista.
   Não muda as 51 tarefas, as 378 horas nem as porcentagens do resumo.
 
-**Próxima tarefa:** J4 — teste em movimento real num sábado cheio (simulado, 21/11/2026).
+**Próxima tarefa:** correção dos itens de gravidade média 6 a 13 da revisão; depois, J4 — teste em movimento real num sábado cheio (simulado, 21/11/2026).
 Depois, J5 (treinamento, 23/11) e J6 (implantação, 23 a 27/11).
 
 ### 13/11/2026

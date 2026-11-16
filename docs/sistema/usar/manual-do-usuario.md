@@ -104,5 +104,7 @@ Telegram, **numa mensagem só**, do mais urgente para o menos:
 - **Fim de semana** (na quinta-feira): carne, carvão, cerveja, linguiça e asinha avaliados com folga.
 
 Nada é enviado nos horários de movimento (10h30–13h00 e 16h30–18h00): o aviso espera e sai no fim do
-horário. Depois do "Sim, pedir", aquele produto não é avisado de novo até a mercadoria chegar.
+horário. Depois do "Sim, pedir", aquele produto não é avisado de novo até a mercadoria chegar —
+mas só pelo prazo de entrega do fornecedor: se ele entrega em 2 dias e nada chegou, no terceiro dia
+o aviso volta começando por **"O pedido ainda não chegou"**.
 Para ligar o celular, ver o Guia de início rápido.

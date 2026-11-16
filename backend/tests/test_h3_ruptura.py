@@ -297,6 +297,26 @@ def test_h3_lote_antigo_nao_conta_como_chegada_do_pedido(frango, dono):
     assert gerar_avisos_de_ruptura() == []
 
 
+# X1, item 5 (decisão do grupo, 16/11/2026): o silêncio dura o prazo de entrega do fornecedor. O
+# "Sim, pedir" das 03h00 do dia 9, com entrega em 2 dias, espera a mercadoria até o dia 11.
+
+
+def test_h3_no_dia_previsto_para_a_entrega_ainda_nao_avisa(frango, dono):
+    _previsao(frango)
+    _saldo(frango, "6")
+    _respondeu_sim(frango, QUARTA - timedelta(days=2))  # dia 9; entrega prevista para o dia 11 (hoje)
+    assert gerar_avisos_de_ruptura() == []
+
+
+def test_h3_pedido_que_nao_chegou_no_prazo_de_entrega_volta_a_avisar(frango, dono):
+    _previsao(frango)
+    _saldo(frango, "6")
+    _respondeu_sim(frango, QUARTA - timedelta(days=3))  # dia 8; entrega prevista para o dia 10
+    [aviso] = gerar_avisos_de_ruptura()
+    assert aviso.mensagem.startswith("O pedido ainda não chegou: Frango resfriado 1 kg acaba em 2 dias")
+    assert aviso.resposta_usuario is None
+
+
 @pytest.fixture
 def carvao(db):
     return _produto("Carvão 5 kg", critico=True, unidade="UN")

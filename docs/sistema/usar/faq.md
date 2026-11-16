@@ -44,8 +44,9 @@ outro fechamento — o anterior continua visível.
 
 **O Sr. João não recebeu o aviso.**
 Nos horários de movimento (10h30–13h00 e 16h30–18h00) nada é enviado: o aviso sai no fim do
-horário. Depois de "Sim, pedir", o produto não é avisado de novo até a mercadoria chegar. Se nada
-chegou fora desses casos, ver `sustentar/runbooks.md`.
+horário. Depois de "Sim, pedir", o produto não é avisado de novo até a mercadoria chegar, dentro do
+prazo de entrega do fornecedor; passado o prazo sem entrega, o aviso volta com "O pedido ainda não
+chegou". Se nada chegou fora desses casos, ver `sustentar/runbooks.md`.
 
 **De onde vem a quantidade "Pedir 30 KG"?**
 É o que o produto deve vender no prazo de entrega do fornecedor mais 7 dias, menos o que já tem
