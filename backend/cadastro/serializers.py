@@ -9,10 +9,15 @@ from rest_framework.validators import UniqueValidator
 
 from cadastro.models import Categoria, Fornecedor, Produto
 from cadastro.regras import verificar_rn03
+from comum.busca import sem_acento
 
 # L17 (decidida na B3): lista fechada, a que o schema.sql cita. Validada só na API — o banco não tem
 # essa restrição. Para acrescentar uma unidade, basta incluí-la aqui.
 UNIDADES_DE_MEDIDA = ("KG", "UN", "L", "PCT")
+
+
+def _nome_simples(nome: str) -> str:
+    return " ".join(sem_acento(nome).split())
 
 
 def _nome_obrigatorio(mensagem: str) -> dict:
@@ -171,13 +176,18 @@ class ProdutoSerializer(serializers.ModelSerializer):
         return unidade
 
     def validate(self, dados):
-        # Operação 01, passo 6: "já existe produto com este nome na categoria?"
+        # Operação 01, passo 6: "já existe produto com este nome na categoria?" — comparado sem
+        # maiúscula, acento nem espaço a mais, como a importação das vendas acha o produto (L05) e a
+        # carga da J2 (revisão X1, item 12): "arroz 5 KG" e "Arroz 5 kg" são o mesmo produto.
         nome = dados.get("nome", getattr(self.instance, "nome", None))
         categoria = dados.get("categoria", getattr(self.instance, "categoria", None))
-        repetidos = Produto.objects.filter(nome=nome, categoria=categoria)
+        mesma_categoria = Produto.objects.filter(categoria=categoria)
         if self.instance is not None:
-            repetidos = repetidos.exclude(pk=self.instance.pk)
-        if repetidos.exists():
+            mesma_categoria = mesma_categoria.exclude(pk=self.instance.pk)
+        if any(
+            _nome_simples(outro) == _nome_simples(nome)
+            for outro in mesma_categoria.values_list("nome", flat=True)
+        ):
             raise serializers.ValidationError({"nome": "Já existe um produto com esse nome nesta categoria."})
 
         if self.instance is None:

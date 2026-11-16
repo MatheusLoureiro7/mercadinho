@@ -187,6 +187,18 @@ cronograma, a regra de negócio (quando houver) e o commit.
 
 ### 16/11/2026
 
+- **X1, item 12 — Dois produtos com o "mesmo" nome (correção da revisão, gravidade média).**
+  **O problema:** o cadastro pela tela recusava nome repetido na categoria comparando o texto exato,
+  e aceitava "Arroz 5 kg" e "arroz 5 KG" como produtos diferentes. A importação das vendas compara
+  sem maiúscula, acento nem espaço (L05): via dois produtos com o mesmo nome e deixava **toda venda
+  dele pendente**, todo dia.
+  **O que foi feito (sem decisão nova):** o cadastro passou a comparar o nome do mesmo jeito que a
+  importação e a carga da J2 já comparavam. A mensagem é a mesma de antes; corrigir a maiúscula do
+  próprio nome continua permitido. Nenhuma tabela mudou.
+  **Testes:** 5 novos (três formas do nome parecido, a edição para um nome parecido com outro, e a
+  correção da maiúscula do próprio nome). Os 4 que dependiam da correção falharam antes e passam
+  depois. **1109 testes no total, todos aprovados.** Manual atualizado.
+
 - **X1, item 11 — A rodada perdida não era recuperada (correção da revisão, gravidade média).**
   **O problema:** a rodada roda às 03h00 pelo cron. Com o notebook fechado nesse horário, o dia
   ficava sem importação e sem avisos; e, se fosse quinta, o aviso de fim de semana (RN10) não

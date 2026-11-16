@@ -37,6 +37,8 @@ dias dura**, preços, estoque mínimo, fornecedor e se **não pode faltar no fim
 - Produto perecível só é salvo com a durabilidade em dias (RN03).
 - Escolha o **fornecedor**: é pelo prazo de entrega dele que o sistema avisa *antes* de acabar. Sem
   fornecedor, o Sr. João só é avisado quando o produto já acabou.
+- Não dá para ter dois produtos com o mesmo nome na categoria, nem mudando só maiúscula, acento ou
+  espaço ("Arroz 5 kg" e "arroz 5 KG"): para a planilha do caixa eles são o mesmo produto.
 - A categoria nova é criada dali mesmo. Produto, categoria e fornecedor não se apagam.
 
 ### Fornecedores (RF02)

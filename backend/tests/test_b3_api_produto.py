@@ -196,6 +196,30 @@ def test_b3_nome_repetido_na_mesma_categoria_e_recusado(api, secos):
     assert Produto.objects.count() == 1
 
 
+@pytest.mark.parametrize("parecido", ["arroz 5 KG", "  Arroz   5 kg ", "ÁRROZ 5 KG"])
+def test_x1_nome_que_so_muda_maiuscula_acento_ou_espaco_e_repetido(api, secos, parecido):
+    """X1, item 12: a importação compara assim (L05); dois nomes "iguais" deixariam a venda pendente."""
+    api("OPERACAO").post(URL, _arroz(secos))
+    resposta = api("OPERACAO").post(URL, _arroz(secos, nome=parecido))
+    assert resposta.status_code == 400
+    assert resposta.json()["erro"]["campos"] == {
+        "nome": ["Já existe um produto com esse nome nesta categoria."]
+    }
+    assert Produto.objects.count() == 1
+
+
+def test_x1_editar_para_um_nome_parecido_com_outro_e_recusado(api, secos):
+    api("OPERACAO").post(URL, _arroz(secos))
+    feijao_id = api("OPERACAO").post(URL, _arroz(secos, nome="Feijão 1 kg")).json()["id"]
+    resposta = api("OPERACAO").patch(f"{URL}{feijao_id}/", {"nome": "arroz 5 KG"})
+    assert resposta.status_code == 400
+
+
+def test_x1_corrigir_a_maiuscula_do_proprio_nome_e_aceito(api, secos):
+    produto_id = api("OPERACAO").post(URL, _arroz(secos, nome="arroz 5 kg")).json()["id"]
+    assert api("OPERACAO").patch(f"{URL}{produto_id}/", {"nome": "Arroz 5 kg"}).status_code == 200
+
+
 def test_b3_mesmo_nome_em_outra_categoria_e_aceito(api, secos):
     outra = Categoria.objects.create(nome="Promoções")
     api("OPERACAO").post(URL, _arroz(secos))
