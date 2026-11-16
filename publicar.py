@@ -17,6 +17,11 @@ banco de verdade e a troca dos servidores — API em 127.0.0.1:8000 e painel em 
 o painel repassando /api/ para a API (L25). Passo que falha para a esteira e o sistema publicado
 continua como estava. Cada publicação vai para logs/publicacoes.log; a saída dos servidores, para
 logs/api.log e logs/painel.log.
+
+A API publicada sobe sempre com DJANGO_DEBUG=false, qualquer que seja o .env (revisão X1, item 20):
+com a depuração ligada, endereço errado mostraria a página técnica do Django — rotas, código,
+configurações — em vez da resposta em JSON. O .env não é sobrescrito: o python-dotenv não troca
+variável que já veio do ambiente.
 """
 
 import argparse
@@ -52,6 +57,7 @@ SERVIDORES = [
     ("api", [PY, "backend/manage.py", "runserver", "127.0.0.1:8000", "--noreload"]),
     ("painel", [PY, str(Path("frontend") / "servir.py")]),
 ]
+AMBIENTE = {"api": {"DJANGO_DEBUG": "false"}}  # X1, item 20
 ENDERECOS = [PAINEL + "/login.html", PAINEL + "/api/"]
 
 
@@ -61,7 +67,7 @@ class Maquina:
     def rodar(self, comando: list[str]) -> int:
         return subprocess.run(comando, cwd=RAIZ).returncode  # noqa: S603 — comandos fixos deste arquivo
 
-    def iniciar(self, nome: str, comando: list[str], log: Path) -> int:
+    def iniciar(self, nome: str, comando: list[str], log: Path, ambiente: dict | None = None) -> int:
         separado = (
             {"creationflags": subprocess.CREATE_NEW_PROCESS_GROUP | subprocess.DETACHED_PROCESS}
             if os.name == "nt"
@@ -69,7 +75,12 @@ class Maquina:
         )
         with open(log, "a", encoding="utf-8") as saida:
             processo = subprocess.Popen(  # noqa: S603 — comandos fixos deste arquivo
-                comando, cwd=RAIZ, stdout=saida, stderr=subprocess.STDOUT, **separado
+                comando,
+                cwd=RAIZ,
+                stdout=saida,
+                stderr=subprocess.STDOUT,
+                env={**os.environ, **(ambiente or {})},
+                **separado,
             )
         return processo.pid
 
@@ -120,7 +131,7 @@ def iniciar_servidores(maquina) -> None:
     PASTA_ESTADO.mkdir(parents=True, exist_ok=True)
     PASTA_LOGS.mkdir(parents=True, exist_ok=True)
     for nome, comando in SERVIDORES:
-        pid = maquina.iniciar(nome, comando, PASTA_LOGS / f"{nome}.log")
+        pid = maquina.iniciar(nome, comando, PASTA_LOGS / f"{nome}.log", AMBIENTE.get(nome))
         (PASTA_ESTADO / f"{nome}.pid").write_text(str(pid))
 
 

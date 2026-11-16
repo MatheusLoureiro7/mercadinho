@@ -42,7 +42,7 @@ class Maquina:
     """Faz o papel do terminal e dos servidores, anotando tudo o que a esteira pediu."""
 
     def __init__(self, falha_em=None, responde=True, vivos=()):
-        self.comandos, self.iniciados, self.parados = [], [], []
+        self.comandos, self.iniciados, self.parados, self.ambientes = [], [], [], {}
         self.falha_em, self.responde, self.vivos = falha_em, responde, set(vivos)
         self.proximo_pid = 1000
 
@@ -50,9 +50,10 @@ class Maquina:
         self.comandos.append(" ".join(comando))
         return 1 if self.falha_em and self.falha_em in " ".join(comando) else 0
 
-    def iniciar(self, nome, comando, log):
+    def iniciar(self, nome, comando, log, ambiente=None):
         self.proximo_pid += 1
         self.iniciados.append(nome)
+        self.ambientes[nome] = ambiente or {}
         self.vivos.add(self.proximo_pid)
         return self.proximo_pid
 
@@ -159,3 +160,18 @@ def test_a5_usa_o_python_do_ambiente_e_o_servidor_do_django_sem_dependencia_nova
 
 def test_a5_estado_da_publicacao_fica_fora_do_git():
     assert ".publicacao/" in (RAIZ / ".gitignore").read_text(encoding="utf-8")
+
+
+# X1, item 20: com DJANGO_DEBUG=true, endereço errado mostra a página técnica do Django (rotas,
+# código, configurações) em vez da resposta em JSON. O sistema publicado nunca sobe assim.
+
+
+def test_x1_api_publicada_sobe_sem_modo_de_depuracao_qualquer_que_seja_o_env(publicar):
+    maquina = Maquina()
+    assert _rodar(publicar, maquina) == 0
+    assert maquina.ambientes["api"] == {"DJANGO_DEBUG": "false"}
+
+
+def test_x1_modelo_de_configuracao_vem_sem_modo_de_depuracao():
+    linhas = (RAIZ / ".env.example").read_text(encoding="utf-8").splitlines()
+    assert "DJANGO_DEBUG=false" in linhas

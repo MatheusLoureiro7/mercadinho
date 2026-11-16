@@ -51,7 +51,7 @@ Ficam **só no arquivo `.env`** da raiz, que **nunca vai para o git** (RNF12). M
 | Variável | Para quê |
 |---|---|
 | `DJANGO_SECRET_KEY` | Assina os tokens de sessão. Obrigatória com `DJANGO_DEBUG=false` |
-| `DJANGO_DEBUG` | `true` só em desenvolvimento |
+| `DJANGO_DEBUG` | `true` só em desenvolvimento. O `publicar.py` sobe a API com `false` de qualquer jeito (revisão X1, item 20) |
 | `DJANGO_ALLOWED_HOSTS` | Endereços pelos quais a API aceita ser chamada |
 | `SESSAO_VALIDADE_HORAS` | Quanto dura a sessão (12 horas) |
 | `API_NUM_PROXIES` | Quantos repassadores há na frente da API; usado no limite de tentativas de login (0 em desenvolvimento) |

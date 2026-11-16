@@ -113,7 +113,7 @@ variáveis `POSTGRES_*` do `.env` para ele.
 | Variável | Para quê |
 |---|---|
 | `DJANGO_SECRET_KEY` | Obrigatória quando `DJANGO_DEBUG=false` |
-| `DJANGO_DEBUG` | `true` só na máquina de desenvolvimento |
+| `DJANGO_DEBUG` | `true` só na máquina de desenvolvimento; o `publicar.py` sempre sobe a API com `false` |
 | `POSTGRES_*` | Conexão com o banco — o `docker compose` usa as mesmas variáveis para criar o banco |
 | `TELEGRAM_BOT_TOKEN` | Bot de avisos (H5). Vazio: os avisos ficam guardados e não saem |
 | `TELEGRAM_WEBHOOK_SEGREDO` | Segredo do webhook que recebe a resposta do dono (H7). Vazio: nada é aceito |

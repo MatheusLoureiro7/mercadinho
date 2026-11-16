@@ -187,6 +187,20 @@ cronograma, a regra de negócio (quando houver) e o commit.
 
 ### 16/11/2026
 
+- **X1, item 20 — Modo de depuração ligado na publicação (correção da revisão, gravidade baixa).**
+  **O problema:** o modelo de configuração (`.env.example`) vinha com `DJANGO_DEBUG=true`, e o
+  `publicar.py` subia a API com o que estivesse no `.env`. Com a depuração ligada, um endereço errado
+  mostra a página técnica do Django — com as rotas, e num erro até código e configurações — em vez
+  da resposta em JSON.
+  **O que foi feito (técnico, sem decisão nova):** o `publicar.py` sobe a API **sempre** com
+  `DJANGO_DEBUG=false`, qualquer que seja o `.env`, e o `.env.example` passou a vir com `false`. O
+  `.env` deste computador não foi mexido (é pessoal, com senhas, fora do git); ele já tem a chave
+  secreta que o modo sem depuração exige. **Conferido na prática:** com a API sem depuração, o
+  endereço inexistente responde o JSON da loja; com depuração, a página técnica.
+  **Testes:** 2 novos (a API publicada sobe sem depuração; o modelo de configuração vem com
+  `false`); os 2 falharam antes da correção e passam depois. **1136 testes no total, todos
+  aprovados.** Guia de implantação e README atualizados.
+
 - **X1, item 19 — Banco diferente do `schema.sql` em detalhes (correção da revisão, gravidade
   baixa).**
   **O problema:** colunas, tipos e restrições conferem, mas o Django cria detalhes que o `schema.sql`
