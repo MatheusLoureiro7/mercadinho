@@ -187,6 +187,22 @@ cronograma, a regra de negócio (quando houver) e o commit.
 
 ### 16/11/2026
 
+- **X1, item 7 — Só "dinheiro" contava como dinheiro (correção da revisão, gravidade média).**
+  **O problema:** o apurado do fechamento soma as vendas pagas em dinheiro, e o sistema só aceitava
+  a palavra exata "dinheiro" na coluna Pagamento. "Espécie" não contava, e uma planilha sem a coluna
+  (ela é opcional) dava apurado R$ 0,00: a gaveta inteira virava uma sobra falsa, gravada para sempre.
+  **Decisão do grupo (16/11/2026):** contam como dinheiro "Dinheiro", "Espécie" e "Em espécie", sem
+  diferenciar maiúscula, acento nem espaços. Se alguma venda do dia veio **sem forma de pagamento**,
+  o fechamento daquele dia é recusado, explicando o motivo. Registrado em
+  `docs/FORMATO-PLANILHA-CAIXA.md`. Nenhuma tabela mudou.
+  **Consequência a acompanhar:** como um dia importado não entra de novo (item 1), o dia cuja
+  planilha veio sem a coluna Pagamento fica sem fechamento. O caixa da loja precisa exportar sempre
+  essa coluna; a planilha de exemplo do grupo já a tem em todas as linhas.
+  **Testes:** 10 novos casos (as formas de escrever espécie; textos que só contêm a palavra não
+  contam; venda sem pagamento recusa o fechamento, com a coluna vazia, em branco ou ausente). Os 6
+  que dependiam da correção falharam antes e passam depois. **1085 testes no total, todos
+  aprovados.** FAQ e glossário atualizados.
+
 - **X1, item 6 — O caixa só podia ser fechado no dia seguinte (correção da revisão, gravidade
   média).**
   **O problema:** a tela de fechamento sempre fechava "ontem", sem poder escolher. Se ninguém abrisse

@@ -22,7 +22,7 @@ documento) · **Gerado** (sai do código; um teste falha se ficar velho).
 | Usar | Manual do usuário | `usar/manual-do-usuario.md` | Pronto | 16/11/2026 |
 | Usar | Guia de início rápido | `usar/inicio-rapido.md` | Pronto | 16/11/2026 |
 | Usar | FAQ | `usar/faq.md` | Pronto | 16/11/2026 |
-| Usar | Glossário de negócio | `usar/glossario.md` | Pronto | 13/11/2026 |
+| Usar | Glossário de negócio | `usar/glossario.md` | Pronto | 16/11/2026 |
 | Usar | Release notes do usuário | `usar/novidades.md` | Pronto | 13/11/2026 |
 | Usar | Material de treinamento | `usar/treinamento.md` | Parcial: sessões e vídeos na J5 (23/11/2026) | 13/11/2026 |
 | Manter | Requisitos e regras de negócio | `docs/REGRAS-NEGOCIO.md`, `docs/ESPECIFICACAO.md` e `manter/rastreabilidade.md` | Gerado | 13/11/2026 |

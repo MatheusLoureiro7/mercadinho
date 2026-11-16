@@ -1,6 +1,6 @@
 # Glossário de negócio
 
-*Atualizado em 13/11/2026.* Os termos que aparecem nas telas e nos avisos, e as contas que o
+*Atualizado em 16/11/2026.* Os termos que aparecem nas telas e nos avisos, e as contas que o
 sistema faz. Os números entre parênteses (RN, RF) apontam a regra na especificação; os valores
 ajustáveis ficam na tabela de parâmetros.
 
@@ -54,7 +54,7 @@ ajustáveis ficam na tabela de parâmetros.
 
 | Termo | O que é |
 |---|---|
-| **Apurado** | Soma das vendas do dia pagas em dinheiro, segundo a planilha do caixa (L12). |
+| **Apurado** | Soma das vendas do dia pagas em dinheiro ("Dinheiro", "Espécie" ou "Em espécie" na coluna Pagamento), segundo a planilha do caixa (L12). |
 | **Contado** | O dinheiro que a esposa contou na gaveta. |
 | **Diferença** | Contado − apurado, calculada pelo sistema e nunca digitada nem corrigida (RN15). |
 | **Resultado da semana** | Vendas − perdas a preço de custo (L16). Não é lucro: o custo da mercadoria vendida não entra. |

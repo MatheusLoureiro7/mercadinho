@@ -27,7 +27,7 @@ Exemplo pronto: `docs/exemplos/vendas-2026-11-05.xlsx`.
 | **Produto** | sim | nome do produto **como está no cadastro** | `Arroz 5 kg` | `item_venda.produto_id` (ver abaixo) |
 | **Quantidade** | sim | maior que zero, até 3 casas | `1,275` | `item_venda.quantidade` |
 | **Preço unitário** | sim | em reais, 2 casas | `15,90` | `item_venda.preco` |
-| **Pagamento** | não | texto, até 30 letras | `PIX` | `venda.forma_pagamento` |
+| **Pagamento** | não, mas sem ela o caixa não fecha (ver abaixo) | texto, até 30 letras | `PIX` | `venda.forma_pagamento` |
 
 O nome das colunas é procurado no cabeçalho sem diferenciar maiúscula de minúscula nem acento; a
 ordem das colunas não importa.
@@ -51,6 +51,11 @@ ordem das colunas não importa.
   ganha o seu registro em `importacao_pdv` (mesmo `arquivo_nome`, `data_referencia` daquele dia,
   com as linhas e pendências dele), para o fechamento de caixa e o balanço enxergarem todos os dias.
   Os cupons são agrupados dentro de cada dia, porque o caixa recomeça a numeração.
+- **Pagamento e fechamento de caixa — decisão do grupo, 16/11/2026 (revisão X1, item 7):** contam
+  como dinheiro `Dinheiro`, `Espécie` e `Em espécie`, sem diferenciar maiúscula, acento nem espaços
+  a mais. A planilha sem a coluna Pagamento, ou com alguma linha sem ela, é importada normalmente
+  (estoque e previsão funcionam), mas o **fechamento de caixa daquele dia é recusado**: sem saber o
+  que foi pago em dinheiro, o apurado sairia menor e a sobra seria falsa (RN15).
 - **Situação da importação:** `OK` se todas as linhas foram lidas e casaram; `PARCIAL` se alguma
   ficou pendente (produto não reconhecido); `ERRO` se o arquivo não pôde ser lido (não é `.xlsx` ou
   falta coluna obrigatória) **ou se alguma linha não pôde ser lida** (data, hora, quantidade ou

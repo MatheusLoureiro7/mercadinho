@@ -149,7 +149,6 @@ def test_l12_apurado_soma_so_as_vendas_em_dinheiro(db):
     _venda("50.00", "  DINHEIRO ")
     _venda("70.00", "PIX")
     _venda("30.00", "Cartão de débito")
-    _venda("20.00", None)
     assert valor_apurado(ONTEM) == Decimal("150.00")
 
 
@@ -158,6 +157,30 @@ def test_l12_apurado_e_so_do_dia_no_horario_da_loja(db):
     _venda("40.00", quando=datetime(2026, 11, 3, 23, 50, tzinfo=SAO_PAULO))
     _venda("60.00", quando=datetime(2026, 11, 5, 0, 10, tzinfo=SAO_PAULO))
     assert valor_apurado(ONTEM) == Decimal("100.00")
+
+
+@pytest.mark.parametrize("pagamento", ["Espécie", "especie", " Em  ESPÉCIE ", "dinheiro"])
+def test_x1_especie_tambem_conta_como_dinheiro(db, pagamento):
+    """X1, item 7 (decisão do grupo, 16/11/2026): "dinheiro", "espécie" e "em espécie"."""
+    _venda("80.00", pagamento)
+    assert valor_apurado(ONTEM) == Decimal("80.00")
+
+
+@pytest.mark.parametrize("pagamento", ["Cartão + dinheiro", "Dinheiro/troco", "PIX"])
+def test_x1_texto_que_so_contem_a_palavra_nao_conta_como_dinheiro(db, pagamento):
+    _venda("80.00", pagamento)
+    assert valor_apurado(ONTEM) == Decimal("0.00")
+
+
+@pytest.mark.parametrize("pagamento", [None, "", "   "])
+def test_x1_venda_sem_forma_de_pagamento_recusa_o_fechamento_do_dia(esposa, pagamento):
+    """X1, item 7: sem a forma de pagamento, o apurado sairia menor e a sobra seria falsa (RN15)."""
+    _importado()
+    _venda("100.00", "Dinheiro")
+    _venda("20.00", pagamento)
+    with pytest.raises(ErroDeRegraDeNegocio, match="1 venda de 04/11/2026 veio sem a forma de pagamento"):
+        registrar_fechamento(valor_contado=Decimal("120.00"), usuario=esposa)
+    assert not FechamentoCaixa.objects.exists()
 
 
 def test_l12_dia_sem_venda_em_dinheiro_apura_zero(db):

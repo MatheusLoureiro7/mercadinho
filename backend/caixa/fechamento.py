@@ -11,22 +11,30 @@ Decisão do grupo em 16/11/2026 (revisão X1, item 6): a esposa pode escolher o 
 se não disser nada; qualquer dia anterior cujas vendas já entraram (o sábado registrado na segunda);
 nunca hoje nem o futuro, porque as vendas do dia só entram na madrugada seguinte.
 
+Decisão do grupo em 16/11/2026 (revisão X1, item 7): contam como dinheiro "dinheiro", "espécie" e
+"em espécie", sem diferença de maiúscula, acento nem espaço a mais. Venda do dia sem forma de
+pagamento recusa o fechamento daquele dia: não dá para saber se foi dinheiro, e o apurado sairia
+menor que a gaveta — uma sobra falsa que, pela RN15, nunca mais se apaga.
+
 RN15: a diferença é calculada pelo banco (coluna gerada); correção é sempre um registro novo.
 """
 
 from datetime import date, timedelta
 from decimal import Decimal
 
-from django.db.models import Sum
-from django.db.models.functions import Lower, Trim
 from django.utils import timezone
 
 from cadastro.models import Usuario
 from caixa.models import FechamentoCaixa
+from comum.busca import sem_acento
 from comum.erros import ErroDeRegraDeNegocio
 from vendas.models import ImportacaoPdv, Venda
 
-DINHEIRO = "dinheiro"
+DINHEIRO = {"dinheiro", "especie", "em especie"}  # já sem acento e em minúsculas
+
+
+def _forma(pagamento: str | None) -> str:
+    return " ".join(sem_acento(pagamento or "").split())
 
 
 def dia_do_fechamento() -> date:
@@ -42,13 +50,14 @@ def vendas_importadas(dia: date) -> bool:
 
 def valor_apurado(dia: date) -> Decimal:
     """Soma das vendas do dia (horário da loja) pagas em dinheiro."""
-    total = (
-        Venda.objects.filter(data_hora__date=dia)
-        .alias(pagamento=Lower(Trim("forma_pagamento")))
-        .filter(pagamento=DINHEIRO)
-        .aggregate(total=Sum("valor_total"))["total"]
-    )
-    return (total or Decimal("0")).quantize(Decimal("0.01"))
+    vendas = Venda.objects.filter(data_hora__date=dia).values_list("forma_pagamento", "valor_total")
+    total = sum((valor for pagamento, valor in vendas if _forma(pagamento) in DINHEIRO), Decimal("0"))
+    return total.quantize(Decimal("0.01"))
+
+
+def _vendas_sem_forma_de_pagamento(dia: date) -> int:
+    pagamentos = Venda.objects.filter(data_hora__date=dia).values_list("forma_pagamento", flat=True)
+    return sum(1 for pagamento in pagamentos if not _forma(pagamento))
 
 
 def apurado_do_fechamento(dia: date | None = None) -> tuple[date, Decimal]:
@@ -66,6 +75,16 @@ def apurado_do_fechamento(dia: date | None = None) -> tuple[date, Decimal]:
             f"As vendas de {dia:%d/%m/%Y} ainda não entraram no sistema, então não há valor apurado "
             "para conferir. Confira se a planilha do caixa desse dia foi salva na pasta e tente "
             "depois das 03h00.",
+        )
+    sem_pagamento = _vendas_sem_forma_de_pagamento(dia)
+    if sem_pagamento:
+        vendas = "1 venda" if sem_pagamento == 1 else f"{sem_pagamento} vendas"
+        veio = "veio" if sem_pagamento == 1 else "vieram"
+        raise ErroDeRegraDeNegocio(
+            "RN15",
+            f"{vendas} de {dia:%d/%m/%Y} {veio} sem a forma de pagamento, então não dá para saber "
+            "quanto entrou em dinheiro. A planilha do caixa precisa da coluna Pagamento preenchida "
+            "em todas as linhas.",
         )
     return dia, valor_apurado(dia)
 

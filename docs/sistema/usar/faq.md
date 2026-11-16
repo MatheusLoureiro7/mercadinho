@@ -56,6 +56,11 @@ chegou". Se nada chegou fora desses casos, ver `sustentar/runbooks.md`.
 O fechamento de um dia só pode ser feito depois que a planilha daquele dia foi importada. Confira a
 planilha em Importação de vendas.
 
+**O fechamento diz que vendas vieram "sem a forma de pagamento".**
+A planilha do caixa daquele dia veio sem a coluna Pagamento, ou com linhas em branco nela. Sem isso
+não dá para saber quanto entrou em dinheiro, e o sistema não deixa registrar uma diferença falsa.
+Peça para o caixa exportar sempre a coluna Pagamento.
+
 **Esqueci de fechar o caixa de sábado. Ainda dá?**
 Dá. Na tela de Fechamento de caixa, troque o **Dia do caixa** para o sábado e registre normalmente.
 
