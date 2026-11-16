@@ -52,6 +52,10 @@ chegou". Se nada chegou fora desses casos, ver `sustentar/runbooks.md`.
 O produto está sem fornecedor no cadastro. Sem o prazo de entrega, o sistema não sabe quando é hora
 de pedir e só avisa quando acaba. Em **Produtos**, escolha o fornecedor dele.
 
+**Um produto acabou e o Sr. João não foi avisado.**
+Se o produto não vende há algum tempo (o panetone fora do Natal), o sistema não avisa que acabou:
+sem venda, não há o que repor. Quando ele voltar a vender, os avisos voltam sozinhos.
+
 **De onde vem a quantidade "Pedir 30 KG"?**
 É o que o produto deve vender no prazo de entrega do fornecedor mais 7 dias, menos o que já tem
 (L15). Produto vendido por unidade ou pacote é arredondado para cima. Ver o glossário.

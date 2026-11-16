@@ -11,6 +11,9 @@ RN10: na quinta, produto crítico de fim de semana com saldo <= ponto_pedido × 
 
 Decisões da H3 (docs/ACOMPANHAMENTO.md, 12/11/2026), as mesmas da H2 onde cabem:
 - sem ponto de pedido não há aviso: produto "ainda aprendendo" (RN09) ou sem fornecedor (G3);
+- produto sem venda no período do consumo (consumo médio zero) não avisa (decisão do grupo,
+  16/11/2026, revisão X1 item 9): o ponto de pedido sai zero e "0 ≤ 0" avisaria "acabou" todo dia,
+  com urgência alta, do panetone fora de época; quando voltar a vender, volta a avisar;
 - exceção (decisão do grupo, 16/11/2026, revisão X1 item 8): o produto sem fornecedor que vinha
   vendendo e acabou avisa, com urgência ALTA, pedindo que se cadastre o fornecedor — sem prazo de
   entrega não dá para avisar antes, mas calar com o produto zerado não serve;
@@ -146,7 +149,7 @@ def gerar_avisos_de_ruptura(*, hoje: date | None = None) -> list[Alerta]:
             saldo = saldos.get(produto.pk, Decimal(0))
             if _acabou_sem_fornecedor(previsao, saldo):
                 tipo, prefixo, severidade = Alerta.Tipo.RUPTURA, "", Alerta.Severidade.ALTA
-            elif previsao.ponto_pedido is None:
+            elif previsao.ponto_pedido is None or not previsao.consumo_medio_diario:
                 continue
             elif saldo <= previsao.ponto_pedido:
                 tipo = Alerta.Tipo.RUPTURA

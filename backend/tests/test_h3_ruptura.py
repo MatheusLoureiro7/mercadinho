@@ -176,6 +176,22 @@ def test_x1_sem_fornecedor_ainda_aprendendo_nao_avisa_que_acabou(dono):
     assert gerar_avisos_de_ruptura() == []
 
 
+def test_x1_produto_parado_e_zerado_nao_avisa_todo_dia(dono):
+    """X1, item 9 (decisão do grupo, 16/11/2026): sem venda no período não há o que acabar."""
+    panetone = _produto("Panetone 500 g", unidade="UN")
+    _previsao(panetone, ponto="0", dias="0", sugestao="0")
+    PrevisaoProduto.objects.filter(produto=panetone).update(consumo_medio_diario=Decimal("0"))
+    assert gerar_avisos_de_ruptura() == []
+
+
+def test_x1_produto_parado_e_critico_nao_avisa_pelo_fim_de_semana(dono):
+    panetone = _produto("Panetone 500 g", critico=True, unidade="UN")
+    _previsao(panetone, ponto="0", dias=None, sugestao="0")
+    PrevisaoProduto.objects.filter(produto=panetone).update(consumo_medio_diario=Decimal("0"))
+    with patch("django.utils.timezone.now", return_value=QUINTA):
+        assert gerar_avisos_de_ruptura() == []
+
+
 def test_rn08_produto_que_acabou_avisa_com_urgencia_alta(frango, dono):
     _previsao(frango, ponto="10", dias="0", sugestao="40")
     _saldo(frango, "-1.5")

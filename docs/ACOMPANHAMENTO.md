@@ -187,6 +187,19 @@ cronograma, a regra de negócio (quando houver) e o commit.
 
 ### 16/11/2026
 
+- **X1, item 9 — Produto parado e zerado avisava "acabou" todo dia (correção da revisão,
+  gravidade média).**
+  **O problema:** o aviso sai quando o saldo é igual ou menor que o ponto de pedido (RN08). Um
+  produto que não vende há 30 dias (o panetone depois do Natal) tem consumo zero e ponto de pedido
+  zero; com saldo zero, "0 ≤ 0" gerava toda madrugada um aviso "acabou" com urgência alta, no topo
+  da mensagem — o tipo de aviso repetido que faz a pessoa parar de ler os avisos de verdade.
+  **Decisão do grupo (16/11/2026):** produto **sem venda no período do consumo** não gera aviso de
+  "vai acabar" nem de fim de semana. Quando voltar a vender, a previsão recalcula e os avisos voltam
+  sozinhos. Nenhuma tabela mudou.
+  **Testes:** 2 novos (o produto parado não avisa, nem no dia a dia nem pelo fim de semana). Os 2
+  falharam antes da correção e passam depois. **1090 testes no total, todos aprovados.** FAQ
+  atualizado.
+
 - **X1, item 8 — Produto sem fornecedor nunca avisava (correção da revisão, gravidade média).**
   **O problema:** o aviso de "vai acabar" (RN08) usa o prazo de entrega do fornecedor padrão. Como o
   fornecedor é opcional no cadastro, o produto sem fornecedor nunca avisava — nem quando zerava — e
