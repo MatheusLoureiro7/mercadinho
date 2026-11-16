@@ -147,6 +147,18 @@ def test_rn05_l01_o_prazo_e_lido_por_produto(presunto, iogurte):
     assert [a.produto for a in avisos] == [presunto]
 
 
+def test_x1_prazo_e_lido_uma_vez_por_produto_e_nao_uma_vez_por_lote(presunto, iogurte):
+    """X1, item 21: com centenas de lotes, eram centenas de leituras iguais (RNF06)."""
+    for dia in range(20, 30):
+        _lote(presunto, date(2026, 9, dia))
+    _lote(iogurte, date(2026, 9, 22))
+
+    with patch("alertas.validade.dias_aviso_validade", return_value=3) as prazo:
+        _rodada()
+
+    assert sorted(chamada.args[0].nome for chamada in prazo.call_args_list) == ["Iogurte natural", "Presunto"]
+
+
 # ------------------------------------------------------------------------------------------------
 # A frase e a urgência (RNF10, L11)
 # ------------------------------------------------------------------------------------------------

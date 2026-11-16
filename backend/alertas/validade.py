@@ -43,6 +43,7 @@ def gerar_avisos_de_validade(*, hoje: date | None = None) -> list[Alerta]:
     )
 
     criados = []
+    prazos: dict[int, int] = {}  # L01: um prazo por produto, lido uma vez por rodada (X1, item 21)
     with transaction.atomic():
         # Confere "já avisei hoje?" sob a trava: duas rodadas juntas não avisam em dobro (X1, item 16).
         travar("avisos_de_validade")
@@ -54,7 +55,9 @@ def gerar_avisos_de_validade(*, hoje: date | None = None) -> list[Alerta]:
         for lote in candidatos:
             dias = (lote.data_validade - hoje).days
             # L01: o prazo é lido por produto — hoje é global; muda num lugar só quando o grupo decidir.
-            if dias > dias_aviso_validade(lote.produto) or lote.pk in ja_avisados_hoje:
+            if lote.produto_id not in prazos:
+                prazos[lote.produto_id] = dias_aviso_validade(lote.produto)
+            if dias > prazos[lote.produto_id] or lote.pk in ja_avisados_hoje:
                 continue
             # O de dias anteriores que não saiu dá lugar ao de hoje (a gravação de hoje vem logo abaixo).
             cancelar_os_abertos(Alerta.objects.filter(tipo=Alerta.Tipo.VALIDADE, lote=lote))

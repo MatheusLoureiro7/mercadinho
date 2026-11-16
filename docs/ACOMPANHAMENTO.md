@@ -187,6 +187,16 @@ cronograma, a regra de negócio (quando houver) e o commit.
 
 ### 16/11/2026
 
+- **X1, item 21 — Uma leitura do prazo de validade por lote (correção da revisão, gravidade
+  baixa).**
+  **O problema:** na madrugada, o aviso de validade lia do banco o prazo de antecedência (RN05) de
+  novo para cada lote perecível. O valor é um só (L01); com centenas de lotes, eram centenas de
+  leituras iguais, deixando a rodada mais lenta no computador antigo (RNF06).
+  **O que foi feito (técnico, sem decisão nova):** o prazo é lido uma vez por produto em cada rodada.
+  Continua "por produto", a porta deixada para quando o grupo decidir a L01.
+  **Testes:** 1 novo (onze lotes de dois produtos, duas leituras); falhou antes da correção e passa
+  depois. **1137 testes no total, todos aprovados.**
+
 - **X1, item 20 — Modo de depuração ligado na publicação (correção da revisão, gravidade baixa).**
   **O problema:** o modelo de configuração (`.env.example`) vinha com `DJANGO_DEBUG=true`, e o
   `publicar.py` subia a API com o que estivesse no `.env`. Com a depuração ligada, um endereço errado
