@@ -178,6 +178,16 @@ def test_e3_cupom_com_dois_itens_vira_uma_venda_com_a_soma(tmp_path, frango, fei
     assert venda.itens.count() == 2
 
 
+def test_x1_total_do_cupom_arredonda_cada_item_como_o_caixa(tmp_path, frango):
+    """X1, item 15 (decisão do grupo, 16/11/2026): 0,333 × 19,99 = 6,66 por item; o cupom dá 13,32."""
+    linhas = [
+        _linha(1, "Frango resfriado 1 kg", 0.333, 19.99),
+        _linha(1, "Frango resfriado 1 kg", 0.333, 19.99),
+    ]
+    importar_planilha(_planilha(tmp_path, linhas))
+    assert Venda.objects.get().valor_total == Decimal("13.32")
+
+
 def test_e3_cada_cupom_vira_uma_venda(tmp_path, feijao):
     _lote(feijao, "10", None)
     caminho = _planilha(

@@ -35,7 +35,9 @@ ordem das colunas não importa.
 ## Como cada linha vira dado no sistema
 
 - **Venda:** cada cupom vira uma linha em `venda`. O valor total é a **soma de quantidade × preço
-  unitário** dos itens do cupom, arredondada nos centavos (a planilha não traz total).
+  unitário** dos itens do cupom (a planilha não traz total), com **cada item arredondado nos
+  centavos antes de somar**, como o caixa calcula — decisão do grupo, 16/11/2026 (revisão X1, item
+  15). Antes, só a soma era arredondada, e 2 × 0,333 kg a R$ 19,99 dava 13,31 em vez de 13,32.
 - **Produto — decisão do grupo sobre a lacuna L05:** o produto é encontrado **pelo nome**,
   comparado sem diferenciar maiúscula, acento nem espaços a mais. Não se cria coluna nova em
   `produto`: o modelo de dados da Apostila IV não muda.

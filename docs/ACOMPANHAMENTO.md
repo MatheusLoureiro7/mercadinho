@@ -187,6 +187,15 @@ cronograma, a regra de negócio (quando houver) e o commit.
 
 ### 16/11/2026
 
+- **X1, item 15 — Total do cupom arredondado só no fim (correção da revisão, gravidade baixa).**
+  **O problema:** a planilha não traz o total do cupom; o sistema somava quantidade × preço de cada
+  item e só arredondava no fim. O caixa arredonda cada item: 2 × 0,333 kg a R$ 19,99 dá R$ 13,32 no
+  caixa e dava R$ 13,31 no sistema — um centavo de "sobra" falsa no fechamento.
+  **Decisão do grupo (16/11/2026):** cada item é arredondado nos centavos antes de somar, como o
+  caixa. Registrado em `docs/FORMATO-PLANILHA-CAIXA.md`. Nenhuma tabela mudou.
+  **Testes:** 1 novo, que falhou antes da correção (13,31) e passa depois (13,32). **1124 testes no
+  total, todos aprovados.**
+
 - **X1, item 14 — Erro interno com número fora do esperado (correção da revisão, gravidade baixa).**
   **O problema:** dois casos davam "Algo deu errado do nosso lado" (erro 500) em vez de uma mensagem:
   um endereço da tela de importação com texto no lugar do número (`/api/itens-pendentes/abc/casar/`),

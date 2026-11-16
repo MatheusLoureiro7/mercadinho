@@ -5,7 +5,8 @@ Importação das vendas do caixa — tarefa E3. Operação 04 da Apostila IV (RN
 
 1. Registra a importação como PENDENTE (passo 2) e lê a planilha (passo 3).
 2. Cada cupom vira uma `venda`; cada linha, um `item_venda` (passo 7). O valor total é a soma de
-   quantidade × preço unitário dos itens (E1: a planilha não traz total).
+   quantidade × preço unitário dos itens (E1: a planilha não traz total), cada item arredondado nos
+   centavos antes de somar, como o caixa faz (decisão do grupo, 16/11/2026, revisão X1 item 15).
 3. O produto é procurado pelo nome do cadastro, sem diferença de maiúscula, acento nem espaço a mais
    (decisão L05). Linha que não casa fica com o item sem produto, pendente de revisão, e NÃO trava
    as demais (passo 6). Nome que existe em duas categorias também fica pendente: não se chuta.
@@ -120,10 +121,13 @@ def _gravar(linhas: list[LinhaDeVenda], produtos: dict[str, Produto | None]) -> 
     pendentes = 0
     for itens in por_cupom.values():
         primeira = itens[0]
-        total = sum((item.quantidade * item.preco for item in itens), Decimal(0))
+        total = sum(
+            ((item.quantidade * item.preco).quantize(CENTAVO, rounding=ROUND_HALF_UP) for item in itens),
+            Decimal(0),
+        )
         venda = Venda.objects.create(
             data_hora=primeira.data_hora,
-            valor_total=total.quantize(CENTAVO, rounding=ROUND_HALF_UP),
+            valor_total=total,
             forma_pagamento=primeira.pagamento,
         )
         for item in itens:
