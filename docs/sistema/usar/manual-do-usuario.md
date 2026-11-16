@@ -61,7 +61,9 @@ rodada das 03h00 importa. Nesta tela:
   data, hora, quantidade e preço; ache a linha na planilha, toque em **Escolher o produto**,
   procure e toque em **Ligar a este produto**. A venda sai do estoque no dia em que aconteceu.
 - **Planilhas lidas** — as últimas 30, com a situação: *Lida*, *Lida, com vendas a conferir* ou
-  *Não foi lida* (essa é tentada de novo na madrugada seguinte).
+  *Não foi lida* (essa é tentada de novo na madrugada seguinte). Basta uma linha fora do formato —
+  hora "9h30" em vez de "09:30", por exemplo — para a planilha inteira não entrar: corrija a linha
+  no Excel e salve de novo na pasta. Assim nenhuma venda some do fechamento de caixa.
 - O nome do arquivo não importa: o sistema reconhece as vendas pelo dia. Um dia que já entrou não
   entra de novo, nem salvo com outro nome; e o caixa pode gravar sempre por cima do mesmo arquivo.
 - Para a mesma venda não ficar pendente todo dia, deixe o nome do produto no cadastro igual ao do caixa.

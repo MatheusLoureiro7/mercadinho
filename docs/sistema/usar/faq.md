@@ -6,7 +6,9 @@ do ar, aviso que não sai) está nos runbooks: `sustentar/runbooks.md`.
 **A venda de ontem não apareceu.**
 As vendas entram de madrugada, às 03h00, a partir da planilha do caixa salva na pasta combinada.
 Veja em **Importação de vendas → Planilhas lidas**: se a planilha "Não foi lida", confira se é do
-Excel (.xlsx) e tem as colunas combinadas; ela é tentada de novo na madrugada seguinte.
+Excel (.xlsx), se tem as colunas combinadas e se cada linha está no formato (data dd/mm/aaaa, hora
+hh:mm, quantidade e preço com números): uma única linha errada impede a planilha inteira de entrar.
+Corrija e salve de novo na pasta; ela é tentada de novo na madrugada seguinte.
 
 **Salvei a planilha do mesmo dia duas vezes, com nomes diferentes. A venda vai contar em dobro?**
 Não. O sistema reconhece as vendas pelo dia, não pelo nome do arquivo: o dia que já entrou é

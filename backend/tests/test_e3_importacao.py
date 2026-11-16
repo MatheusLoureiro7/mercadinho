@@ -27,6 +27,8 @@ from django.core.management.base import CommandError
 from openpyxl import Workbook
 
 from cadastro.models import Categoria, Produto
+from caixa.fechamento import apurado_do_fechamento
+from comum.erros import ErroDeRegraDeNegocio
 from estoque.models import Lote, Movimentacao
 from estoque.saldo import saldo_do_produto
 from previsao.consumo import vendido_no_periodo
@@ -301,14 +303,47 @@ def test_e3_tudo_certo_fica_ok_com_a_data_das_vendas(tmp_path, feijao):
     assert importacao.processado_em is not None
 
 
-def test_e3_linha_invalida_nao_e_gravada_e_a_importacao_fica_parcial(tmp_path, feijao):
+def test_e3_linha_invalida_recusa_a_planilha_inteira_e_nada_e_gravado(tmp_path, feijao):
+    """X1, item 2 (decisão do grupo, 16/11/2026): linha que não pode ser lida não pode sumir das vendas."""
     _lote(feijao, "10", None)
     caminho = _planilha(
         tmp_path, [_linha(1, "Feijão carioca 1 kg", 1, 8.99), _linha(2, "Feijão carioca 1 kg", 0, 8.99)]
     )
     importacao = importar_planilha(caminho)
-    assert Venda.objects.count() == 1
-    assert (importacao.status, importacao.linhas_lidas, importacao.linhas_erro) == ("PARCIAL", 2, 1)
+    assert (importacao.status, importacao.linhas_lidas, importacao.linhas_erro) == ("ERRO", 2, 1)
+    assert not Venda.objects.exists() and not ItemVenda.objects.exists()
+    assert saldo_do_produto(feijao) == Decimal("10")
+
+
+def test_e3_planilha_recusada_por_linha_invalida_entra_depois_de_corrigida(tmp_path, feijao):
+    _lote(feijao, "10", None)
+    estragada = [
+        _linha(1, "Feijão carioca 1 kg", 1, 8.99),
+        _linha(2, "Feijão carioca 1 kg", 2, 8.99, hora="9h30"),
+    ]
+    importar_planilha(_planilha(tmp_path, estragada))
+    corrigida = [
+        _linha(1, "Feijão carioca 1 kg", 1, 8.99),
+        _linha(2, "Feijão carioca 1 kg", 2, 8.99, hora=time(9, 30)),
+    ]
+    importacao = importar_planilha(_planilha(tmp_path, corrigida))
+    assert (importacao.status, importacao.linhas_lidas) == ("OK", 2)
+    assert saldo_do_produto(feijao) == Decimal("7")
+
+
+def test_e3_linha_invalida_nao_deixa_o_caixa_fechar_com_o_apurado_errado(tmp_path, feijao):
+    """X1, item 2: o cupom de R$ 200,00 com a hora "9h30" virava uma sobra falsa de R$ 200,00."""
+    _lote(feijao, "10", None)
+    linhas = [
+        _linha(1, "Feijão carioca 1 kg", 1, 20, pagamento="Dinheiro"),
+        _linha(2, "Feijão carioca 1 kg", 1, 200, hora="9h30", pagamento="Dinheiro"),
+    ]
+    importar_planilha(_planilha(tmp_path, linhas))
+    with (
+        patch("django.utils.timezone.now", return_value=datetime(2026, 11, 6, 9, 0, tzinfo=SAO_PAULO)),
+        pytest.raises(ErroDeRegraDeNegocio, match="ainda não entraram"),
+    ):
+        apurado_do_fechamento()
 
 
 def test_e3_arquivo_ilegivel_fica_com_erro_e_nada_e_gravado(tmp_path, db):

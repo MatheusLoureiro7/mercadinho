@@ -13,7 +13,9 @@ causa do sistema (RNF07)** — o pior caso é o aviso atrasar.
 
 ## R2 — A planilha do caixa não foi lida
 **Sintoma:** Importação de vendas mostra "Não foi lida", ou o fechamento diz que as vendas não entraram.
-1. Conferir se o arquivo é `.xlsx` e tem as colunas de `docs/FORMATO-PLANILHA-CAIXA.md`.
+1. Conferir se o arquivo é `.xlsx` e tem as colunas de `docs/FORMATO-PLANILHA-CAIXA.md`. No log da
+   rodada, procurar a linha com problema ("vendas.xlsx, linha 3: Hora não é uma hora no formato
+   hh:mm"): uma linha fora do formato recusa a planilha inteira (X1, item 2).
 2. Salvar a planilha corrigida na pasta (`PASTA_VENDAS_CAIXA`). Ela entra na próxima madrugada, ou
    agora: `python backend/manage.py importar_vendas`. Dia de venda que já entrou não
    entra de novo, qualquer que seja o nome do arquivo; a planilha com o nome de uma já lida entra se

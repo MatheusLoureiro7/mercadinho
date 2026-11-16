@@ -48,8 +48,13 @@ ordem das colunas não importa.
   a planilha inteira for de dias que já entraram, ela é recusada e não deixa registro. O caixa pode
   gravar sempre o mesmo nome (`vendas.xlsx`): o arquivo regravado depois da última leitura é lido.
 - **Situação da importação:** `OK` se todas as linhas foram lidas e casaram; `PARCIAL` se alguma
-  ficou pendente ou com erro; `ERRO` se o arquivo não pôde ser lido (não é `.xlsx` ou falta coluna
-  obrigatória).
+  ficou pendente (produto não reconhecido); `ERRO` se o arquivo não pôde ser lido (não é `.xlsx` ou
+  falta coluna obrigatória) **ou se alguma linha não pôde ser lida** (data, hora, quantidade ou
+  preço fora do formato) — e aí nada da planilha entra.
+- **Linha que não pode ser lida — decisão do grupo, 16/11/2026 (revisão X1, item 2):** antes, a
+  planilha entrava `PARCIAL` sem essa linha, e a venda dela sumia do apurado do fechamento de caixa
+  (RN15), sem conserto, porque o dia já estava importado. Agora a planilha inteira é recusada; o
+  número da linha e o motivo ficam no registro da rodada. Corrigida e salva de novo, ela entra.
 
 ## Diferenças em relação ao texto da Apostila IV
 
