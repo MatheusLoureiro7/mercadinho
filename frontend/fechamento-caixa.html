@@ -57,7 +57,7 @@
       <!-- Fluxograma 06 (RF12, RN15). Só o dinheiro contado é digitado: o apurado vem do sistema e a
            diferença é calculada — na tela só para mostrar antes de confirmar; quem grava é o banco. -->
       <section class="cartao" aria-labelledby="titulo-formulario">
-        <h2 class="cartao__titulo" id="titulo-formulario">Conferir o caixa de hoje<span id="data-de-hoje"></span></h2>
+        <h2 class="cartao__titulo" id="titulo-formulario">Conferir o caixa</h2>
 
         <p class="sucesso" id="sucesso" role="status" hidden>
           <svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6L9 17l-5-5" /></svg>
@@ -69,14 +69,25 @@
           <ul id="lista-de-erros"></ul>
         </div>
 
-        <dl class="conferencia">
-          <div class="conferencia__item">
-            <dt>Apurado pelo sistema</dt>
-            <dd id="valor-apurado">Procurando…</dd>
-          </div>
-        </dl>
-
         <form id="formulario" novalidate>
+          <!-- X1, item 6 (decisão do grupo, 16/11/2026): ontem, já preenchido; dá para escolher um dia
+               anterior que ficou para trás. Hoje e o futuro, não: as vendas só entram de madrugada. -->
+          <div class="formulario__grade">
+            <div class="campo">
+              <label for="campo-dia">Dia do caixa<span class="obrigatorio" aria-hidden="true">*</span></label>
+              <input id="campo-dia" name="data" type="date" required aria-describedby="ajuda-dia erro-data" />
+              <p class="campo__ajuda" id="ajuda-dia">Ontem, normalmente. Mude para fechar um dia que ficou para trás.</p>
+              <p class="campo__erro" id="erro-data" hidden></p>
+            </div>
+          </div>
+
+          <dl class="conferencia">
+            <div class="conferencia__item">
+              <dt>Apurado pelo sistema</dt>
+              <dd id="valor-apurado" aria-live="polite">Procurando…</dd>
+            </div>
+          </dl>
+
           <div class="formulario__grade">
             <div class="campo">
               <label for="campo-contado">Dinheiro contado<span class="obrigatorio" aria-hidden="true">*</span></label>
@@ -99,7 +110,7 @@
 
       <!-- RN15: registro nunca é alterado nem apagado. Contou de novo, é um registro novo. -->
       <section class="cartao" aria-labelledby="titulo-lista">
-        <h2 class="cartao__titulo" id="titulo-lista">Fechamentos de hoje</h2>
+        <h2 class="cartao__titulo" id="titulo-lista">Fechamentos do dia</h2>
         <p class="pagina__descricao">Contou de novo? Registre outra vez: o registro anterior continua aqui, como manda a regra.</p>
 
         <p class="visualmente-oculto" id="anuncio-lista" aria-live="polite"></p>

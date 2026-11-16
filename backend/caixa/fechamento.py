@@ -7,6 +7,10 @@ Decisões do grupo em 05/11/2026 (lacuna L12):
   dinheiro à noite e registra na manhã seguinte. Sem as vendas daquele dia, o fechamento é recusado:
   o apurado sairia zero e a "diferença" seria falsa.
 
+Decisão do grupo em 16/11/2026 (revisão X1, item 6): a esposa pode escolher o dia do caixa — ontem,
+se não disser nada; qualquer dia anterior cujas vendas já entraram (o sábado registrado na segunda);
+nunca hoje nem o futuro, porque as vendas do dia só entram na madrugada seguinte.
+
 RN15: a diferença é calculada pelo banco (coluna gerada); correção é sempre um registro novo.
 """
 
@@ -47,8 +51,15 @@ def valor_apurado(dia: date) -> Decimal:
     return (total or Decimal("0")).quantize(Decimal("0.01"))
 
 
-def apurado_do_fechamento() -> tuple[date, Decimal]:
-    dia = dia_do_fechamento()
+def apurado_do_fechamento(dia: date | None = None) -> tuple[date, Decimal]:
+    dia = dia or dia_do_fechamento()
+    if dia >= timezone.localdate():
+        raise ErroDeRegraDeNegocio(
+            "RN15",
+            f"O caixa de {dia:%d/%m/%Y} só pode ser fechado depois que as vendas do dia entrarem no "
+            "sistema, na madrugada seguinte. Escolha um dia que já passou.",
+            campo="data",
+        )
     if not vendas_importadas(dia):
         raise ErroDeRegraDeNegocio(
             "RN15",
@@ -59,8 +70,10 @@ def apurado_do_fechamento() -> tuple[date, Decimal]:
     return dia, valor_apurado(dia)
 
 
-def registrar_fechamento(*, valor_contado: Decimal, usuario: Usuario | None) -> FechamentoCaixa:
-    dia, apurado = apurado_do_fechamento()
+def registrar_fechamento(
+    *, valor_contado: Decimal, usuario: Usuario | None, data: date | None = None
+) -> FechamentoCaixa:
+    dia, apurado = apurado_do_fechamento(data)
     fechamento = FechamentoCaixa.objects.create(
         data=dia, valor_sistema=apurado, valor_contado=valor_contado, registrado_por=usuario
     )

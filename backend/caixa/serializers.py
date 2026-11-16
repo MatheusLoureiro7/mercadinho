@@ -1,8 +1,9 @@
 """
 Fechamento de caixa — o que a API recebe e devolve. Tarefa I1 (RN15).
 
-A tela manda só o dinheiro contado. Data, apurado e diferença são do sistema: se a tela mandar,
-são ignorados (RN15 — a diferença é calculada, nunca digitada).
+A tela manda o dinheiro contado e, se quiser, o dia do caixa (X1, item 6; sem ele, ontem). Apurado e
+diferença são do sistema: se a tela mandar, são ignorados (RN15 — a diferença é calculada, nunca
+digitada).
 """
 
 from rest_framework import serializers
@@ -24,6 +25,10 @@ class DinheiroContadoSerializer(serializers.Serializer):
             "max_whole_digits": "Valor grande demais para o caixa.",
             "invalid": "Escreva o valor só com número, por exemplo 3215.00.",
         },
+    )
+    data = serializers.DateField(
+        required=False,
+        error_messages={"invalid": "Use a data no formato AAAA-MM-DD."},
     )
 
 

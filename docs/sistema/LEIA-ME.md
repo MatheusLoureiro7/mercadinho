@@ -20,7 +20,7 @@ documento) · **Gerado** (sai do código; um teste falha se ficar velho).
 | Pergunta | Documento (slides) | Arquivo | Situação | Atualizado em |
 |---|---|---|---|---|
 | Usar | Manual do usuário | `usar/manual-do-usuario.md` | Pronto | 16/11/2026 |
-| Usar | Guia de início rápido | `usar/inicio-rapido.md` | Pronto | 13/11/2026 |
+| Usar | Guia de início rápido | `usar/inicio-rapido.md` | Pronto | 16/11/2026 |
 | Usar | FAQ | `usar/faq.md` | Pronto | 16/11/2026 |
 | Usar | Glossário de negócio | `usar/glossario.md` | Pronto | 13/11/2026 |
 | Usar | Release notes do usuário | `usar/novidades.md` | Pronto | 13/11/2026 |

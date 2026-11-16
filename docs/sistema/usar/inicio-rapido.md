@@ -1,6 +1,6 @@
 # Guia de início rápido
 
-*Atualizado em 13/11/2026.* Os primeiros passos de cada pessoa, em poucos minutos. O manual completo
+*Atualizado em 16/11/2026.* Os primeiros passos de cada pessoa, em poucos minutos. O manual completo
 está em `usar/manual-do-usuario.md`.
 
 ## Antes do primeiro dia (a equipe faz uma vez)
@@ -23,7 +23,8 @@ está em `usar/manual-do-usuario.md`.
 
 ## Esposa — 3 minutos
 1. Entre com o seu login.
-2. De manhã: **Fechamento de caixa** → digite o dinheiro contado na gaveta ontem → **Registrar fechamento**.
+2. De manhã: **Fechamento de caixa** → o dia já vem com ontem → digite o dinheiro contado na gaveta →
+   **Registrar fechamento**.
 3. Segunda-feira: **Balanço da semana** → **Semana anterior** para ver a semana fechada.
 
 ## Sr. João — 1 minuto

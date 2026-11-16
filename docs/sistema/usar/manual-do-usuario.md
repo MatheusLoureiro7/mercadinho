@@ -81,10 +81,12 @@ só por Avarias e quebras. Produto novo aparece como "ainda aprendendo" até ter
 ## Telas da esposa
 
 ### Fechamento de caixa (RF12, RN15)
-De manhã, confira o caixa **do dia anterior** (as vendas de ontem entram de madrugada). Digite só o
-**dinheiro contado**: o sistema mostra o apurado (vendas em dinheiro do dia) e a diferença antes de
-registrar. Registro não se altera nem se apaga: contou de novo, registra de novo, e o anterior fica.
-Se as vendas do dia ainda não entraram, a tela explica e não deixa registrar.
+De manhã, confira o caixa **do dia anterior** (as vendas de ontem entram de madrugada). O **Dia do
+caixa** já vem com ontem; para fechar um dia que ficou para trás (o sábado, fechado na segunda), troque
+a data. Hoje e os dias que ainda não chegaram não podem ser fechados. Digite o **dinheiro contado**: o
+sistema mostra o apurado (vendas em dinheiro daquele dia) e a diferença antes de registrar. Registro
+não se altera nem se apaga: contou de novo, registra de novo, e o anterior fica. Se as vendas do dia
+escolhido ainda não entraram, a tela explica e não deixa registrar.
 
 ### Balanço da semana (RF13)
 Vendas, perdas e resultado de **segunda a domingo**, no lugar do caderno:

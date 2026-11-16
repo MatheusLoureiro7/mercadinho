@@ -54,12 +54,15 @@ def test_i2_tela_exige_login_e_o_perfil_do_fechamento():
     )
 
 
-def test_i2_rn15_so_o_dinheiro_contado_e_digitado():
-    """Nem a diferença nem o apurado têm campo: um é calculado, o outro vem do sistema (RN15)."""
+def test_i2_rn15_so_o_dinheiro_contado_e_o_dia_do_caixa_sao_digitados():
+    """
+    Nem a diferença nem o apurado têm campo: um é calculado, o outro vem do sistema (RN15). O dia do
+    caixa é escolhido desde a revisão X1, item 6 (decisão do grupo, 16/11/2026).
+    """
     html = (FRONTEND / TELA).read_text(encoding="utf-8")
 
     campos = set(re.findall(r'<(?:input|select|textarea)[^>]*\bname="([\w]+)"', html))
-    assert campos == {"valor_contado"}
+    assert campos == {"valor_contado", "data"}
 
 
 def test_i2_rn15_tela_nao_altera_nem_apaga_fechamento():
@@ -178,7 +181,8 @@ def test_i2_rn15_registra_e_mostra_na_lista_do_dia(tela, caixa):
     _contar(tela, "3.215,00")
     tela.click("#botao-salvar")
 
-    assert caixa.recebidos == [{"valor_contado": "3215.00"}]  # só o contado: data, apurado e diferença não
+    # Só o contado e o dia do caixa (X1, item 6): apurado e diferença, nunca.
+    assert caixa.recebidos == [{"valor_contado": "3215.00", "data": tela.input_value("#campo-dia")}]
     expect(tela.locator("#sucesso")).to_contain_text("Fechamento registrado")
     linha = tela.locator("#corpo-tabela tr").first
     expect(linha).to_contain_text("19:00")

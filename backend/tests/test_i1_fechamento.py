@@ -235,10 +235,53 @@ def test_i1_api_registra_e_devolve_o_registro(api, dia_de_3240):
     assert corpo["registrado_por_nome"] == "Dona Maria" and corpo["registrado_em"]
 
 
-def test_rn15_api_ignora_apurado_diferenca_e_data_mandados_pela_tela(api, dia_de_3240):
-    dados = {"valor_contado": "3215.00", "valor_sistema": "3215.00", "diferenca": "0", "data": "2026-11-05"}
+def test_rn15_api_ignora_apurado_e_diferenca_mandados_pela_tela(api, dia_de_3240):
+    dados = {"valor_contado": "3215.00", "valor_sistema": "3215.00", "diferenca": "0"}
     corpo = api("post", dados=dados).json()
     assert (corpo["valor_sistema"], corpo["diferenca"], corpo["data"]) == ("3240.00", "-25.00", "2026-11-04")
+
+
+# X1, item 6 (decisão do grupo, 16/11/2026): a esposa escolhe o dia do caixa — ontem, se não disser
+# nada; qualquer dia anterior cujas vendas já entraram; nunca hoje nem o futuro.
+
+
+@pytest.fixture
+def sabado_esquecido(db):
+    _importado(dia=date(2026, 10, 31))
+    _venda("50.00", quando=datetime(2026, 10, 31, 9, 0, tzinfo=SAO_PAULO))
+    return date(2026, 10, 31)
+
+
+def test_x1_api_apurado_de_um_dia_anterior_escolhido(api, sabado_esquecido):
+    resposta = api("get", URL + "apurado/?data=2026-10-31")
+    assert resposta.json() == {"data": "2026-10-31", "valor_sistema": "50.00"}
+
+
+def test_x1_api_fecha_um_dia_anterior_escolhido(api, sabado_esquecido):
+    corpo = api("post", dados={"valor_contado": "60.00", "data": "2026-10-31"}).json()
+    assert (corpo["data"], corpo["valor_sistema"], corpo["diferenca"]) == ("2026-10-31", "50.00", "10.00")
+
+
+@pytest.mark.parametrize("dia", ["2026-11-05", "2026-11-06"])
+def test_x1_api_caixa_de_hoje_ou_do_futuro_e_recusado(api, dia):
+    _importado(dia=date.fromisoformat(dia))
+    resposta = api("post", dados={"valor_contado": "60.00", "data": dia})
+    assert resposta.status_code == 400
+    assert resposta.json()["erro"]["regra"] == "RN15"
+    assert "depois que as vendas do dia entrarem" in resposta.json()["erro"]["mensagem"]
+    assert api("get", URL + f"apurado/?data={dia}").status_code == 400
+    assert not FechamentoCaixa.objects.exists()
+
+
+def test_x1_api_dia_escolhido_sem_vendas_importadas_diz_qual_dia(api, esposa):
+    resposta = api("get", URL + "apurado/?data=2026-10-30")
+    assert resposta.status_code == 400 and "30/10/2026" in resposta.json()["erro"]["mensagem"]
+
+
+def test_x1_api_dia_do_caixa_em_formato_errado_aponta_o_campo(api, sabado_esquecido):
+    assert "data" in api("get", URL + "apurado/?data=31/10/2026").json()["erro"]["campos"]
+    resposta = api("post", dados={"valor_contado": "60.00", "data": "31/10/2026"})
+    assert resposta.status_code == 400 and "data" in resposta.json()["erro"]["campos"]
 
 
 @pytest.mark.parametrize(
@@ -323,3 +366,26 @@ def test_i1_pela_tela_vendas_nao_importadas_avisa_e_trava(page, painel, esposa_n
         abrir_tela(page, painel, esposa_na_tela, "fechamento-caixa.html")
         expect(page.locator("#indisponivel")).to_contain_text(re.compile(r"vendas de 04/11/2026"))
         expect(page.locator("#botao-salvar")).to_be_disabled()
+
+
+@pytest.mark.tela
+def test_x1_pela_tela_a_esposa_fecha_o_caixa_de_um_dia_que_ficou_para_tras(page, painel, esposa_na_tela):
+    """X1, item 6: o sábado 31/10 fechado na quinta 05/11; ontem (04/11) não teve vendas importadas."""
+    _importado(dia=date(2026, 10, 31))
+    _venda("50.00", quando=datetime(2026, 10, 31, 9, 0, tzinfo=SAO_PAULO))
+    with patch("django.utils.timezone.now", return_value=MANHA_DE_HOJE):
+        page.clock.set_fixed_time(MANHA_DE_HOJE)
+        abrir_tela(page, painel, esposa_na_tela, "fechamento-caixa.html")
+        expect(page.locator("#campo-dia")).to_have_value("2026-11-04")
+        expect(page.locator("#indisponivel")).to_contain_text("vendas de 04/11/2026")
+        expect(page.locator("#botao-salvar")).to_be_disabled()
+
+        page.fill("#campo-dia", "2026-10-31")
+        expect(page.locator("#valor-apurado")).to_have_text("R$ 50,00")
+        expect(page.locator("#titulo-formulario")).to_contain_text("31/10/2026")
+        expect(page.locator("#indisponivel")).to_be_hidden()
+        page.fill("#campo-contado", "50,00")
+        page.click("#botao-salvar")
+        expect(page.locator("#sucesso")).to_contain_text("O caixa bateu.")
+        expect(page.locator("#corpo-tabela")).to_contain_text("Dona Maria")
+    assert FechamentoCaixa.objects.get().data == date(2026, 10, 31)

@@ -187,6 +187,23 @@ cronograma, a regra de negócio (quando houver) e o commit.
 
 ### 16/11/2026
 
+- **X1, item 6 — O caixa só podia ser fechado no dia seguinte (correção da revisão, gravidade
+  média).**
+  **O problema:** a tela de fechamento sempre fechava "ontem", sem poder escolher. Se ninguém abrisse
+  o sistema no dia seguinte (o sábado, numa loja que não abre domingo) ou se a rodada das 03h00
+  falhasse, aquele dia nunca mais podia ser fechado.
+  **Decisão do grupo (16/11/2026):** a tela ganhou o campo **"Dia do caixa"**, já preenchido com
+  ontem. A esposa pode escolher um dia anterior cujas vendas já entraram; hoje e o futuro continuam
+  recusados, porque as vendas do dia só entram de madrugada. Na API, `?data=` no apurado e `data`
+  opcional no registro; sem a data, continua sendo ontem. Nenhuma tabela mudou. A tela passou pela
+  UI UX Pro Max: campo de data nativo do navegador, com rótulo, ajuda e erro embaixo do campo; se o
+  dia escolhido não tem vendas, a tela explica e trava só a contagem, deixando trocar o dia.
+  **Testes:** 6 novos de API (apurado e registro de um dia anterior, hoje e futuro recusados, dia sem
+  vendas, data em formato errado) e 1 de tela, de ponta a ponta: o sábado fechado na quinta. Os 7
+  falharam antes da correção e passam depois. Dois testes antigos mudaram de propósito: a tela agora
+  digita e manda também o dia (apurado e diferença continuam fora). **1075 testes no total, todos
+  aprovados.** Manual, FAQ e Guia de início rápido atualizados.
+
 - **X1, item 5 — Depois do "Sim, pedir", o produto ficava calado para sempre (correção da revisão,
   gravidade média).**
   **O problema:** depois que o Sr. João toca em "Sim, pedir", o sistema para de avisar sobre aquele

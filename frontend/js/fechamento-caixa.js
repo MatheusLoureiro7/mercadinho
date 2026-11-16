@@ -2,17 +2,19 @@
  * Tela de Fechamento de caixa — tarefa I2 (RF12, RN15, fluxograma 06). Usada pela esposa (GESTAO,
  * RN14): confere o dinheiro contado contra o apurado no dia.
  *
- * Só o dinheiro contado é digitado. O apurado vem do sistema — a soma das vendas do dia pagas em
- * dinheiro (L12) — e a diferença (contado − apurado) é calculada: aqui, só para mostrar antes de
- * confirmar; quem grava é o banco, numa coluna gerada (RN15). Correção é um registro novo — a tela
+ * Digitados: o dinheiro contado e o dia do caixa. O apurado vem do sistema — a soma das vendas do dia
+ * pagas em dinheiro (L12) — e a diferença (contado − apurado) é calculada: aqui, só para mostrar antes
+ * de confirmar; quem grava é o banco, numa coluna gerada (RN15). Correção é um registro novo — a tela
  * nunca altera nem apaga.
  *
  * API (tarefa I1):
- *   GET  fechamentos/apurado/                 → { data, valor_sistema } do dia do fechamento
+ *   GET  fechamentos/apurado/?data=AAAA-MM-DD → { data, valor_sistema } do dia escolhido
  *   GET  fechamentos/?data=AAAA-MM-DD         → registros do dia, o mais novo primeiro
- *   POST fechamentos/ { valor_contado }        → o registro gravado (data e apurado: o servidor)
- * O fechamento é do dia anterior (L12): as vendas do dia entram às 03h00 do dia seguinte. Se as
- * vendas daquele dia ainda não entraram, a API recusa (RN15) e a tela mostra o motivo e trava.
+ *   POST fechamentos/ { valor_contado, data }  → o registro gravado (apurado e diferença: o servidor)
+ * O dia vem preenchido com ontem (L12): as vendas do dia entram às 03h00 do dia seguinte. Dá para
+ * escolher um dia anterior que ficou para trás (X1, item 6, decisão do grupo de 16/11/2026). Se as
+ * vendas daquele dia ainda não entraram, a API recusa (RN15): a tela mostra o motivo e trava a
+ * contagem, mas deixa trocar o dia.
  */
 
 import { api } from "./api.js";
@@ -21,11 +23,14 @@ import { dataBrasileira, diaNaLoja, emReais, horaNaLoja } from "./formatos.js";
 import { apagarErroAoCorrigir, celula, confirmar, limparErros, linhaVazia, mostrarErroNoCampo, mostrarErros } from "./formulario.js";
 import { entrarNaTela } from "./sessao.js";
 
-// Exatamente o que a tela manda para a API. Um teste confere que é o único campo digitado.
-const CAMPOS = { valor_contado: { id: "campo-contado", rotulo: "Dinheiro contado" } };
+// Exatamente o que a tela manda para a API. Um teste confere que são os únicos campos digitados.
+const CAMPOS = {
+  data: { id: "campo-dia", rotulo: "Dia do caixa" },
+  valor_contado: { id: "campo-contado", rotulo: "Dinheiro contado" },
+};
 const COLUNAS = 5;
 
-const estado = { hoje: diaNaLoja(), quando: "hoje", apuradoEmCentavos: null };
+const estado = { dia: null, quando: "", apuradoEmCentavos: null };
 
 const $ = (id) => document.getElementById(id);
 
@@ -36,44 +41,70 @@ document.addEventListener("DOMContentLoaded", iniciar);
 async function iniciar() {
   if (!(await entrarNaTela("fechamento_caixa"))) return;
 
-  const apurado = await api.ler("fechamentos/apurado/", { data: estado.hoje });
-  if (!apurado.ok) {
-    travarFormulario();
-    const semVendasDoDia = apurado.erro && apurado.erro.regra === "RN15";
-    if (apurado.status === 404 || semVendasDoDia) {
-      // RN15/L12: sem as vendas do dia no sistema não há apurado para conferir; a API diz qual dia.
-      if (semVendasDoDia) $("indisponivel").querySelector("span").textContent = apurado.erro.mensagem;
-      $("indisponivel").hidden = false;
-      $("valor-apurado").textContent = "—";
-      $("corpo-tabela").append(linhaVazia(COLUNAS, "Nenhum fechamento hoje.", ""));
-    } else {
-      $("valor-apurado").textContent = "—";
-      $("corpo-tabela").append(linhaDeFalha(apurado.erro, COLUNAS, () => window.location.reload()));
-    }
-    return;
-  }
-  if (apurado.dados.data) estado.hoje = apurado.dados.data; // o dia que vale é o do sistema
-  if (estado.hoje === diaNaLoja()) {
-    $("data-de-hoje").textContent = " · " + dataBrasileira(estado.hoje);
-  } else {
-    // L12: o fechamento é do dia anterior — as vendas do dia só entram às 03h00 do dia seguinte.
-    estado.quando = "em " + dataBrasileira(estado.hoje);
-    $("titulo-formulario").textContent = "Conferir o caixa de " + dataBrasileira(estado.hoje);
-    $("titulo-lista").textContent = "Fechamentos de " + dataBrasileira(estado.hoje);
-  }
-  estado.apuradoEmCentavos = centavos(apurado.dados.valor_sistema);
-  $("valor-apurado").textContent = emReais(apurado.dados.valor_sistema);
-
+  const ontem = ontemNaLoja();
+  $("campo-dia").max = ontem;
+  $("campo-dia").value = ontem;
+  $("campo-dia").addEventListener("change", () => {
+    if ($("campo-dia").value) carregarDia($("campo-dia").value);
+  });
   $("formulario").addEventListener("submit", registrar);
   $("campo-contado").addEventListener("input", mostrarDiferenca);
   apagarErroAoCorrigir(CAMPOS);
-  carregarLista();
-  $("campo-contado").focus();
+
+  await carregarDia(ontem);
+  if (!$("campo-contado").disabled) $("campo-contado").focus();
 }
 
-function travarFormulario() {
-  $("campo-contado").disabled = true;
-  $("botao-salvar").disabled = true;
+/** O dia anterior no calendário da loja (São Paulo), em AAAA-MM-DD. */
+function ontemNaLoja() {
+  const [ano, mes, dia] = diaNaLoja().split("-").map(Number);
+  return new Date(Date.UTC(ano, mes - 1, dia - 1)).toISOString().slice(0, 10);
+}
+
+async function carregarDia(dia) {
+  estado.dia = dia;
+  estado.quando = "em " + dataBrasileira(dia);
+  estado.apuradoEmCentavos = null;
+  $("titulo-formulario").textContent = "Conferir o caixa de " + dataBrasileira(dia);
+  $("titulo-lista").textContent = "Fechamentos de " + dataBrasileira(dia);
+  $("indisponivel").hidden = true;
+  $("valor-apurado").textContent = "Procurando…";
+  limparErros(CAMPOS);
+  confirmar(null);
+  mostrarDiferenca();
+
+  const apurado = await api.ler("fechamentos/apurado/", { data: dia });
+  if (dia !== estado.dia) return; // a pessoa já trocou de dia enquanto este chegava
+  if (!apurado.ok) {
+    liberarContagem(false);
+    $("valor-apurado").textContent = "—";
+    const semVendasDoDia = apurado.erro && apurado.erro.regra === "RN15";
+    if (semVendasDoDia) {
+      // RN15/L12: sem as vendas do dia no sistema não há apurado para conferir; a API diz qual dia.
+      $("indisponivel").querySelector("span").textContent = apurado.erro.mensagem;
+      $("indisponivel").hidden = false;
+      carregarLista();
+    } else if (apurado.status === 404) {
+      $("campo-dia").disabled = true;
+      $("indisponivel").hidden = false;
+      $("corpo-tabela").textContent = "";
+      $("corpo-tabela").append(linhaVazia(COLUNAS, "Nenhum fechamento " + estado.quando + ".", ""));
+    } else {
+      $("corpo-tabela").textContent = "";
+      $("corpo-tabela").append(linhaDeFalha(apurado.erro, COLUNAS, () => carregarDia(dia)));
+    }
+    return;
+  }
+  liberarContagem(true);
+  estado.apuradoEmCentavos = centavos(apurado.dados.valor_sistema);
+  $("valor-apurado").textContent = emReais(apurado.dados.valor_sistema);
+  mostrarDiferenca();
+  carregarLista();
+}
+
+function liberarContagem(liberar) {
+  $("campo-contado").disabled = !liberar;
+  $("botao-salvar").disabled = !liberar;
 }
 
 // ------------------------------------------------------------------------------------------ Dinheiro
@@ -147,7 +178,7 @@ async function registrar(evento) {
 
   const botao = $("botao-salvar");
   botao.disabled = true;
-  const resposta = await api.criar("fechamentos/", { valor_contado: contado });
+  const resposta = await api.criar("fechamentos/", { valor_contado: contado, data: estado.dia });
   botao.disabled = false;
 
   if (!resposta.ok) {
@@ -167,7 +198,9 @@ async function registrar(evento) {
 
 async function carregarLista() {
   const corpo = $("corpo-tabela");
-  const resposta = await api.ler("fechamentos/", { data: estado.hoje });
+  const dia = estado.dia;
+  const resposta = await api.ler("fechamentos/", { data: dia });
+  if (dia !== estado.dia) return; // a pessoa já trocou de dia enquanto esta lista chegava
   corpo.textContent = "";
   if (!resposta.ok) {
     corpo.append(linhaDeFalha(resposta.erro, COLUNAS, carregarLista));

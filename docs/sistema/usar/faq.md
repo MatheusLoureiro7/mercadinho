@@ -53,8 +53,11 @@ chegou". Se nada chegou fora desses casos, ver `sustentar/runbooks.md`.
 (L15). Produto vendido por unidade ou pacote é arredondado para cima. Ver o glossário.
 
 **O fechamento de caixa diz que as vendas ainda não entraram.**
-O fechamento é do dia anterior e só pode ser feito depois que a planilha daquele dia foi importada.
-Confira a planilha em Importação de vendas.
+O fechamento de um dia só pode ser feito depois que a planilha daquele dia foi importada. Confira a
+planilha em Importação de vendas.
+
+**Esqueci de fechar o caixa de sábado. Ainda dá?**
+Dá. Na tela de Fechamento de caixa, troque o **Dia do caixa** para o sábado e registre normalmente.
 
 **O balanço mostra "não entrou" num dia.**
 A planilha do caixa daquele dia ainda não foi importada: o balanço da semana está incompleto até ela entrar.

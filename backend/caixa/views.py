@@ -2,9 +2,10 @@
 Fechamento de caixa — endpoints. Tarefa I1 (RN15, RF12, fluxograma 06). Tela da esposa (GESTAO, RN14).
 
 /api/fechamentos/
-    GET  apurado/            {"data", "valor_sistema"} do dia do fechamento (o dia anterior)
+    GET  apurado/?data=      {"data", "valor_sistema"} do dia escolhido (sem ?data=, o dia anterior)
     GET  ?data=AAAA-MM-DD    os registros do dia, o mais novo primeiro
-    POST {"valor_contado"}   grava; data, apurado e diferença são do sistema
+    POST {"valor_contado", "data"?}   grava o dia escolhido (sem "data", ontem); apurado e diferença
+                                      são do sistema (X1, item 6)
 
 RN15: não existe alterar nem apagar — correção é um registro novo.
 
@@ -49,7 +50,12 @@ class FechamentoViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
     @action(detail=False, methods=["get"])
     def apurado(self, request):
-        dia, valor = apurado_do_fechamento()
+        texto = self.request.query_params.get("data")
+        try:
+            escolhido = date.fromisoformat(texto) if texto else None
+        except ValueError as erro:
+            raise ValidationError({"data": ["Use a data no formato AAAA-MM-DD."]}) from erro
+        dia, valor = apurado_do_fechamento(escolhido)
         return Response({"data": dia.isoformat(), "valor_sistema": f"{valor:.2f}"})
 
 
