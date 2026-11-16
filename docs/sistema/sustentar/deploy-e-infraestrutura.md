@@ -1,6 +1,6 @@
 # Deploy e infraestrutura
 
-*Atualizado em 13/11/2026.* Onde o sistema roda, como é publicado e onde ficam os segredos.
+*Atualizado em 16/11/2026.* Onde o sistema roda, como é publicado e onde ficam os segredos.
 
 ## Onde roda
 
@@ -11,7 +11,7 @@ Decisão D05 (30/10/2026): **no computador do Matheus**. O professor assiste à 
 | Banco PostgreSQL 17 | 127.0.0.1:5432 (só a própria máquina) | `docker compose up -d --wait` (`docker-compose.yml`) |
 | API Django | 127.0.0.1:8000 | `publicar.py` (servidor do Django, `--noreload`) |
 | Painel | 127.0.0.1:8090 (repassa `/api/` para a API) | `publicar.py` (`frontend/servir.py`) |
-| Rodada diária | — | cron: 03h00 `rodada_diaria`; 13h00 e 18h00 `enviar_avisos` |
+| Rodada diária | — | cron: 03h00 `rodada_diaria`; 13h00 e 18h00 `enviar_avisos`; de hora em hora (aos 30 min) `rodada_diaria --se-faltar` |
 
 Infraestrutura como código: o banco é descrito no `docker-compose.yml`; as linhas do cron saem do
 comando `agenda_cron`, a partir da tabela de parâmetros.
@@ -34,11 +34,14 @@ esteira, antes de cada publicação, e a cada tarefa. Ver o roadmap.
 ## Instalar a rodada diária (uma vez)
 
 ```
-python backend/manage.py agenda_cron   # mostra as 3 linhas com os caminhos desta máquina
+python backend/manage.py agenda_cron   # mostra as 4 linhas com os caminhos desta máquina
 crontab -e                             # cole as linhas no fim e salve
 ```
 
-O computador precisa estar **ligado às 03h00** e no **horário de São Paulo**. No macOS, se o cron
+O computador deve estar **ligado às 03h00** e no **horário de São Paulo**. Se estiver desligado ou
+dormindo, a linha de hora em hora (`--se-faltar`) faz a rodada assim que ele voltar: o dia da última
+rodada fica anotado em `logs/ultima-rodada.txt` (revisão X1, item 11). **Quem já instalou o crontab
+antes de 16/11/2026 precisa gerar as linhas de novo e trocar** — a quarta linha é nova. No macOS, se o cron
 não ler a pasta, dar a ele *Acesso Total ao Disco*.
 
 ## Segredos

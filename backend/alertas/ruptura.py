@@ -122,10 +122,15 @@ def _pedidos_sem_entrega(hoje: date) -> tuple[set[int], set[int]]:
     return a_caminho, atrasados
 
 
-def gerar_avisos_de_ruptura(*, hoje: date | None = None) -> list[Alerta]:
-    """Grava os avisos PENDENTES de "vai acabar" (RN08) e, na quinta, de fim de semana (RN10)."""
+def gerar_avisos_de_ruptura(
+    *, hoje: date | None = None, avaliar_fim_de_semana: bool | None = None
+) -> list[Alerta]:
+    """
+    Grava os avisos PENDENTES de "vai acabar" (RN08) e, na quinta, de fim de semana (RN10). A rodada
+    pede o fim de semana na sexta ou no sábado quando a quinta não rodou (X1, item 11).
+    """
     hoje = hoje or timezone.localdate()  # o dia da loja, nunca o CURRENT_DATE (UTC) do banco
-    e_quinta = hoje.isoweekday() == QUINTA
+    e_quinta = hoje.isoweekday() == QUINTA if avaliar_fim_de_semana is None else avaliar_fim_de_semana
     folga = Decimal(1) + Decimal(parametro_inteiro("folga_fim_semana_pct")) / 100
     destinatario = Usuario.objects.filter(papel=Usuario.Papel.DONO, ativo=True).order_by("pk").first()
     saldos = saldos_de_todos()

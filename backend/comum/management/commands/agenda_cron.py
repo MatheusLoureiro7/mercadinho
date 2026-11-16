@@ -4,7 +4,9 @@ nova). Os horários vêm da tabela de parâmetros, nunca do programa:
 
 - `hora_rodada_diaria` (03:00): a rodada inteira (`rodada_diaria`);
 - o fim de cada janela de silêncio (13:00 e 18:00): `enviar_avisos` de novo, para soltar o que
-  ficou segurado no horário de movimento (RN12).
+  ficou segurado no horário de movimento (RN12);
+- de hora em hora, aos 30 minutos: `rodada_diaria --se-faltar`, que recupera a rodada perdida com o
+  computador desligado às 03h00 (revisão X1, item 11). Aos 30, para não coincidir com a das 03h00.
 
     python backend/manage.py agenda_cron              mostra as linhas
     crontab -e                                        cole as linhas no fim do arquivo
@@ -49,3 +51,7 @@ class Command(BaseCommand):
             fim = parametro(chave).split("-")[1]
             self.stdout.write(f"# fim do horário de movimento {periodo}: solta os avisos segurados (RN12)")
             self.stdout.write(linha(_minuto_e_hora(fim), "enviar_avisos"))
+        self.stdout.write(
+            "# de hora em hora: recupera a rodada que não aconteceu (computador desligado às 03h00)"
+        )
+        self.stdout.write(linha("30 *", "rodada_diaria --se-faltar"))

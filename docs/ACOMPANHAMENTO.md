@@ -187,6 +187,21 @@ cronograma, a regra de negócio (quando houver) e o commit.
 
 ### 16/11/2026
 
+- **X1, item 11 — A rodada perdida não era recuperada (correção da revisão, gravidade média).**
+  **O problema:** a rodada roda às 03h00 pelo cron. Com o notebook fechado nesse horário, o dia
+  ficava sem importação e sem avisos; e, se fosse quinta, o aviso de fim de semana (RN10) não
+  acontecia naquela semana, porque só a quinta avalia.
+  **Decisão do grupo (16/11/2026):** a rodada anota o dia em que rodou (`logs/ultima-rodada.txt`,
+  sem tabela nova), e o cron ganhou uma quarta linha: **de hora em hora, aos 30 minutos**,
+  `rodada_diaria --se-faltar` faz a rodada só se a de hoje ainda não aconteceu (e já passou das
+  03h00). Se a quinta foi perdida, a primeira rodada de sexta ou de sábado avalia o fim de semana no
+  lugar dela. Os avisos que saírem de dia continuam respeitando o horário de movimento (RN12).
+  **Atenção na implantação (J6):** o crontab precisa ser gerado de novo com `agenda_cron` (4 linhas).
+  **Testes:** 12 novos (a rodada anota o dia mesmo com falha; recupera, não repete e espera a hora;
+  as 7 combinações de dia e última rodada do fim de semana; a sexta avalia quando pedido) e 1
+  ajustado (o crontab com 4 linhas). Os 13 falharam antes da correção e passam depois. **1104
+  testes no total, todos aprovados.** Runbook R9 e guia de implantação atualizados.
+
 - **X1, item 10 — Nenhuma tela mostrava a previsão (correção da revisão, gravidade média).**
   **O problema:** a previsão (em quantos dias cada produto acaba) era calculada toda madrugada, mas
   só aparecia no aviso do Telegram. A especificação pede o número em tela: o RF08 ("em quantos dias

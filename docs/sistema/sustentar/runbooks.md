@@ -51,5 +51,8 @@ Não é falha do sistema: faltou registrar uma entrada, ou a contagem estava err
 entrada que faltou; perda a mais se registra em Avarias. Nada se apaga (RN01).
 
 ## R9 — O computador estava desligado às 03h00
-Ligar e rodar `python backend/manage.py rodada_diaria`. O consumo refaz os últimos 30 dias, então
-nenhum dia se perde.
+Basta ligar: em até uma hora a linha `rodada_diaria --se-faltar` do crontab faz a rodada do dia
+(revisão X1, item 11). Se a quinta foi perdida, o aviso de fim de semana (RN10) sai na sexta ou no
+sábado. Com pressa, rodar à mão: `python backend/manage.py rodada_diaria`. O consumo refaz os últimos
+30 dias, então nenhum dia se perde. Não aconteceu? Conferir se o crontab tem as 4 linhas de
+`agenda_cron` e ler `logs/rodada.log`.

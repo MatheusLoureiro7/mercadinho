@@ -31,7 +31,7 @@ documento) · **Gerado** (sai do código; um teste falha se ficar velho).
 | Manter | Modelo e dicionário de dados | `manter/dicionario-de-dados.md` | Gerado | 13/11/2026 |
 | Manter | Contratos de API | `manter/contratos-da-api.md` | Gerado | 13/11/2026 |
 | Manter | README e guia de dev + testes | `README.md`, `COMO-RODAR.md` e `manter/guia-do-desenvolvedor.md` | Pronto | 13/11/2026 |
-| Sustentar | Deploy e infraestrutura | `sustentar/deploy-e-infraestrutura.md` | Pronto | 13/11/2026 |
+| Sustentar | Deploy e infraestrutura | `sustentar/deploy-e-infraestrutura.md` | Pronto | 16/11/2026 |
 | Sustentar | Runbooks | `sustentar/runbooks.md` | Pronto | 16/11/2026 |
 | Sustentar | Monitoramento | `sustentar/monitoramento.md` | Parcial: sem alerta automático para a equipe | 13/11/2026 |
 | Sustentar | Matriz de suporte e SLA | `sustentar/suporte-e-sla.md` | Parcial: proposta, contatos na J6 (23 a 27/11/2026) | 13/11/2026 |

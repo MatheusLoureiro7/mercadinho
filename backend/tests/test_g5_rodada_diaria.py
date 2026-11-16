@@ -106,6 +106,74 @@ def test_g5_comando_sem_falha_termina_bem(db):
     assert "Rodada de 12/11/2026 concluída" in saida.getvalue()
 
 
+# --- Rodada perdida (X1, item 11) -----------------------------------------------------------------
+# Decisão do grupo (16/11/2026): o cron também roda `rodada_diaria --se-faltar` de hora em hora, que
+# só faz a rodada se a de hoje ainda não aconteceu (notebook fechado às 03h00). O dia da última
+# rodada fica anotado num arquivo em logs/. Fim de semana (RN10) perdido na quinta é avaliado na
+# primeira rodada de sexta ou de sábado.
+
+
+def _passos_que_anotam(feitos):
+    return [(nome, lambda saida, nome=nome: feitos.append(nome)) for nome, _ in rodada.PASSOS]
+
+
+def test_x1_rodada_anota_o_dia_mesmo_com_falha(db):
+    passos = [(nome, lambda saida: None) for nome, _ in rodada.PASSOS]
+    passos[0] = (passos[0][0], lambda saida: (_ for _ in ()).throw(RuntimeError("pasta sumiu")))
+    with patch.object(rodada, "PASSOS", passos):
+        rodada.rodar(StringIO())
+    assert rodada.ultima_rodada() == date(2026, 11, 12)
+
+
+def test_x1_se_faltar_roda_quando_a_de_hoje_nao_aconteceu(db):
+    rodada.anotar_rodada(date(2026, 11, 11))
+    feitos = []
+    nove_da_manha = datetime(2026, 11, 12, 9, 30, tzinfo=SAO_PAULO)
+    with patch.object(rodada, "PASSOS", _passos_que_anotam(feitos)):
+        with patch("django.utils.timezone.now", return_value=nove_da_manha):
+            call_command("rodada_diaria", "--se-faltar", stdout=StringIO())
+    assert len(feitos) == len(rodada.PASSOS)
+    assert rodada.ultima_rodada() == date(2026, 11, 12)
+
+
+def test_x1_se_faltar_nao_roda_de_novo_no_mesmo_dia(db):
+    rodada.anotar_rodada(date(2026, 11, 12))
+    feitos, saida = [], StringIO()
+    with patch.object(rodada, "PASSOS", _passos_que_anotam(feitos)):
+        with patch("django.utils.timezone.now", return_value=datetime(2026, 11, 12, 9, 30, tzinfo=SAO_PAULO)):
+            call_command("rodada_diaria", "--se-faltar", stdout=saida)
+    assert feitos == []
+    assert "A rodada de 12/11/2026 já aconteceu" in saida.getvalue()
+
+
+def test_x1_se_faltar_antes_da_hora_da_rodada_espera_a_das_03h00(db):
+    rodada.anotar_rodada(date(2026, 11, 11))
+    feitos = []
+    with patch.object(rodada, "PASSOS", _passos_que_anotam(feitos)):
+        with patch("django.utils.timezone.now", return_value=datetime(2026, 11, 12, 1, 30, tzinfo=SAO_PAULO)):
+            call_command("rodada_diaria", "--se-faltar", stdout=StringIO())
+    assert feitos == []
+
+
+QUARTA, QUINTA, SEXTA, SABADO, DOMINGO = (date(2026, 11, d) for d in (11, 12, 13, 14, 15))
+
+
+@pytest.mark.parametrize(
+    "hoje, ultima, avalia",
+    [
+        (QUINTA, QUARTA, True),  # a quinta normal (RN10)
+        (SEXTA, QUINTA, False),  # a quinta rodou: sexta não avalia de novo
+        (SEXTA, QUARTA, True),  # a quinta não rodou: sexta avalia no lugar
+        (SABADO, QUARTA, True),
+        (SABADO, SEXTA, False),  # a sexta já recuperou
+        (DOMINGO, QUARTA, False),  # o fim de semana já chegou
+        (QUARTA, None, False),
+    ],
+)
+def test_x1_rn10_fim_de_semana_perdido_na_quinta_e_avaliado_depois(hoje, ultima, avalia):
+    assert rodada.avaliar_fim_de_semana(hoje, ultima) is avalia
+
+
 # --- A rodada de verdade --------------------------------------------------------------------------
 
 
@@ -180,11 +248,13 @@ def _crontab():
 @pytest.mark.django_db
 def test_g5_crontab_roda_a_rodada_na_hora_do_parametro_e_solta_os_segurados():
     linhas = _crontab()
-    assert len(linhas) == 3
-    rodada_diaria, fim_da_manha, fim_da_tarde = linhas
+    assert len(linhas) == 4
+    rodada_diaria, fim_da_manha, fim_da_tarde, se_faltar = linhas
     assert rodada_diaria.startswith("0 3 * * * ") and 'manage.py" rodada_diaria' in rodada_diaria
     assert fim_da_manha.startswith("0 13 * * * ") and 'manage.py" enviar_avisos' in fim_da_manha
     assert fim_da_tarde.startswith("0 18 * * * ") and 'manage.py" enviar_avisos' in fim_da_tarde
+    # X1, item 11: de hora em hora, aos 30 minutos (longe das 03h00), recupera a rodada perdida.
+    assert se_faltar.startswith("30 * * * * ") and 'manage.py" rodada_diaria --se-faltar' in se_faltar
 
 
 @pytest.mark.django_db

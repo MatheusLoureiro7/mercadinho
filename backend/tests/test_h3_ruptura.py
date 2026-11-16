@@ -389,6 +389,15 @@ def test_rn10_quinta_acima_da_folga_nao_avisa(carvao, dono):
         assert gerar_avisos_de_ruptura() == []
 
 
+def test_x1_rn10_sexta_avalia_o_fim_de_semana_quando_a_quinta_nao_rodou(carvao, dono):
+    _previsao(carvao, ponto="10")
+    _saldo(carvao, "12")  # 12 ≤ 10 × 1,4
+    sexta = QUINTA + timedelta(days=1)
+    with patch("django.utils.timezone.now", return_value=sexta):
+        [aviso] = gerar_avisos_de_ruptura(avaliar_fim_de_semana=True)
+    assert aviso.tipo == "FIM_SEMANA"
+
+
 def test_rn10_quarta_nao_avalia_o_fim_de_semana(carvao, dono):
     _previsao(carvao, ponto="10")
     _saldo(carvao, "12")

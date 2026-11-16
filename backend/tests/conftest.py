@@ -137,6 +137,12 @@ def indices(tabela: str) -> dict[str, str]:
 
 
 @pytest.fixture(autouse=True)
+def _ultima_rodada_numa_pasta_temporaria(settings, tmp_path):
+    """A anotação da última rodada (X1, item 11) nunca vai para o logs/ de verdade nos testes."""
+    settings.ARQUIVO_ULTIMA_RODADA = tmp_path / "ultima-rodada.txt"
+
+
+@pytest.fixture(autouse=True)
 def _hash_de_senha_rapido_nos_testes(settings):
     """
     O hash de senha de verdade (PBKDF2) é lento de propósito. Nos testes usamos um rápido, só para

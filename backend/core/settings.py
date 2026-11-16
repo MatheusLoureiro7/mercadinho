@@ -146,6 +146,10 @@ LOG_ARQUIVO = os.environ.get("LOG_ARQUIVO", "logs/mercadinho.log").strip()
 if LOG_ARQUIVO and not Path(LOG_ARQUIVO).is_absolute():
     LOG_ARQUIVO = str(RAIZ_REPOSITORIO / LOG_ARQUIVO)  # relativo à raiz do repositório
 
+# Onde a rodada diária anota o dia da última vez que rodou (revisão X1, item 11): é o que o
+# `rodada_diaria --se-faltar` de hora em hora confere para recuperar a rodada perdida.
+ARQUIVO_ULTIMA_RODADA = RAIZ_REPOSITORIO / "logs" / "ultima-rodada.txt"
+
 _manipuladores_log = {
     "console": {"class": "logging.StreamHandler", "formatter": "padrao"},
 }
