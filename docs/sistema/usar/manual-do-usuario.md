@@ -35,6 +35,8 @@ o sistema pede para entrar de novo. **Sair** fica no canto de cima.
 Cadastra e altera produtos: nome, categoria, unidade (KG, UN, L ou PCT), se é perecível e **quantos
 dias dura**, preços, estoque mínimo, fornecedor e se **não pode faltar no fim de semana**.
 - Produto perecível só é salvo com a durabilidade em dias (RN03).
+- Escolha o **fornecedor**: é pelo prazo de entrega dele que o sistema avisa *antes* de acabar. Sem
+  fornecedor, o Sr. João só é avisado quando o produto já acabou.
 - A categoria nova é criada dali mesmo. Produto, categoria e fornecedor não se apagam.
 
 ### Fornecedores (RF02)

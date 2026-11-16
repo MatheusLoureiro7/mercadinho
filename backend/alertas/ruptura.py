@@ -11,6 +11,9 @@ RN10: na quinta, produto crítico de fim de semana com saldo <= ponto_pedido × 
 
 Decisões da H3 (docs/ACOMPANHAMENTO.md, 12/11/2026), as mesmas da H2 onde cabem:
 - sem ponto de pedido não há aviso: produto "ainda aprendendo" (RN09) ou sem fornecedor (G3);
+- exceção (decisão do grupo, 16/11/2026, revisão X1 item 8): o produto sem fornecedor que vinha
+  vendendo e acabou avisa, com urgência ALTA, pedindo que se cadastre o fornecedor — sem prazo de
+  entrega não dá para avisar antes, mas calar com o produto zerado não serve;
 - todo dia, enquanto a condição valer; rodar duas vezes no mesmo dia não duplica; o aviso de um
   dia anterior que ainda não saiu dá lugar ao de hoje;
 - urgência (L11): ALTA quando acabou ou acaba antes de a entrega chegar; MEDIA nos outros casos;
@@ -70,6 +73,18 @@ def _mensagem(previsao: PrevisaoProduto, saldo: Decimal) -> str:
     return texto
 
 
+SEM_FORNECEDOR = " Cadastre o fornecedor para o sistema avisar antes de acabar."
+
+
+def _acabou_sem_fornecedor(previsao: PrevisaoProduto, saldo: Decimal) -> bool:
+    return (
+        previsao.ponto_pedido is None
+        and previsao.produto.fornecedor_padrao is None
+        and bool(previsao.consumo_medio_diario)
+        and saldo <= 0
+    )
+
+
 def _acaba_antes_da_entrega(previsao: PrevisaoProduto, saldo: Decimal) -> bool:
     prazo = previsao.produto.fornecedor_padrao.prazo_entrega_dias
     return saldo <= 0 or (previsao.dias_ate_acabar is not None and previsao.dias_ate_acabar < prazo)
@@ -117,7 +132,7 @@ def gerar_avisos_de_ruptura(*, hoje: date | None = None) -> list[Alerta]:
         Alerta.objects.filter(tipo__in=tipos, gerado_em__date=hoje).values_list("produto_id", "tipo")
     )
     previsoes = (
-        PrevisaoProduto.objects.filter(calculado_em__isnull=False, ponto_pedido__isnull=False)
+        PrevisaoProduto.objects.filter(calculado_em__isnull=False)
         .select_related("produto__fornecedor_padrao")
         .order_by("produto__nome", "produto_id")
     )
@@ -129,7 +144,11 @@ def gerar_avisos_de_ruptura(*, hoje: date | None = None) -> list[Alerta]:
             if produto.pk in a_caminho:
                 continue
             saldo = saldos.get(produto.pk, Decimal(0))
-            if saldo <= previsao.ponto_pedido:
+            if _acabou_sem_fornecedor(previsao, saldo):
+                tipo, prefixo, severidade = Alerta.Tipo.RUPTURA, "", Alerta.Severidade.ALTA
+            elif previsao.ponto_pedido is None:
+                continue
+            elif saldo <= previsao.ponto_pedido:
                 tipo = Alerta.Tipo.RUPTURA
                 prefixo = "O pedido ainda não chegou: " if produto.pk in atrasados else ""
                 severidade = (
@@ -153,7 +172,9 @@ def gerar_avisos_de_ruptura(*, hoje: date | None = None) -> list[Alerta]:
                     produto=produto,
                     tipo=tipo,
                     severidade=severidade,
-                    mensagem=prefixo + _mensagem(previsao, saldo),
+                    mensagem=prefixo
+                    + _mensagem(previsao, saldo)
+                    + (SEM_FORNECEDOR if produto.fornecedor_padrao is None else ""),
                     destinatario=destinatario,
                 )
             )

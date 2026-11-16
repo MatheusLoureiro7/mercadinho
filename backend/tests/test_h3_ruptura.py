@@ -141,9 +141,38 @@ def test_rn08_produto_sem_previsao_nao_avisa(frango, dono):
     assert gerar_avisos_de_ruptura() == []
 
 
-def test_rn08_sem_fornecedor_nao_tem_ponto_de_pedido_e_nao_avisa(dono):
+def test_rn08_sem_fornecedor_nao_tem_ponto_de_pedido_e_nao_avisa_enquanto_tem_estoque(dono):
     sal = _produto("Sal 1 kg", prazo=None)
     _previsao(sal, ponto=None, sugestao=None)
+    _saldo(sal, "3")
+    assert gerar_avisos_de_ruptura() == []
+
+
+# X1, item 8 (decisão do grupo, 16/11/2026): sem fornecedor não dá para avisar antes (não há prazo
+# de entrega), mas o produto que vinha vendendo e acabou avisa — e diz o que fazer.
+
+
+def test_x1_sem_fornecedor_avisa_quando_acaba_e_pede_o_fornecedor(dono):
+    carvao = _produto("Carvão 5 kg", prazo=None, unidade="PCT")
+    _previsao(carvao, ponto=None, sugestao=None, dias="0")
+    [aviso] = gerar_avisos_de_ruptura()
+    assert (aviso.tipo, aviso.severidade) == ("RUPTURA", "ALTA")
+    assert aviso.mensagem == (
+        "Carvão 5 kg acabou — não tem mais no estoque. "
+        "Cadastre o fornecedor para o sistema avisar antes de acabar."
+    )
+
+
+def test_x1_sem_fornecedor_e_sem_venda_nao_avisa_que_acabou(dono):
+    carvao = _produto("Carvão 5 kg", prazo=None, unidade="PCT")
+    _previsao(carvao, ponto=None, sugestao=None, dias=None)
+    PrevisaoProduto.objects.filter(produto=carvao).update(consumo_medio_diario=Decimal("0"))
+    assert gerar_avisos_de_ruptura() == []
+
+
+def test_x1_sem_fornecedor_ainda_aprendendo_nao_avisa_que_acabou(dono):
+    carvao = _produto("Carvão 5 kg", prazo=None, unidade="PCT")
+    _previsao(carvao, aprendendo=True)
     assert gerar_avisos_de_ruptura() == []
 
 

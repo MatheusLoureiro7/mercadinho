@@ -48,6 +48,10 @@ horário. Depois de "Sim, pedir", o produto não é avisado de novo até a merca
 prazo de entrega do fornecedor; passado o prazo sem entrega, o aviso volta com "O pedido ainda não
 chegou". Se nada chegou fora desses casos, ver `sustentar/runbooks.md`.
 
+**O aviso diz "Cadastre o fornecedor para o sistema avisar antes de acabar".**
+O produto está sem fornecedor no cadastro. Sem o prazo de entrega, o sistema não sabe quando é hora
+de pedir e só avisa quando acaba. Em **Produtos**, escolha o fornecedor dele.
+
 **De onde vem a quantidade "Pedir 30 KG"?**
 É o que o produto deve vender no prazo de entrega do fornecedor mais 7 dias, menos o que já tem
 (L15). Produto vendido por unidade ou pacote é arredondado para cima. Ver o glossário.

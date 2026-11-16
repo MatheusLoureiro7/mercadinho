@@ -44,6 +44,7 @@ ul, ol { margin: 0 0 2mm; padding-left: 5mm; } li { margin-bottom: 0.8mm; }
 <p><b>Não consigo salvar um produto perecível.</b> Perecível precisa dizer quantos dias dura (RN03). Preencha "Dura quantos dias".</p>
 <p><b>Registrei uma perda errada. Como apago?</b> Perda, lote e fechamento de caixa <b>não se apagam</b> (RN01, RN15): são o registro do que aconteceu. Uma perda a mais se corrige registrando a entrada correspondente; um fechamento errado, registrando outro fechamento — o anterior continua visível.</p>
 <p><b>O Sr. João não recebeu o aviso.</b> Nos horários de movimento (10h30–13h00 e 16h30–18h00) nada é enviado: o aviso sai no fim do horário. Depois de "Sim, pedir", o produto não é avisado de novo até a mercadoria chegar, dentro do prazo de entrega do fornecedor; passado o prazo sem entrega, o aviso volta com "O pedido ainda não chegou". Se nada chegou fora desses casos, ver <code>sustentar/runbooks.md</code>.</p>
+<p><b>O aviso diz "Cadastre o fornecedor para o sistema avisar antes de acabar".</b> O produto está sem fornecedor no cadastro. Sem o prazo de entrega, o sistema não sabe quando é hora de pedir e só avisa quando acaba. Em <b>Produtos</b>, escolha o fornecedor dele.</p>
 <p><b>De onde vem a quantidade "Pedir 30 KG"?</b> É o que o produto deve vender no prazo de entrega do fornecedor mais 7 dias, menos o que já tem (L15). Produto vendido por unidade ou pacote é arredondado para cima. Ver o glossário.</p>
 <p><b>O fechamento de caixa diz que as vendas ainda não entraram.</b> O fechamento de um dia só pode ser feito depois que a planilha daquele dia foi importada. Confira a planilha em Importação de vendas.</p>
 <p><b>O fechamento diz que vendas vieram "sem a forma de pagamento".</b> A planilha do caixa daquele dia veio sem a coluna Pagamento, ou com linhas em branco nela. Sem isso não dá para saber quanto entrou em dinheiro, e o sistema não deixa registrar uma diferença falsa. Peça para o caixa exportar sempre a coluna Pagamento.</p>
@@ -85,7 +86,7 @@ ul, ol { margin: 0 0 2mm; padding-left: 5mm; } li { margin-bottom: 0.8mm; }
 <h3>Telas do sobrinho</h3>
 <h4>Produtos (RF01, RF15)</h4>
 <p>Cadastra e altera produtos: nome, categoria, unidade (KG, UN, L ou PCT), se é perecível e <b>quantos dias dura</b>, preços, estoque mínimo, fornecedor e se <b>não pode faltar no fim de semana</b>.</p>
-<ul><li>Produto perecível só é salvo com a durabilidade em dias (RN03).</li><li>A categoria nova é criada dali mesmo. Produto, categoria e fornecedor não se apagam.</li></ul>
+<ul><li>Produto perecível só é salvo com a durabilidade em dias (RN03).</li><li>Escolha o <b>fornecedor</b>: é pelo prazo de entrega dele que o sistema avisa <i>antes</i> de acabar. Sem fornecedor, o Sr. João só é avisado quando o produto já acabou.</li><li>A categoria nova é criada dali mesmo. Produto, categoria e fornecedor não se apagam.</li></ul>
 <h4>Fornecedores (RF02)</h4>
 <p>Nome, contato, <b>em quantos dias entrega</b> depois do pedido e pedido mínimo. O prazo de entrega é o que o sistema usa para saber quando pedir.</p>
 <h4>Entrada de mercadoria (RF03, operação 02)</h4>

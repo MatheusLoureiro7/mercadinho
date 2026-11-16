@@ -187,6 +187,19 @@ cronograma, a regra de negócio (quando houver) e o commit.
 
 ### 16/11/2026
 
+- **X1, item 8 — Produto sem fornecedor nunca avisava (correção da revisão, gravidade média).**
+  **O problema:** o aviso de "vai acabar" (RN08) usa o prazo de entrega do fornecedor padrão. Como o
+  fornecedor é opcional no cadastro, o produto sem fornecedor nunca avisava — nem quando zerava — e
+  nenhuma tela mostrava isso.
+  **Decisão do grupo (16/11/2026):** sem fornecedor não dá para avisar antes, mas o produto que vinha
+  vendendo e **acabou** gera o aviso, com urgência alta: "Carvão 5 kg acabou — não tem mais no
+  estoque. Cadastre o fornecedor para o sistema avisar antes de acabar." O cadastro continua com o
+  fornecedor opcional; nenhuma tela nem tabela mudou. Produto ainda aprendendo (RN09) ou sem venda
+  continua sem esse aviso.
+  **Testes:** 3 novos (o aviso sai quando acaba; não sai sem venda nem ainda aprendendo) e 1
+  ajustado (com estoque, continua sem aviso). O primeiro falhou antes da correção e passa depois.
+  **1088 testes no total, todos aprovados.** Manual e FAQ atualizados.
+
 - **X1, item 7 — Só "dinheiro" contava como dinheiro (correção da revisão, gravidade média).**
   **O problema:** o apurado do fechamento soma as vendas pagas em dinheiro, e o sistema só aceitava
   a palavra exata "dinheiro" na coluna Pagamento. "Espécie" não contava, e uma planilha sem a coluna
