@@ -16,6 +16,9 @@ from comum.busca import sem_acento
 UNIDADES_DE_MEDIDA = ("KG", "UN", "L", "PCT")
 
 
+DURABILIDADE_MAXIMA = 3650  # dias
+
+
 def _nome_simples(nome: str) -> str:
     return " ".join(sem_acento(nome).split())
 
@@ -128,10 +131,16 @@ class ProdutoSerializer(serializers.ModelSerializer):
     # Opcionais: se não vierem, valem os padrões (L19 para perecível; DEFAULT FALSE do banco).
     perecivel = serializers.BooleanField(required=False)
     critico_fim_semana = serializers.BooleanField(required=False)
+    # Teto de 10 anos (decisão do grupo, 16/11/2026, revisão X1 item 14): a validade calculada
+    # (entrada + durabilidade, RN04) passava do ano 9999 e quebrava a entrada de mercadoria.
     durabilidade_dias = serializers.IntegerField(
         required=False,
         allow_null=True,
-        error_messages={"invalid": "Informe a durabilidade em dias, só com números."},
+        max_value=DURABILIDADE_MAXIMA,
+        error_messages={
+            "invalid": "Informe a durabilidade em dias, só com números.",
+            "max_value": f"A durabilidade vai até {DURABILIDADE_MAXIMA} dias (10 anos).",
+        },
     )
     preco_custo = _dinheiro("preço de custo")
     preco_venda = _dinheiro("preço de venda")

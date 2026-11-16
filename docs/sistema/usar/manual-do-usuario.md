@@ -34,7 +34,7 @@ o sistema pede para entrar de novo. **Sair** fica no canto de cima.
 ### Produtos (RF01, RF15)
 Cadastra e altera produtos: nome, categoria, unidade (KG, UN, L ou PCT), se é perecível e **quantos
 dias dura**, preços, estoque mínimo, fornecedor e se **não pode faltar no fim de semana**.
-- Produto perecível só é salvo com a durabilidade em dias (RN03).
+- Produto perecível só é salvo com a durabilidade em dias (RN03), de 1 a 3650 dias (10 anos).
 - Escolha o **fornecedor**: é pelo prazo de entrega dele que o sistema avisa *antes* de acabar. Sem
   fornecedor, o Sr. João só é avisado quando o produto já acabou.
 - Não dá para ter dois produtos com o mesmo nome na categoria, nem mudando só maiúscula, acento ou

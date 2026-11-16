@@ -174,6 +174,17 @@ def test_b3_preco_que_nao_e_numero_e_recusado(api, secos):
     assert "preco_venda" in resposta.json()["erro"]["campos"]
 
 
+def test_x1_durabilidade_acima_de_10_anos_e_recusada(api, acougue):
+    """X1, item 14 (decisão do grupo, 16/11/2026): 2 bilhões de dias quebravam a entrada de mercadoria."""
+    dados = {"nome": "Frango", "categoria": acougue.pk, "unidade_medida": "KG", "perecivel": True}
+    resposta = api("OPERACAO").post(URL, {**dados, "durabilidade_dias": 2_000_000_000})
+    assert resposta.status_code == 400
+    assert resposta.json()["erro"]["campos"]["durabilidade_dias"] == [
+        "A durabilidade vai até 3650 dias (10 anos)."
+    ]
+    assert api("OPERACAO").post(URL, {**dados, "durabilidade_dias": 3650}).status_code == 201
+
+
 def test_b3_durabilidade_que_nao_e_numero_e_recusada(api, acougue):
     resposta = api("OPERACAO").post(
         URL,

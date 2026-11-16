@@ -187,6 +187,17 @@ cronograma, a regra de negócio (quando houver) e o commit.
 
 ### 16/11/2026
 
+- **X1, item 14 — Erro interno com número fora do esperado (correção da revisão, gravidade baixa).**
+  **O problema:** dois casos davam "Algo deu errado do nosso lado" (erro 500) em vez de uma mensagem:
+  um endereço da tela de importação com texto no lugar do número (`/api/itens-pendentes/abc/casar/`),
+  e um produto perecível cadastrado com durabilidade de 2 bilhões de dias, cuja validade calculada
+  passava do ano 9999 e quebrava a entrada de mercadoria.
+  **O que foi feito:** o endereço com texto agora responde "não encontrado", como o resto da API. A
+  durabilidade ganhou um teto, por **decisão do grupo (16/11/2026): 3650 dias (10 anos)**, com a
+  mensagem "A durabilidade vai até 3650 dias (10 anos)." Nenhuma tabela mudou.
+  **Testes:** 2 novos; os 2 falharam antes da correção e passam depois. **1123 testes no total, todos
+  aprovados.** Manual atualizado.
+
 - **X1, item 13 — "1.000" digitado virava 1 (correção da revisão, gravidade média).**
   **O problema:** nas telas, número sem vírgula tinha o ponto lido como casa decimal ("12.90" =
   12,90). Quem digitava "1.000" do jeito brasileiro, para mil latas, gravava um lote de **1** lata,

@@ -249,6 +249,13 @@ def test_e4_api_item_que_nao_existe_responde_404(api, frango):
     assert api("post", f"{URL}99999/casar/", {"produto": frango.pk}).status_code == 404
 
 
+def test_x1_api_item_com_texto_no_lugar_do_numero_responde_404_e_nao_erro_interno(api, frango):
+    """X1, item 14: "abc" no endereço dava erro 500 ("Algo deu errado do nosso lado")."""
+    resposta = api("post", f"{URL}abc/casar/", {"produto": frango.pk})
+    assert resposta.status_code == 404
+    assert resposta.json()["erro"]["codigo"] == "nao_encontrado"
+
+
 @pytest.mark.parametrize("papel", ["DONO", "GESTAO"])
 def test_rn14_so_operacao_ve_e_casa_os_itens_pendentes(api, frango, papel):
     item = _pendente()

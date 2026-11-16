@@ -13,9 +13,9 @@ Venda não se registra pela API, e a planilha não é enviada pela tela: ela vai
 caixa e a rodada das 03h00 importa (operação 04; E3, G5).
 """
 
-from django.shortcuts import get_object_or_404
 from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
+from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
 from vendas.conciliacao import casar_item, itens_pendentes
@@ -47,6 +47,7 @@ class ItemPendenteViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
     @action(detail=True, methods=["post"])
     def casar(self, request, pk=None):
+        # O do DRF: "abc" no endereço vira 404, não erro 500 (revisão X1, item 14).
         item = get_object_or_404(ItemVenda, pk=pk)
         entrada = CasarItemSerializer(data=request.data)
         entrada.is_valid(raise_exception=True)
