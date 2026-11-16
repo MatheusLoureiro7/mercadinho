@@ -1,6 +1,6 @@
 # Registros de decisão de arquitetura (ADR)
 
-*Atualizado em 13/11/2026.* O porquê de cada decisão. Cada uma tem contexto, decisão, consequência,
+*Atualizado em 16/11/2026.* O porquê de cada decisão. Cada uma tem contexto, decisão, consequência,
 data e situação. As decisões de regra de negócio (as lacunas da especificação) estão, com o
 detalhe, em `docs/LACUNAS.md`; as do cliente, em `docs/DECISOES-PENDENTES.md`. Decisão nova vira um
 ADR novo no fim da lista; decisão substituída fica, marcada como *substituída*.
@@ -87,3 +87,11 @@ uso real com muitos acessos; servidor de produção fica no roadmap.
 fica em `docs/sistema/`, versionada com o código; quatro documentos são gerados do código e um teste
 falha se ficarem desatualizados; toda tarefa atualiza o que mudou. **Consequência:** o PDF entregue
 sai sempre dos mesmos arquivos.
+
+### ADR-013 — Trava do PostgreSQL contra duas rodadas ao mesmo tempo
+**Contexto:** revisão X1, item 16 (16/11/2026): a importação e os avisos conferem ("o dia já
+entrou?", "já avisei hoje?") e depois gravam; duas rodadas juntas (o cron e o comando à mão, ou a
+verificação de hora em hora do item 11) gravavam em dobro. **Decisão:** a conferência e a gravação
+acontecem numa transação só, depois de `pg_advisory_xact_lock` (`comum/trava.py`), sem tabela nem
+dependência nova. **Consequência:** quem chega depois espera e encontra o que o primeiro gravou; a
+trava se solta sozinha no fim da transação, mesmo se o processo cair.

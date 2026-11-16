@@ -187,6 +187,18 @@ cronograma, a regra de negócio (quando houver) e o commit.
 
 ### 16/11/2026
 
+- **X1, item 16 — Duas rodadas ao mesmo tempo duplicavam (correção da revisão, gravidade baixa).**
+  **O problema:** a importação confere se o dia já entrou e depois grava; os avisos conferem se já
+  avisaram hoje e depois gravam. Duas rodadas ao mesmo tempo (o cron e alguém rodando o comando à
+  mão) conferiam juntas, ouviam "não" e gravavam as duas: vendas e avisos em dobro.
+  **O que foi feito (técnico, sem decisão nova):** a conferência e a gravação passaram a acontecer
+  sob uma trava do próprio PostgreSQL (`pg_advisory_xact_lock`), sem tabela nem dependência nova:
+  quem chega depois espera e encontra o que o primeiro gravou. Vale para a importação e para os
+  avisos de validade e de "vai acabar". Registrado como ADR-013.
+  **Testes:** 2 novos, com duas execuções em paralelo de verdade e a primeira atrasada de propósito
+  no meio da gravação. Os 2 falharam antes da correção (2 vendas; 2 avisos) e passam depois —
+  repetidos três vezes, sempre iguais. **1126 testes no total, todos aprovados.**
+
 - **X1, item 15 — Total do cupom arredondado só no fim (correção da revisão, gravidade baixa).**
   **O problema:** a planilha não traz o total do cupom; o sistema somava quantidade × preço de cada
   item e só arredondava no fim. O caixa arredonda cada item: 2 × 0,333 kg a R$ 19,99 dá R$ 13,32 no

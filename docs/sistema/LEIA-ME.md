@@ -27,7 +27,7 @@ documento) · **Gerado** (sai do código; um teste falha se ficar velho).
 | Usar | Material de treinamento | `usar/treinamento.md` | Parcial: sessões e vídeos na J5 (23/11/2026) | 13/11/2026 |
 | Manter | Requisitos e regras de negócio | `docs/REGRAS-NEGOCIO.md`, `docs/ESPECIFICACAO.md` e `manter/rastreabilidade.md` | Gerado | 13/11/2026 |
 | Manter | Arquitetura (C4) | `manter/arquitetura.md` | Pronto | 13/11/2026 |
-| Manter | ADRs | `manter/adrs.md` | Pronto | 13/11/2026 |
+| Manter | ADRs | `manter/adrs.md` | Pronto | 16/11/2026 |
 | Manter | Modelo e dicionário de dados | `manter/dicionario-de-dados.md` | Gerado | 13/11/2026 |
 | Manter | Contratos de API | `manter/contratos-da-api.md` | Gerado | 13/11/2026 |
 | Manter | README e guia de dev + testes | `README.md`, `COMO-RODAR.md` e `manter/guia-do-desenvolvedor.md` | Pronto | 13/11/2026 |

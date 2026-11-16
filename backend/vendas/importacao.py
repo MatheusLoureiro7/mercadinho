@@ -43,6 +43,7 @@ from django.utils import timezone
 
 from cadastro.models import Produto
 from comum.busca import sem_acento
+from comum.trava import travar
 from estoque.fifo import lotes_em_ordem_de_validade
 from estoque.models import Movimentacao
 from vendas.leitor import ArquivoIlegivel, LeitorDeArquivoDoCaixa, LeitorDePlanilhaExcel, LinhaDeVenda
@@ -52,6 +53,7 @@ logger = logging.getLogger("mercadinho.importacao")
 
 CENTAVO = Decimal("0.01")
 ORIGEM = "IMPORTACAO_PDV"
+TRAVA = "importacao_das_vendas"
 
 
 class ArquivoJaImportado(Exception):
@@ -161,13 +163,29 @@ def importar_planilha(caminho: Path, leitor: LeitorDeArquivoDoCaixa | None = Non
         lidas = len(leitura.linhas) + len(leitura.erros)
         return [_concluir(importacao, ImportacaoPdv.Status.ERRO, lidas=lidas, com_erro=len(leitura.erros))]
 
-    ja_importados = _dias_ja_importados({_dia(linha) for linha in leitura.linhas})
+    try:
+        with transaction.atomic():
+            # Confere e grava sob a trava: duas importações ao mesmo tempo não passam juntas pela
+            # conferência dos dias já importados (revisão X1, item 16).
+            travar(TRAVA)
+            return _gravar_os_dias_novos(importacao, caminho, leitura.linhas)
+    except ArquivoJaImportado:
+        importacao.delete()
+        raise
+    except Exception:
+        logger.exception("Importação %s interrompida; nada foi gravado.", caminho.name)
+        lidas = len(leitura.linhas)
+        _concluir(importacao, ImportacaoPdv.Status.ERRO, lidas=lidas, com_erro=lidas)
+        raise
+
+
+def _gravar_os_dias_novos(importacao: ImportacaoPdv, caminho: Path, linhas: list[LinhaDeVenda]):
+    ja_importados = _dias_ja_importados({_dia(linha) for linha in linhas})
     por_dia: dict = defaultdict(list)
-    for linha in leitura.linhas:
+    for linha in linhas:
         if _dia(linha) not in ja_importados:
             por_dia[_dia(linha)].append(linha)
-    if leitura.linhas and not por_dia:
-        importacao.delete()
+    if linhas and not por_dia:
         raise ArquivoJaImportado(f"As vendas da planilha {caminho.name} já tinham entrado.")
     if not por_dia:  # planilha só com o cabeçalho
         return [_concluir(importacao, ImportacaoPdv.Status.OK)]
@@ -178,17 +196,9 @@ def importar_planilha(caminho: Path, leitor: LeitorDeArquivoDoCaixa | None = Non
         importacoes[dia] = ImportacaoPdv.objects.create(arquivo_nome=caminho.name, data_referencia=dia)
     importacao.data_referencia = dias[0]
 
-    try:
-        with transaction.atomic():
-            produtos = _produtos_por_nome()
-            pendentes = {dia: _gravar(por_dia[dia], produtos) for dia in dias}
-    except Exception:
-        logger.exception("Importação %s interrompida; nada foi gravado.", caminho.name)
-        for dia in dias:
-            lidas = len(por_dia[dia])
-            _concluir(importacoes[dia], ImportacaoPdv.Status.ERRO, lidas=lidas, com_erro=lidas)
-        raise
-
+    produtos = _produtos_por_nome()
+    pendentes = {dia: _gravar(por_dia[dia], produtos) for dia in dias}
+    # A situação é gravada ainda sob a trava: quem esperava só confere depois de ver OK ou PARCIAL.
     return [
         _concluir(
             importacoes[dia],

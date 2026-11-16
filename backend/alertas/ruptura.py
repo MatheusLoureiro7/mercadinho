@@ -48,6 +48,7 @@ from alertas.servicos import criar_aviso
 from cadastro.models import Usuario
 from comum.formatos import quantidade_na_loja
 from comum.parametros import parametro_inteiro
+from comum.trava import travar
 from estoque.models import Lote
 from estoque.saldo import saldos_de_todos
 from previsao.models import PrevisaoProduto
@@ -136,9 +137,6 @@ def gerar_avisos_de_ruptura(
     saldos = saldos_de_todos()
     a_caminho, atrasados = _pedidos_sem_entrega(hoje)
     tipos = [Alerta.Tipo.RUPTURA, Alerta.Tipo.FIM_SEMANA]
-    ja_avisados_hoje = set(
-        Alerta.objects.filter(tipo__in=tipos, gerado_em__date=hoje).values_list("produto_id", "tipo")
-    )
     previsoes = (
         PrevisaoProduto.objects.filter(calculado_em__isnull=False)
         .select_related("produto__fornecedor_padrao")
@@ -147,6 +145,11 @@ def gerar_avisos_de_ruptura(
 
     criados = []
     with transaction.atomic():
+        # Confere "já avisei hoje?" sob a trava: duas rodadas juntas não avisam em dobro (X1, item 16).
+        travar("avisos_de_ruptura")
+        ja_avisados_hoje = set(
+            Alerta.objects.filter(tipo__in=tipos, gerado_em__date=hoje).values_list("produto_id", "tipo")
+        )
         for previsao in previsoes:
             produto = previsao.produto
             if produto.pk in a_caminho:

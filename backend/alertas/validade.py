@@ -28,6 +28,7 @@ from alertas.servicos import criar_aviso
 from cadastro.models import Usuario
 from comum.formatos import quantidade_na_loja
 from comum.parametros import dias_aviso_validade
+from comum.trava import travar
 from estoque.models import Lote
 
 
@@ -35,11 +36,6 @@ def gerar_avisos_de_validade(*, hoje: date | None = None) -> list[Alerta]:
     """Grava um aviso PENDENTE para cada lote no prazo da RN05. Devolve os avisos criados."""
     hoje = hoje or timezone.localdate()  # o dia da loja, nunca o CURRENT_DATE (UTC) do banco
     destinatario = Usuario.objects.filter(papel=Usuario.Papel.DONO, ativo=True).order_by("pk").first()
-    ja_avisados_hoje = set(
-        Alerta.objects.filter(tipo=Alerta.Tipo.VALIDADE, gerado_em__date=hoje).values_list(
-            "lote_id", flat=True
-        )
-    )
     candidatos = (
         Lote.objects.filter(produto__perecivel=True, quantidade_atual__gt=0, data_validade__isnull=False)
         .select_related("produto")
@@ -48,6 +44,13 @@ def gerar_avisos_de_validade(*, hoje: date | None = None) -> list[Alerta]:
 
     criados = []
     with transaction.atomic():
+        # Confere "já avisei hoje?" sob a trava: duas rodadas juntas não avisam em dobro (X1, item 16).
+        travar("avisos_de_validade")
+        ja_avisados_hoje = set(
+            Alerta.objects.filter(tipo=Alerta.Tipo.VALIDADE, gerado_em__date=hoje).values_list(
+                "lote_id", flat=True
+            )
+        )
         for lote in candidatos:
             dias = (lote.data_validade - hoje).days
             # L01: o prazo é lido por produto — hoje é global; muda num lugar só quando o grupo decidir.
