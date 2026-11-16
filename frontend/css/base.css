@@ -979,6 +979,22 @@ section + .cartao {
   margin: 0 0 var(--esp-1);
   font-size: 1.0625rem;
 }
+.confirmacao {
+  margin: var(--esp-4) 0 0;
+}
+.confirmacao__texto {
+  margin: 0 0 var(--esp-3);
+}
+/* Os botões da pergunta ficam dentro do aviso, sem a divisória das ações do formulário. */
+.confirmacao .formulario__acoes {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+/* O botão escondido some mesmo (o display de .botao venceria o atributo hidden). */
+.botao[hidden] {
+  display: none;
+}
 .conferir__venda {
   margin: 0 0 var(--esp-3);
   font-weight: 600;

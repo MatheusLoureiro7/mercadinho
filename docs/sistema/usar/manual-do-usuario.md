@@ -63,7 +63,10 @@ As vendas **entram sozinhas**: salve a planilha do caixa (Excel, uma por dia) na
 rodada das 03h00 importa. Nesta tela:
 - **Vendas para conferir** — venda cujo produto o sistema não reconheceu pelo nome. Aparece com
   data, hora, quantidade e preço; ache a linha na planilha, toque em **Escolher o produto**,
-  procure e toque em **Ligar a este produto**. A venda sai do estoque no dia em que aconteceu.
+  procure e toque em **Ligar a este produto**. A tela confirma quanto sai do estoque de qual produto:
+  toque em **Sim, ligar** ou em **Voltar e trocar o produto**. Ligar **não pode ser desfeito**
+  (RN01): se mesmo assim errar, acerte com uma entrada no produto certo e uma perda no errado.
+  A venda sai do estoque no dia em que aconteceu.
 - **Planilhas lidas** — as últimas 30, com a situação: *Lida*, *Lida, com vendas a conferir* ou
   *Não foi lida* (essa é tentada de novo na madrugada seguinte). Basta uma linha fora do formato —
   hora "9h30" em vez de "09:30", por exemplo — para a planilha inteira não entrar: corrija a linha

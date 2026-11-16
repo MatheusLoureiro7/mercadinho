@@ -196,6 +196,7 @@ def test_e5_liga_a_venda_ao_produto_e_ela_sai_do_estoque(page, painel, sobrinho)
     page.fill("#campo-procurar", "frango")
     expect(page.locator("#campo-produto")).to_have_value(str(frango.pk))
     page.click("#botao-ligar")
+    page.click("#botao-confirmar")  # X1, item 18: confirma antes de gravar
 
     expect(page.locator("#sucesso")).to_contain_text("Frango resfriado 1 kg")
     expect(page.locator("#corpo-pendentes")).to_contain_text("Nenhuma venda para conferir")
@@ -235,7 +236,47 @@ def test_e5_venda_ja_ligada_por_outra_pessoa_mostra_o_motivo(page, painel, sobri
     ItemVenda.objects.filter(pk=item.pk).update(produto=frango)  # alguém resolveu antes
     page.fill("#campo-procurar", "frango")
     page.click("#botao-ligar")
+    page.click("#botao-confirmar")
     expect(page.locator("#resumo-de-erros")).to_contain_text("já foi ligada")
+
+
+# X1, item 18 (decisão do grupo, 16/11/2026): ligar ao produto errado não tem desfazer (RN01: a
+# movimentação nunca é apagada). A tela pergunta antes, dizendo quanto sai do estoque de quem.
+
+
+@pytest.mark.tela
+def test_x1_antes_de_ligar_a_tela_pede_confirmacao_e_nada_e_gravado(page, painel, sobrinho):
+    frango = _frango()
+    _pendente(quantidade="2")
+    abrir_tela(page, painel, sobrinho, TELA)
+    page.locator("#corpo-pendentes button", has_text="Escolher o produto").first.click()
+    page.fill("#campo-procurar", "frango")
+    page.click("#botao-ligar")
+
+    expect(page.locator("#confirmacao")).to_be_visible()
+    expect(page.locator("#confirmacao")).to_contain_text(
+        "Ligar a venda de 05/11/2026 às 08:14 a Frango resfriado 1 kg? "
+        "Isso tira 2 KG do estoque dele e não pode ser desfeito."
+    )
+    expect(page.locator("#botao-confirmar")).to_be_focused()
+    expect(page.locator("#botao-ligar")).to_be_hidden()  # um botão de ação por vez
+    assert ItemVenda.objects.get().produto is None and saldo_do_produto(frango) == Decimal("10")
+
+
+@pytest.mark.tela
+def test_x1_voltar_da_confirmacao_deixa_trocar_o_produto_sem_gravar(page, painel, sobrinho):
+    frango = _frango()
+    _pendente(quantidade="2")
+    abrir_tela(page, painel, sobrinho, TELA)
+    page.locator("#corpo-pendentes button", has_text="Escolher o produto").first.click()
+    page.fill("#campo-procurar", "frango")
+    page.click("#botao-ligar")
+    page.click("#botao-voltar")
+
+    expect(page.locator("#confirmacao")).to_be_hidden()
+    expect(page.locator("#botao-ligar")).to_be_visible()
+    expect(page.locator("#campo-produto")).to_be_focused()
+    assert ItemVenda.objects.get().produto is None and saldo_do_produto(frango) == Decimal("10")
 
 
 @pytest.mark.tela

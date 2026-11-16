@@ -187,6 +187,23 @@ cronograma, a regra de negócio (quando houver) e o commit.
 
 ### 16/11/2026
 
+- **X1, item 18 — Venda ligada ao produto errado não tinha desfazer (correção da revisão,
+  gravidade baixa).**
+  **O problema:** na tela de importação, o sobrinho escolhe o produto de uma venda não reconhecida, e
+  a venda sai do estoque na hora. Escolheu errado, não há volta: a movimentação nunca é apagada
+  (RN01), e um "desfazer" deixaria a venda errada contando no consumo do produto errado (RN11).
+  **Decisão do grupo (16/11/2026):** em vez de desfazer, **confirmar antes**. Ao tocar em "Ligar a
+  este produto", a tela pergunta: "Ligar a venda de 05/11/2026 às 08:14 a Frango resfriado 1 kg?
+  Isso tira 2 KG do estoque dele e não pode ser desfeito.", com "Sim, ligar" e "Voltar e trocar o
+  produto". O manual explica como acertar se mesmo assim errar. Nenhuma tabela nem API mudou.
+  **Achado na conferência da tela:** a captura mostrou que o botão "Ligar a este produto" continuava
+  visível junto da pergunta — o estilo dos botões vencia o atributo de esconder. Corrigido para todo
+  o painel; de quebra, o botão "Sair" passou a aparecer só depois que a sessão confere o login, como
+  sempre foi a intenção.
+  **Testes:** 2 novos (a pergunta aparece e nada é gravado antes do "Sim"; "Voltar" deixa trocar sem
+  gravar) e 2 ajustados (agora confirmam). Falharam antes da correção e passam depois. **1130 testes
+  no total, todos aprovados.** Manual atualizado.
+
 - **X1, item 17 — Mensagem dividida podia chegar repetida (correção da revisão, gravidade baixa).**
   **O problema:** os avisos do dia vão numa mensagem só (RN13), e o Telegram aceita até 4096
   caracteres; num dia de muitos avisos, a mensagem era dividida pelo canal. Se a parte 1 saía e a 2

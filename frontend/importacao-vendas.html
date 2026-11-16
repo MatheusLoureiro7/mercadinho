@@ -84,6 +84,19 @@
             </div>
           </div>
 
+          <!-- X1, item 18 (decisão do grupo, 16/11/2026): ligar não tem desfazer (RN01), então a tela
+               pergunta antes, dizendo quanto sai do estoque de qual produto. -->
+          <div class="recado confirmacao" id="confirmacao" role="group" aria-labelledby="texto-confirmacao" hidden>
+            <svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 8v5M12 16.5v.5" /></svg>
+            <div>
+              <p class="confirmacao__texto" id="texto-confirmacao"></p>
+              <div class="formulario__acoes">
+                <button type="button" class="botao botao--acao" id="botao-confirmar">Sim, ligar</button>
+                <button type="button" class="botao botao--secundario" id="botao-voltar">Voltar e trocar o produto</button>
+              </div>
+            </div>
+          </div>
+
           <div class="formulario__acoes">
             <button type="submit" class="botao botao--acao" id="botao-ligar">Ligar a este produto</button>
             <button type="button" class="botao botao--secundario" id="botao-cancelar">Cancelar</button>

@@ -8,6 +8,9 @@
  *     produto e a venda sai do estoque no dia em que aconteceu (E4, RN01, RN02);
  *   - planilhas lidas: as últimas leituras, com a situação em palavras (não só em cor).
  *
+ * Ligar a venda não tem desfazer — a movimentação nunca é apagada (RN01). Por isso a tela pergunta
+ * antes, dizendo quanto sai do estoque de qual produto (revisão X1, item 18).
+ *
  * API:
  *   GET  importacoes/                          → as últimas 30 planilhas lidas (E5)
  *   GET  itens-pendentes/                      → as vendas para conferir, da mais antiga à mais nova (E4)
@@ -17,7 +20,7 @@
 
 import { api } from "./api.js";
 import { linhaDeFalha } from "./falha.js";
-import { dataBrasileira, diaNaLoja, emReais, horaNaLoja } from "./formatos.js";
+import { dataBrasileira, diaNaLoja, emReais, horaNaLoja, quantidade } from "./formatos.js";
 import { celula, confirmar, limparErros, linhaVazia, mostrarErroNoCampo, mostrarErros } from "./formulario.js";
 import { procurarProduto } from "./procurar-produto.js";
 import { entrarNaTela } from "./sessao.js";
@@ -35,7 +38,7 @@ const SITUACAO = {
   PENDENTE: { texto: "Lendo agora", tipo: "neutra" },
 };
 
-const estado = { pendentes: [], escolhida: null, procura: null, enviando: false };
+const estado = { pendentes: [], escolhida: null, procura: null, enviando: false, confirmando: null };
 
 const $ = (id) => document.getElementById(id);
 
@@ -48,7 +51,16 @@ async function iniciar() {
 
   $("formulario").addEventListener("submit", ligar);
   $("botao-cancelar").addEventListener("click", () => fecharFormulario(true));
-  $("campo-produto").addEventListener("change", () => mostrarErroNoCampo(CAMPOS, "produto", null));
+  $("botao-confirmar").addEventListener("click", gravar);
+  $("botao-voltar").addEventListener("click", () => {
+    esconderConfirmacao();
+    $("campo-produto").focus();
+  });
+  $("campo-produto").addEventListener("change", () => {
+    mostrarErroNoCampo(CAMPOS, "produto", null);
+    esconderConfirmacao();
+  });
+  $("campo-procurar").addEventListener("input", esconderConfirmacao);
 
   carregarPendentes();
   carregarPlanilhas();
@@ -146,6 +158,7 @@ function abrirFormulario(item) {
 function fecharFormulario(voltarParaALinha) {
   const id = estado.escolhida && estado.escolhida.id;
   estado.escolhida = null;
+  esconderConfirmacao();
   $("formulario").hidden = true;
   marcarLinha(null);
   limparErros(CAMPOS);
@@ -174,14 +187,35 @@ async function ligar(evento) {
     return;
   }
 
+  // X1, item 18: primeiro a pergunta; quem grava é o "Sim, ligar".
   const item = estado.escolhida;
+  estado.confirmando = produto;
+  $("texto-confirmacao").textContent =
+    "Ligar a venda de " + quandoFoi(item) + " a " + produto.nome + "? Isso tira " +
+    quantidade(item.quantidade, produto.unidade_medida) + " do estoque dele e não pode ser desfeito.";
+  $("confirmacao").hidden = false;
+  $("botao-ligar").hidden = true;
+  $("botao-confirmar").focus();
+}
+
+function esconderConfirmacao() {
+  estado.confirmando = null;
+  $("confirmacao").hidden = true;
+  $("botao-ligar").hidden = false;
+}
+
+async function gravar() {
+  const item = estado.escolhida;
+  const produto = estado.confirmando;
+  if (estado.enviando || !item || !produto) return;
   estado.enviando = true;
-  $("botao-ligar").disabled = true;
+  $("botao-confirmar").disabled = true;
   const resposta = await api.criar("itens-pendentes/" + item.id + "/casar/", { produto: produto.id });
   estado.enviando = false;
-  $("botao-ligar").disabled = false;
+  $("botao-confirmar").disabled = false;
 
   if (!resposta.ok) {
+    esconderConfirmacao();
     mostrarErros(CAMPOS, resposta.erro);
     return;
   }
