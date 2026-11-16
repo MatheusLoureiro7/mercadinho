@@ -169,6 +169,15 @@ na demonstração são de exemplo, criados pelo grupo.
 | J5 | Treinamento das três pessoas | J4 | 4 | ⬜ A fazer | — | — |
 | J6 | Implantação e acompanhamento da primeira semana | J4 | 6 | ⬜ A fazer | — | — |
 
+## Tarefas extras (fora do cronograma da Apostila IV)
+
+Trabalho que o grupo fez além das 51 tarefas. **Não entra nas 378 horas nem nas porcentagens do
+resumo.**
+
+| ID | TAREFA | SITUAÇÃO | CONCLUÍDA EM | RESULTADO |
+|---|---|---|---|---|
+| ~~X1~~ | ~~Revisão geral do código contra a especificação~~ | ✅ Concluída | 16/11/2026 | `docs/REVISAO-FABLE.md` |
+
 ---
 
 ## Diário
@@ -201,8 +210,33 @@ cronograma, a regra de negócio (quando houver) e o commit.
     madrugada com cópia de segurança (J6; o backup diário, RNF09, ainda não existe).
   Concluída em 16/11/2026 (prevista para até 18/11/2026).
 
-**Próxima tarefa:** J4 — teste em movimento real num sábado cheio (simulado, 21/11/2026). Depois,
-J5 (treinamento, 23/11) e J6 (implantação, 23 a 27/11).
+- **X1 — Revisão geral do código contra a especificação (tarefa extra, fora do cronograma).**
+  Antes da entrega, o grupo fez uma revisão do sistema inteiro, sem corrigir nada, só para listar.
+  **O que foi revisado:** o código comparado com as 16 regras de negócio, os requisitos RF01 a
+  RF17, as 14 tabelas do modelo de dados e as 10 telas; e uma procura por erros que os testes
+  automáticos podem não pegar (data errada depois das 21h, perda contada como venda, saída pelo
+  lote errado, saldo gravado à mão, tela sem conferir o perfil, duas pessoas mexendo no mesmo lote
+  ao mesmo tempo e arredondamento de centavos). O banco deste computador também foi comparado com
+  o modelo de dados entregue.
+  **O que foi encontrado:** 22 problemas — **4 de gravidade alta, 9 de média e 9 de baixa**. A
+  lista completa, com o arquivo, a linha e um exemplo concreto de cada um, está em
+  `docs/REVISAO-FABLE.md`. Doze deles foram reproduzidos na prática.
+  **As regras críticas estão corretas:** o saldo é sempre calculado pelas movimentações (RN01), a
+  mercadoria sai do lote que vence primeiro (RN02), a perda não entra na conta do consumo (RN11) e
+  cada pessoa só entra nas suas telas (RN14).
+  **Os quatro problemas de gravidade alta** estão na importação das vendas do caixa: (1) a mesma
+  planilha salva com outro nome entra duas vezes, e uma planilha nova com o nome de uma antiga não
+  entra; (2) uma linha da planilha com erro fica fora do valor apurado, e o fechamento de caixa
+  registra uma diferença que não existe; (3) quando o caixa vende mais do que o sistema tinha em
+  estoque, o saldo do produto e a soma dos lotes deixam de bater, e não há como acertar; (4) uma
+  planilha com vendas de dois dias trava o fechamento do segundo dia.
+  **Combinado:** as correções dos itens 1 a 4 serão feitas **antes do teste de sábado (J4,
+  21/11/2026)**. Os de gravidade média e baixa ficam para depois, na ordem da lista.
+  Não muda as 51 tarefas, as 378 horas nem as porcentagens do resumo.
+
+**Próxima tarefa:** correção dos itens 1 a 4 da revisão (`docs/REVISAO-FABLE.md`) e, em seguida,
+J4 — teste em movimento real num sábado cheio (simulado, 21/11/2026). Depois, J5 (treinamento,
+23/11) e J6 (implantação, 23 a 27/11).
 
 ### 13/11/2026
 
