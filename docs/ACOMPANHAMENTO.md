@@ -195,6 +195,11 @@ cronograma, a regra de negócio (quando houver) e o commit.
   de desenvolvimento, apagados também arquivos de trabalho que nunca foram versionados: fotos de
   tela antigas do redesenho das telas, registros (logs) antigos e caches. Nenhum código, teste ou
   documento entregue ao professor foi alterado. Tudo enviado ao GitHub para o grupo revisar.
+- **Teste da tela de balanço corrigido (fora do cronograma).** Ao publicar o sistema, um teste de
+  tela do balanço semanal (I3) falhou. O defeito era do teste, não do sistema: ele fixava a data
+  em 12/11/2026 só no servidor, e o navegador usava a data real. Até 16/11 as duas datas davam o
+  mesmo resultado; a partir de 17/11, não. Agora o navegador do teste também usa 12/11. Com isso
+  passaram os 1.144 testes, e o sistema foi publicado com a versão atual.
 
 ### 16/11/2026
 

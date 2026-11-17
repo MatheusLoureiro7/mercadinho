@@ -340,6 +340,7 @@ def test_i3_tela_avisa_perda_sem_custo(page, painel, esposa):
 @pytest.mark.tela
 def test_i3_tela_volta_para_a_semana_anterior_e_nao_passa_da_atual(page, painel, esposa):
     _venda("70.00", date(2026, 11, 3))
+    page.clock.set_fixed_time(QUINTA)  # a tela calcula "ontem" pelo relógio do navegador
     abrir_tela(page, painel, esposa, TELA)
     expect(page.locator("#titulo-semana")).to_contain_text("09/11 a 15/11/2026")
     expect(page.locator("#botao-anterior")).to_be_enabled()  # o balanço terminou de carregar
