@@ -186,6 +186,16 @@ resumo.**
 O que foi feito em cada dia, do mais recente para o mais antigo. Cada linha aponta a tarefa do
 cronograma, a regra de negócio (quando houver) e o commit.
 
+### 17/11/2026
+
+- **Limpeza do repositório (fora do cronograma).** Removidos os arquivos que não servem mais: o
+  roteiro de reunião com o cliente (`REUNIAO-CLIENTE.md` e `.pdf`) — o mercado é fictício e não
+  haverá reunião (decisão de 30/10/2026) — e o `PRIMEIRO-PROMPT.md`, o texto usado para iniciar o
+  projeto, já substituído pelo `CLAUDE.md`. O README deixou de apontar para o roteiro. Na máquina
+  de desenvolvimento, apagados também arquivos de trabalho que nunca foram versionados: fotos de
+  tela antigas do redesenho das telas, registros (logs) antigos e caches. Nenhum código, teste ou
+  documento entregue ao professor foi alterado. Tudo enviado ao GitHub para o grupo revisar.
+
 ### 16/11/2026
 
 - **X2 — Documentação do sistema atualizada e redesenhada (tarefa extra, fora do cronograma).**
