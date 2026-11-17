@@ -209,7 +209,7 @@ anotado aqui.
 
 | Item | Por que não é automático | Como será conferido |
 |---|---|---|
-| **J4 — teste em movimento real** | Precisa de uma rodada inteira simulando um sábado cheio | 21/11, com os produtos e vendas de exemplo do grupo |
+| **J4 — teste em movimento real** | Precisa de uma rodada inteira simulando um sábado cheio | 21/11, com os produtos e vendas de exemplo do grupo — roteiro e casos em `docs/testes/ROTEIRO-J4.md` |
 | **Aviso chegando no celular de verdade** | Os testes usam um Telegram local; não mandam mensagem real | Na J4 e na J6, com o bot real e o celular do grupo |
 | **RNF02 / RNF10 — simplicidade e vocabulário do cliente** | "Fácil de usar" depende de gente | Mensagens são conferidas nos testes (ex.: "o frango acaba em 2 dias"); facilidade, na J5 (treinamento) |
 | **RNF03 — treinamento** | Não é código | J5, 23/11 |

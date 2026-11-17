@@ -200,6 +200,17 @@ cronograma, a regra de negócio (quando houver) e o commit.
   em 12/11/2026 só no servidor, e o navegador usava a data real. Até 16/11 as duas datas davam o
   mesmo resultado; a partir de 17/11, não. Agora o navegador do teste também usa 12/11. Com isso
   passaram os 1.144 testes, e o sistema foi publicado com a versão atual.
+- **J4 — roteiro do teste de sábado preparado (a tarefa continua a fazer).** Escrito o
+  `docs/testes/ROTEIRO-J4.md`: papéis, preparação até sexta, o dia hora a hora, 21 casos de teste
+  com o resultado esperado de cada um e a tabela para anotar o resultado. Na conferência apareceram
+  três coisas a resolver antes de sábado: a pasta das planilhas do caixa não está configurada no
+  computador do Matheus, o agendador das 03h00 não está instalado e faltam as vendas de exemplo de
+  13/11 a 20/11.
+  **Planilhas de exemplo prontas** em `docs/exemplos/j4/`: uma por dia de 13/11 a 20/11 (de 12 a 17
+  cupons, pela média do histórico), a do sábado (70 cupons, com 3 linhas de produto com nome errado
+  e 2 cupons pagos em "espécie", de propósito) e uma com a hora "9h30" para o caso de erro. As nove
+  foram lidas pelo próprio sistema sem erro. Como o estoque atual não cobre esses dias, o roteiro
+  traz a reposição a fazer pela tela de entrada na quarta (18/11) e na sexta (20/11).
 
 ### 16/11/2026
 
