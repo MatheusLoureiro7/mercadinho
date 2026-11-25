@@ -12,21 +12,26 @@ O diário, no fim do arquivo, conta o que foi feito em cada dia.
 | 🔄 Em andamento | Começou e ainda não terminou |
 | ⬜ A fazer | Não começou; não depende de decisão do cliente |
 | ⛔ Aguarda Dxx | Depende de uma decisão pendente (`docs/DECISOES-PENDENTES.md`) |
+| ➖ Não se aplica | Não foi feita porque depende de uma loja real; o mercado deste trabalho é fictício |
 
 ---
 
 ## Resumo
 
-*Atualizado em 16/11/2026.*
+*Atualizado em 25/11/2026.*
 
 | | Concluído | Total | % |
 |---|---|---|---|
 | **Tarefas** | 48 | 51 | 94,1 % |
 | **Horas estimadas** | 362 h | 378 h | 95,8 % |
 
+As 3 tarefas que faltam (J4, J5 e J6, 16 h) estão marcadas como **não se aplica**: elas pedem uma
+loja funcionando, com movimento, funcionários e uma semana de uso, e o mercado deste trabalho é
+fictício. **Das 48 tarefas que dava para fazer, as 48 estão concluídas (362 de 362 h).**
+
 | Etapa | Blocos | Horas concluídas | Total | % |
 |---|---|---|---|---|
-| 1 · Aviso de validade | A, B, C, D, F, J | 196 h | 212 h | 92,5 % |
+| 1 · Aviso de validade | A, B, C, D, F, J | 196 h | 212 h | 92,5 % (16 h não se aplicam) |
 | 2 · Aviso de ruptura | E, G, H | 136 h | 136 h | 100,0 % ✅ |
 | 3 · Gestão | I | 30 h | 30 h | 100,0 % ✅ |
 
@@ -165,9 +170,9 @@ na demonstração são de exemplo, criados pelo grupo.
 | ~~J1~~ | ~~Testes automatizados de todas as regras~~ | todas as regras | 16 | ✅ Concluída | 16/11/2026 | `f802807` |
 | ~~J2~~ | ~~Carga inicial dos produtos, junto com o cliente~~ | B3 | 8 | ✅ Concluída | 12/11/2026 | `261ce90` |
 | ~~J3~~ | ~~Inventário de partida: contagem física~~ | J2 | 6 | ✅ Concluída | 12/11/2026 | `d1b72b5` |
-| J4 | Teste em movimento real, num sábado cheio | todos | 6 | ⬜ A fazer | — | — |
-| J5 | Treinamento das três pessoas | J4 | 4 | ⬜ A fazer | — | — |
-| J6 | Implantação e acompanhamento da primeira semana | J4 | 6 | ⬜ A fazer | — | — |
+| J4 | Teste em movimento real, num sábado cheio | todos | 6 | ➖ Não se aplica (roteiro e planilhas prontos) | — | `2d409be` |
+| J5 | Treinamento das três pessoas | J4 | 4 | ➖ Não se aplica | — | — |
+| J6 | Implantação e acompanhamento da primeira semana | J4 | 6 | ➖ Não se aplica | — | — |
 
 ## Tarefas extras (fora do cronograma da Apostila IV)
 
@@ -185,6 +190,18 @@ resumo.**
 
 O que foi feito em cada dia, do mais recente para o mais antigo. Cada linha aponta a tarefa do
 cronograma, a regra de negócio (quando houver) e o commit.
+
+### 25/11/2026
+
+- **J4, J5 e J6 marcadas como "não se aplica" (decisão do grupo).** As três últimas tarefas do
+  cronograma pedem uma loja de verdade: um sábado cheio de vendas reais (J4), o treinamento do dono,
+  do sobrinho e da pessoa da operação (J5) e uma semana de uso acompanhada na loja (J6). Como o
+  mercado do Sr. João é fictício, não há loja, funcionários nem movimento para isso. Elas **não
+  foram feitas** e não entram como concluídas. O que ficou pronto da J4 continua no repositório e
+  serve de base se o sistema for usado de verdade: o roteiro do teste, com 21 casos e o resultado
+  esperado de cada um (`docs/testes/ROTEIRO-J4.md`), e as planilhas de vendas de exemplo
+  (`docs/exemplos/j4/`), todas lidas pelo sistema sem erro. Com isso, as 48 tarefas que dependiam
+  só do grupo estão concluídas e testadas (362 das 378 horas da apostila).
 
 ### 17/11/2026
 

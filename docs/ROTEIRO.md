@@ -6,7 +6,7 @@ Total: **378 horas**. Os códigos (A1 … J6), as horas e as dependências são 
 **Não pule tarefa.** A ordem vem de dependência real: o modelo de dados sustenta quase tudo e por
 isso vem primeiro. A própria apostila diz que a pessoa de dados é o gargalo do projeto.
 
-Marque `[x]` quando a tarefa estiver pronta **e testada**.
+Marque `[x]` quando a tarefa estiver pronta **e testada**. `[–]` = não se aplica (depende de loja real; o mercado é fictício).
 
 ---
 
@@ -165,9 +165,9 @@ entrada de mercadoria. É a parte do produto que entrega valor mais cedo e sem d
 | [x] | **J1** | Testes automatizados de todas as regras | Teste | todas as regras | 16 |
 | [x] | **J2** | Carga inicial dos produtos, junto com o cliente | Dados | B3 | 8 |
 | [x] | **J3** | Inventário de partida: contagem física | Dados | J2 | 6 |
-| [ ] | **J4** | Teste em movimento real, num sábado cheio | Teste | todos | 6 |
-| [ ] | **J5** | Treinamento das três pessoas | — | J4 | 4 |
-| [ ] | **J6** | Implantação e acompanhamento da primeira semana | Infra | J4 | 6 |
+| [–] | **J4** | Teste em movimento real, num sábado cheio | Teste | todos | 6 |
+| [–] | **J5** | Treinamento das três pessoas | — | J4 | 4 |
+| [–] | **J6** | Implantação e acompanhamento da primeira semana | Infra | J4 | 6 |
 
 **J1 não é para deixar para o fim.** Escreva o teste junto com cada regra; J1 é o fechamento e a
 cobertura que faltou, não o começo.
