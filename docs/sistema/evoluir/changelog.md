@@ -1,6 +1,6 @@
 # Changelog e versionamento
 
-*Atualizado em 16/11/2026.* Versionamento semântico (SemVer), adotado pelo grupo em 13/11/2026:
+*Atualizado em 25/11/2026.* Versionamento semântico (SemVer), adotado pelo grupo em 13/11/2026:
 
 - **MAIOR** (1.0.0, 2.0.0): mudança que quebra algo — dado que precisa ser convertido, tela que some,
   formato da planilha do caixa que muda. Vem sempre com guia de migração.
@@ -13,7 +13,7 @@ Enquanto a versão começar com 0, o sistema está em construção; a **1.0.0** 
 
 ## 0.4.0 — 16/11/2026 — commit `f4104c2`
 Revisão geral do código contra a especificação (tarefa extra X1): 22 achados, todos corrigidos, um
-commit por item (`fa2866e` a `f4104c2`). Lista completa em `docs/REVISAO-FABLE.md`.
+commit por item (`fa2866e` a `f4104c2`). A lista completa ficou no histórico do Git (`docs/REVISAO-FABLE.md`, removido em 25/11/2026).
 
 - **Novo:** coluna "Quando acaba" na Consulta de estoque e campos `previsao` e `dias_ate_acabar` em
   `/api/estoque/` (RF08, RN09). Campo "Dia do caixa" no Fechamento; `?data=` em

@@ -238,17 +238,13 @@ trocar banco de testes, ferramenta, dependência, arquitetura, modelo de usuári
 
 ---
 
-## O que ainda não foi decidido
+## Decisões do cliente (D01–D08)
 
-Oito decisões dependem do cliente e estão em `docs/DECISOES-PENDENTES.md`. Duas são **bloqueantes**:
-
-- **D01** — o caixa da loja exporta as vendas em arquivo? Em que formato?
-  Trava os blocos E, G e H — 136 das 378 horas.
-- **D02** — como o sistema fica sabendo da validade?
-
-**166 horas não dependem de nenhuma decisão** (blocos A, B, C, D e F). É por aí que o trabalho
-começa. Não tente adivinhar o formato do arquivo do caixa: implemente a leitura atrás de uma
-interface e deixe o parser real para quando a resposta chegar.
+As oito decisões que dependiam do cliente (Apêndice A da Apostila IV) já foram tomadas pelo grupo,
+porque o mercado é fictício — D01: o caixa exporta as vendas em planilha Excel
+(`docs/FORMATO-PLANILHA-CAIXA.md`); D05: o sistema roda no computador do Matheus. O registro está
+no diário do `docs/ACOMPANHAMENTO.md` (30/10/2026) e nos ADRs (`docs/sistema/manter/adrs.md`).
+O antigo `docs/DECISOES-PENDENTES.md` foi removido em 25/11/2026 e continua no histórico do Git.
 
 ---
 

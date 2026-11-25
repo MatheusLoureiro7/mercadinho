@@ -1,8 +1,8 @@
 # Registros de decisão de arquitetura (ADR)
 
-*Atualizado em 16/11/2026.* O porquê de cada decisão. Cada uma tem contexto, decisão, consequência,
+*Atualizado em 25/11/2026.* O porquê de cada decisão. Cada uma tem contexto, decisão, consequência,
 data e situação. As decisões de regra de negócio (as lacunas da especificação) estão, com o
-detalhe, em `docs/LACUNAS.md`; as do cliente, em `docs/DECISOES-PENDENTES.md`. Decisão nova vira um
+detalhe, em `docs/LACUNAS.md`; as do cliente (D01–D08), no diário do `docs/ACOMPANHAMENTO.md` de 30/10/2026. Decisão nova vira um
 ADR novo no fim da lista; decisão substituída fica, marcada como *substituída*.
 
 | ADR | Decisão | Data | Situação |

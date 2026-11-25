@@ -15,8 +15,7 @@ exporta.
 | `docs/ESPECIFICACAO.md` | RF, RNF, restrições e fora de escopo |
 | `docs/ARQUITETURA.md` | Camadas, operações, as 10 telas |
 | `schema.sql` | As 14 tabelas — nenhuma coluna a mais |
-| `docs/DECISOES-PENDENTES.md` · `docs/LACUNAS.md` | O que ainda não foi decidido |
-| `openspec/` | Especificação no formato OpenSpec (specs por capacidade e propostas de mudança) |
+| `docs/LACUNAS.md` | Lacunas da especificação e como o grupo decidiu cada uma |
 
 ---
 
@@ -35,7 +34,6 @@ backend/
   tests/       testes (pytest)
 frontend/      HTML + CSS + JS puro — só conversa com a API
 docs/          especificação (não editar sem decisão do grupo)
-openspec/      especificação OpenSpec
 schema.sql     modelo de dados de referência
 ```
 

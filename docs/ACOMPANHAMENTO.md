@@ -11,7 +11,7 @@ O diário, no fim do arquivo, conta o que foi feito em cada dia.
 | ✅ Concluída | Pronta **e testada** |
 | 🔄 Em andamento | Começou e ainda não terminou |
 | ⬜ A fazer | Não começou; não depende de decisão do cliente |
-| ⛔ Aguarda Dxx | Depende de uma decisão pendente (`docs/DECISOES-PENDENTES.md`) |
+| ⛔ Aguarda Dxx | Dependia de uma decisão do cliente (D01–D08, todas tomadas em 30/10/2026) |
 | ➖ Não se aplica | Não foi feita porque depende de uma loja real; o mercado deste trabalho é fictício |
 
 ---
@@ -181,7 +181,7 @@ resumo.**
 
 | ID | TAREFA | SITUAÇÃO | CONCLUÍDA EM | RESULTADO |
 |---|---|---|---|---|
-| ~~X1~~ | ~~Revisão geral do código contra a especificação~~ | ✅ Concluída | 16/11/2026 | `docs/REVISAO-FABLE.md` |
+| ~~X1~~ | ~~Revisão geral do código contra a especificação~~ | ✅ Concluída | 16/11/2026 | 22 defeitos corrigidos (`fa2866e` a `f4104c2`) |
 | ~~X2~~ | ~~Documentação do sistema atualizada e redesenhada (página navegável e PDF)~~ | ✅ Concluída | 16/11/2026 | `docs/sistema/DOCUMENTACAO-DO-SISTEMA.html` e `.pdf` |
 
 ---
@@ -202,6 +202,13 @@ cronograma, a regra de negócio (quando houver) e o commit.
   esperado de cada um (`docs/testes/ROTEIRO-J4.md`), e as planilhas de vendas de exemplo
   (`docs/exemplos/j4/`), todas lidas pelo sistema sem erro. Com isso, as 48 tarefas que dependiam
   só do grupo estão concluídas e testadas (362 das 378 horas da apostila).
+- **Limpeza do repositório para a entrega (fora do cronograma).** Removidos, por decisão do grupo,
+  documentos de trabalho que não servem mais: a lista da revisão geral (`docs/REVISAO-FABLE.md` — os
+  22 defeitos já estavam corrigidos), a lista de decisões pendentes (`docs/DECISOES-PENDENTES.md` —
+  as oito já estavam tomadas desde 30/10/2026) e a cópia da especificação no formato OpenSpec
+  (`openspec/`), com os comandos e skills dessa ferramenta. Os arquivos que citavam esses documentos
+  foram ajustados. Nenhum HTML ou PDF foi apagado, e os quatro documentos da especificação continuam
+  como estavam. Tudo segue no histórico do Git. Os 1.144 testes passaram depois da limpeza.
 
 ### 17/11/2026
 
@@ -263,7 +270,7 @@ cronograma, a regra de negócio (quando houver) e o commit.
   operação que não existe (lacuna L10, aberta).
   **O que foi feito:** os dois textos foram corrigidos. Não muda o funcionamento, por isso não há
   teste que falhe antes e passe depois; a suíte inteira continua passando (**1137 testes**).
-  **Com isso, os 22 itens da revisão (`docs/REVISAO-FABLE.md`) estão corrigidos**: 4 de gravidade
+  **Com isso, os 22 itens da revisão (`docs/REVISAO-FABLE.md`, (arquivo removido em 25/11/2026; continua no histórico do Git)) estão corrigidos**: 4 de gravidade
   alta, 9 de média e 9 de baixa, um commit por item, todos em 16/11/2026.
 
 - **X1, item 21 — Uma leitura do prazo de validade por lote (correção da revisão, gravidade
@@ -594,7 +601,7 @@ cronograma, a regra de negócio (quando houver) e o commit.
   o modelo de dados entregue.
   **O que foi encontrado:** 22 problemas — **4 de gravidade alta, 9 de média e 9 de baixa**. A
   lista completa, com o arquivo, a linha e um exemplo concreto de cada um, está em
-  `docs/REVISAO-FABLE.md`. Doze deles foram reproduzidos na prática.
+  `docs/REVISAO-FABLE.md` (arquivo removido em 25/11/2026; continua no histórico do Git). Doze deles foram reproduzidos na prática.
   **As regras críticas estão corretas:** o saldo é sempre calculado pelas movimentações (RN01), a
   mercadoria sai do lote que vence primeiro (RN02), a perda não entra na conta do consumo (RN11) e
   cada pessoa só entra nas suas telas (RN14).
@@ -1558,7 +1565,7 @@ aguarda D05) e o bloco J.
   resolvida por conta própria no código.
 - **Decisão da L09** (autenticação × tabela `usuario`): opção (c) — a autenticação do Django
   usa a tabela `usuario` exatamente como está na Apostila IV, sem nenhuma coluna a mais.
-- **OpenSpec.** A especificação foi passada também para o formato OpenSpec (`openspec/specs/`):
+- **OpenSpec.** A especificação foi passada também para o formato OpenSpec (`openspec/specs/`, (arquivo removido em 25/11/2026; continua no histórico do Git)):
   10 capacidades, cada requisito apontando a regra de origem e usando os exemplos das apostilas.
 
 - **A3 — Esqueleto da API.** A API REST — a "porta única de entrada" da Apostila IV — está de
