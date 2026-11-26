@@ -1,97 +1,231 @@
 <!DOCTYPE html>
 <html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>MDGS-TST-001 — Relatório de Testes</title>
 <style>
-@font-face { font-family: Plex; font-weight: 400; src: url(file:///Users/bibico/Documents/projetos/Mercadinho/frontend/fontes/ibm-plex-sans-400.woff2); }
-@font-face { font-family: Plex; font-weight: 500; src: url(file:///Users/bibico/Documents/projetos/Mercadinho/frontend/fontes/ibm-plex-sans-500.woff2); }
-@font-face { font-family: Plex; font-weight: 600; src: url(file:///Users/bibico/Documents/projetos/Mercadinho/frontend/fontes/ibm-plex-sans-600.woff2); }
-* { box-sizing: border-box; }
-body { font-family: Plex, sans-serif; font-size: 9.2pt; line-height: 1.4; color: #1d2430; margin: 0;
-        counter-reset: secao; }
-header { border-bottom: 1.5pt solid #12305a; padding-bottom: 4mm; margin-bottom: 6mm; }
-.sup { font-size: 8.4pt; color: #556; display: flex; justify-content: space-between; }
-h1 { font-size: 21pt; color: #12305a; margin: 3mm 0 1mm; font-weight: 600; }
-.sistema { font-size: 11pt; color: #33415a; }
-h2 { font-size: 12.5pt; color: #12305a; font-weight: 600; margin: 5mm 0 2mm; break-after: avoid;
-      counter-increment: secao; }
-h2::before { content: counter(secao) ". "; }
-p { margin: 0 0 2.5mm; }
-table { width: 100%; border-collapse: collapse; margin: 1mm 0 3mm; font-size: 8.5pt; }
-th, td { border: 0.5pt solid #b9c2d0; padding: 1.1mm 2mm; text-align: left; vertical-align: top; }
-thead th { background: #12305a; color: #fff; font-weight: 500; }
-tr { break-inside: avoid; }
-.num { text-align: right; width: 18mm; }
-.id { font-weight: 500; white-space: nowrap; }
-.regras td:nth-child(2) { width: 34mm; } .regras .num { width: 13mm; } .regras td:last-child { width: 22mm; }
-.data { white-space: nowrap; width: 26mm; }
-.selo { display: inline-block; padding: 0.3mm 1.6mm; border-radius: 1mm; font-size: 7.6pt;
-         font-weight: 600; white-space: nowrap; border: 0.5pt solid; }
-.selo.ok { color: #12663a; background: #e3f4ea; border-color: #9bd1b2; }
-.selo.falha { color: #9b1c1c; background: #fbe5e5; border-color: #e5a3a3; }
-.selo.parcial { color: #7a5200; background: #fdf1d8; border-color: #e6c27a; }
-.selo.nao { color: #4a5568; background: #edf0f4; border-color: #c3cad5; }
-.numeros { display: flex; gap: 3mm; margin: 1mm 0 3mm; }
-.numeros div { flex: 1; border: 0.5pt solid #b9c2d0; padding: 2.5mm 3mm; font-size: 8.4pt; color: #445; }
-.numeros span { display: block; font-size: 17pt; font-weight: 600; color: #12305a; }
-.conclusao { border-left: 2pt solid #12305a; background: #f2f5fa; padding: 3mm 4mm; }
-</style></head><body>
+/* Mesmo visual da Documentação do Sistema (docs/sistema): verde da loja, Unbounded nos títulos,
+   IBM Plex Sans no texto, tema claro ou escuro com botão; o PDF é sempre claro. */
+@font-face { font-family: "Plex"; font-weight: 400; font-display: swap; src: url("../../frontend/fontes/ibm-plex-sans-400.woff2") format("woff2"); }
+@font-face { font-family: "Plex"; font-weight: 500; font-display: swap; src: url("../../frontend/fontes/ibm-plex-sans-500.woff2") format("woff2"); }
+@font-face { font-family: "Plex"; font-weight: 600; font-display: swap; src: url("../../frontend/fontes/ibm-plex-sans-600.woff2") format("woff2"); }
+@font-face { font-family: "Unbounded"; font-weight: 500; font-display: swap; src: url("../../frontend/fontes/unbounded-500.woff2") format("woff2"); }
+@font-face { font-family: "Unbounded"; font-weight: 600; font-display: swap; src: url("../../frontend/fontes/unbounded-600.woff2") format("woff2"); }
+:root {
+  --fundo: #f6f7f4; --superficie: #ffffff; --superficie-2: #eef1ec; --tinta: #0f1f18; --tinta-suave: #4a5a52;
+  --linha: #dbe1da; --marca: #0a6847; --marca-fundo: #e1f2e9; --amarelo: #ffd43b; --sobre-amarelo: #2a2200;
+  --aviso: #8a4b00; --aviso-fundo: #fff3d1; --erro: #9b1c1c; --erro-fundo: #fbe5e5; --foco: #1d4ed8;
+  --texto: "Plex", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --titulo: "Unbounded", "Plex", system-ui, sans-serif;
+  --mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+  --medida: 74ch;
+}
+:root[data-tema="escuro"] {
+  --fundo: #0f1f19; --superficie: #15281f; --superficie-2: #1b3228; --tinta: #e7efe9; --tinta-suave: #a3b6ab;
+  --linha: #284035; --marca: #62d4a4; --marca-fundo: #173d2d; --aviso: #ffcf70; --aviso-fundo: #3a2c0c;
+  --erro: #ff9b9b; --erro-fundo: #3d1717; --foco: #9db9ff; color-scheme: dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-tema="claro"]) {
+    --fundo: #0f1f19; --superficie: #15281f; --superficie-2: #1b3228; --tinta: #e7efe9; --tinta-suave: #a3b6ab;
+    --linha: #284035; --marca: #62d4a4; --marca-fundo: #173d2d; --aviso: #ffcf70; --aviso-fundo: #3a2c0c;
+    --erro: #ff9b9b; --erro-fundo: #3d1717; --foco: #9db9ff; color-scheme: dark;
+  }
+}
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; background: var(--fundo); color: var(--tinta); font: 400 1rem/1.6 var(--texto); -webkit-text-size-adjust: 100%; }
+main { max-width: 1040px; margin: 0 auto; padding: 0 clamp(16px, 5vw, 56px) 96px; }
+a { color: var(--marca); }
+:focus-visible { outline: 3px solid var(--foco); outline-offset: 2px; }
+.topo { display: flex; justify-content: flex-end; padding-top: 16px; }
+.botao { min-height: 36px; padding: 0 12px; cursor: pointer; font: 500 0.875rem var(--texto); color: var(--tinta);
+  background: var(--superficie); border: 1px solid var(--tinta-suave); border-radius: 8px; }
+.botao:hover { background: var(--superficie-2); }
 
-<header>
-  <div class="sup"><span>Engenharia de Software · Grupo MDGS</span>
-  <span>MDGS-TST-001 · versão 1.3 · 16/11/2026</span></div>
+.capa { padding: clamp(24px, 6vh, 72px) 0 32px; border-bottom: 1px solid var(--linha); }
+.capa__grupo { margin: 0 0 18px; color: var(--tinta-suave); }
+.capa h1 { margin: 0; font: 600 clamp(2rem, 4.6vw, 3.25rem)/1.08 var(--titulo); letter-spacing: -0.02em; text-wrap: balance; }
+.capa__sistema { margin: 14px 0 0; max-width: 60ch; font-size: 1.1875rem; color: var(--tinta-suave); text-wrap: balance; }
+.ficha { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); margin: 36px 0 0; padding: 0; border-top: 1px solid var(--linha); }
+.ficha div { padding: 14px 16px 14px 0; border-bottom: 1px solid var(--linha); }
+.ficha dt { font-size: 0.8125rem; color: var(--tinta-suave); }
+.ficha dd { margin: 2px 0 0; font: 500 1.0625rem/1.3 var(--mono); font-variant-numeric: tabular-nums; }
+
+.numeros { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; margin: 8px 0 20px; border-top: 3px solid var(--tinta); }
+.numeros div { padding: 14px 16px 12px 0; border-bottom: 1px solid var(--linha); }
+.numeros b { display: block; font: 600 clamp(1.6rem, 3.4vw, 2.25rem)/1.1 var(--titulo); font-variant-numeric: tabular-nums; }
+.numeros .ok b { color: var(--marca); }
+.numeros span { font-size: 0.875rem; color: var(--tinta-suave); }
+
+section { padding-top: 52px; counter-increment: secao; }
+main { counter-reset: secao; }
+h2 { margin: 0 0 14px; padding-bottom: 12px; border-bottom: 1px solid var(--linha); font: 600 1.5rem/1.2 var(--titulo); letter-spacing: -0.01em; }
+h2::before { content: counter(secao) " · "; color: var(--tinta-suave); font-weight: 500; }
+h3 { margin: 28px 0 10px; font: 600 1.0625rem/1.35 var(--texto); }
+p { margin: 0 0 14px; max-width: var(--medida); }
+code { font: 0.875em var(--mono); background: var(--superficie-2); padding: 1px 4px; border-radius: 4px; }
+
+.tabela { margin: 0 0 22px; overflow-x: auto; border: 1px solid var(--linha); border-radius: 8px; background: var(--superficie); }
+table { width: 100%; border-collapse: collapse; font-size: 0.875rem; line-height: 1.45; }
+th, td { padding: 9px 12px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--linha); }
+thead th { font-weight: 600; color: var(--tinta-suave); white-space: nowrap; border-bottom: 1px solid var(--tinta-suave); background: var(--superficie-2); }
+tbody tr:last-child td { border-bottom: 0; }
+td:first-child { font-weight: 500; }
+.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.data { white-space: nowrap; font-family: var(--mono); font-size: 0.8125rem; font-variant-numeric: tabular-nums; }
+.id { white-space: nowrap; font-family: var(--mono); }
+
+.selo { display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; font-size: 0.8125rem; font-weight: 500; }
+.selo::before { content: ""; flex: none; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+.selo.ok { color: var(--marca); }
+.selo.falha { color: var(--erro); }
+.selo.parcial, .selo.media { color: var(--aviso); }
+.selo.parcial::before, .selo.media::before { background: none; border: 2px solid currentColor; }
+.selo.alta { color: var(--erro); }
+.selo.nao, .selo.baixa { color: var(--tinta-suave); }
+.selo.nao::before, .selo.baixa::before { background: none; border: 2px solid currentColor; }
+
+.conclusao { max-width: none; padding: 16px 18px; border-left: 3px solid var(--amarelo); background: var(--superficie-2); border-radius: 0 6px 6px 0; }
+.pe { margin-top: 72px; padding-top: 16px; border-top: 1px solid var(--linha); font-size: 0.875rem; color: var(--tinta-suave); }
+
+@media (max-width: 640px) { .numeros { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+@page { size: A4; margin: 16mm 15mm 18mm; }
+@media print {
+  :root, :root[data-tema="escuro"], :root:not([data-tema="claro"]) {
+    --fundo: #fff; --superficie: #fff; --superficie-2: #f1f3ef; --tinta: #0f1f18; --tinta-suave: #4a5a52;
+    --linha: #cfd6ce; --marca: #0a6847; --aviso: #8a4b00; --erro: #9b1c1c; color-scheme: light;
+  }
+  html { font-size: 9.4pt; }
+  body { background: #fff; line-height: 1.45; }
+  .topo, .pe { display: none !important; }
+  main { max-width: none; padding: 0; }
+  .capa { padding: 4mm 0 6mm; }
+  .capa h1 { font-size: 26pt; }
+  .capa__sistema { font-size: 12pt; }
+  .ficha { margin-top: 7mm; grid-template-columns: repeat(4, 1fr); }
+  .ficha dd { font-size: 10.5pt; }
+  section { padding-top: 7mm; }
+  h2 { font-size: 14pt; break-after: avoid; }
+  h3 { break-after: avoid; }
+  p { max-width: none; }
+  .numeros b { font-size: 20pt; }
+  .tabela { overflow: visible; border-radius: 0; border-width: 0.5pt; }
+  table { font-size: 8.2pt; }
+  th, td { padding: 1.3mm 1.8mm; border-bottom-width: 0.5pt; }
+  thead { display: table-header-group; }
+  tr { break-inside: avoid; }
+  .selo, .conclusao { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+</style>
+<script>
+(function () {
+  try { var t = localStorage.getItem("mdgs-tema"); if (t) document.documentElement.dataset.tema = t; } catch (e) {}
+})();
+</script>
+</head><body>
+<main>
+<div class="topo"><button type="button" class="botao" id="trocar-tema">Trocar tema</button></div>
+
+<header class="capa">
+  <p class="capa__grupo">Engenharia de Software · Grupo MDGS</p>
   <h1>Relatório de Testes</h1>
-  <div class="sistema">Sistema de Gestão de Estoque e Compras — Mercado do Sr. João</div>
+  <p class="capa__sistema">Sistema de Gestão de Estoque e Compras — Mercado do Sr. João</p>
+  <dl class="ficha">
+    <div><dt>Documento</dt><dd>MDGS-TST-001</dd></div>
+    <div><dt>Versão</dt><dd>2.0</dd></div>
+    <div><dt>Emitido em</dt><dd>25/11/2026</dd></div>
+    <div><dt>Código testado</dt><dd>f11f524</dd></div>
+  </dl>
 </header>
 
+<section>
 <h2>Objetivo</h2>
-<p>Registrar o que foi testado no sistema, o resultado obtido e o que ainda falta testar. Base:
+<p>Registrar o que foi testado no sistema, o resultado obtido e o que não se aplica testar. Base:
 regras de negócio da Apostila I, fluxogramas da Apostila II e requisitos da Apostila III.</p>
+</section>
 
+<section>
 <h2>Como foi testado</h2>
-<table><thead><tr><th>Tipo de teste</th><th>O que verifica</th><th class="num">Testes</th></tr></thead><tbody>
-<tr><td>Regra, API e banco</td><td>Cada regra com o exemplo da Apostila I; a API aceita e recusa o que deve; o banco é igual ao modelo da Apostila IV</td><td class="num">942</td></tr>
-<tr><td>Tela, de ponta a ponta</td><td>Navegador real: login, preenchimento da tela, resultado na tela e no banco</td><td class="num">111</td></tr>
-</tbody></table>
+<div class="tabela"><table><thead><tr><th>Tipo de teste</th><th>O que verifica</th><th class="num">Testes</th></tr></thead><tbody>
+<tr><td>Regra, API e banco</td><td>Cada regra com o exemplo da Apostila I; a API aceita e recusa o que deve; o banco é igual ao modelo da Apostila IV</td><td class="num">1018</td></tr>
+<tr><td>Tela, de ponta a ponta</td><td>Navegador real: login, preenchimento da tela, resultado na tela e no banco</td><td class="num">126</td></tr>
+</tbody></table></div>
 <p>Todos os testes são automáticos (pytest e Playwright), rodam no mesmo banco do sistema
 (PostgreSQL) e cada decisão dos fluxogramas é testada pelo caminho "sim" e pelo "não". Cada teste
-foi escrito junto com a sua tarefa, entre 06/10/2026 e 16/11/2026, e a suíte inteira é executada
-de novo a cada entrega — a última vez em 16/11/2026.</p>
+foi escrito junto com a sua tarefa, a partir de 06/10/2026, e a suíte inteira é executada de novo a
+cada entrega — a última vez em 25/11/2026.</p>
+</section>
 
+<section>
 <h2>Resultado</h2>
 <div class="numeros">
-  <div><span>1053</span>testes executados</div>
-  <div><span>1053</span>aprovados</div>
-  <div><span>0</span>reprovados</div>
-  <div><span>100 %</span>de aprovação</div>
+  <div><b>1144</b><span>testes executados</span></div>
+  <div class="ok"><b>1144</b><span>aprovados</span></div>
+  <div><b>0</b><span>reprovados</span></div>
+  <div class="ok"><b>100%</b><span>de aprovação</span></div>
 </div>
-<p>Execução de 16/11/2026 às 09:55, em 1 min 57 s, sobre o
-código do commit <code>f802807</code>.</p>
-<table><thead><tr><th>Parte do sistema</th><th class="num">Testes</th><th class="num">Aprovados</th><th>Testado em</th><th>Situação</th></tr></thead>
-<tbody><tr><td>A · Fundação: banco, API, login e perfis</td><td class='num'>83</td><td class='num'>83</td><td class='data'>06/10 e 13/11/2026</td><td><span class="selo ok">Aprovado</span></td></tr><tr><td>B · Cadastros de produto, categoria e fornecedor</td><td class='num'>154</td><td class='num'>154</td><td class='data'>06 a 08/10/2026</td><td><span class="selo ok">Aprovado</span></td></tr><tr><td>C · Entrada de mercadoria e saldo</td><td class='num'>108</td><td class='num'>108</td><td class='data'>06 a 08/10/2026</td><td><span class="selo ok">Aprovado</span></td></tr><tr><td>D · Perdas e avarias</td><td class='num'>76</td><td class='num'>76</td><td class='data'>07 e 08/10/2026</td><td><span class="selo ok">Aprovado</span></td></tr><tr><td>E · Importação das vendas do caixa</td><td class='num'>107</td><td class='num'>107</td><td class='data'>05 e 12/11/2026</td><td><span class="selo ok">Aprovado</span></td></tr><tr><td>F · Consulta de estoque</td><td class='num'>77</td><td class='num'>77</td><td class='data'>07 e 08/10/2026</td><td><span class="selo ok">Aprovado</span></td></tr><tr><td>G · Previsão de consumo e rodada das 03h00</td><td class='num'>71</td><td class='num'>71</td><td class='data'>12/11/2026</td><td><span class="selo ok">Aprovado</span></td></tr><tr><td>H · Avisos pelo Telegram: validade e vai acabar</td><td class='num'>208</td><td class='num'>208</td><td class='data'>08/10 a 12/11/2026</td><td><span class="selo ok">Aprovado</span></td></tr><tr><td>I · Fechamento de caixa e balanço da semana</td><td class='num'>83</td><td class='num'>83</td><td class='data'>09/10 a 12/11/2026</td><td><span class="selo ok">Aprovado</span></td></tr><tr><td>J · Cobertura das regras e carga inicial</td><td class='num'>52</td><td class='num'>52</td><td class='data'>09/10 a 16/11/2026</td><td><span class="selo ok">Aprovado</span></td></tr><tr><td>Telas no celular e no tablet</td><td class='num'>28</td><td class='num'>28</td><td class='data'>09/10 e 12/11/2026</td><td><span class="selo ok">Aprovado</span></td></tr><tr><td>Documentação do sistema em dia com o código</td><td class='num'>6</td><td class='num'>6</td><td class='data'>13 e 16/11/2026</td><td><span class="selo ok">Aprovado</span></td></tr></tbody></table>
+<p>Execução de 25/11/2026 às 20:59, em 2 min 23 s, sobre o
+código do commit <code>f11f524</code>.</p>
+<div class="tabela"><table><thead><tr><th>Parte do sistema</th><th class="num">Testes</th><th class="num">Aprovados</th><th>Testado em</th><th>Situação</th></tr></thead>
+<tbody><tr><td>A · Fundação: banco, API, login e perfis</td><td class='num'>85</td><td class='num'>85</td><td class='data'>06/10 e 13/11/2026</td><td><span class="selo ok">Aprovado</span></td></tr><tr><td>B · Cadastros de produto, categoria e fornecedor</td><td class='num'>160</td><td class='num'>160</td><td class='data'>06 a 08/10/2026</td><td><span class="selo ok">Aprovado</span></td></tr><tr><td>C · Entrada de mercadoria e saldo</td><td class='num'>120</td><td class='num'>120</td><td class='data'>06 a 08/10/2026</td><td><span class="selo ok">Aprovado</span></td></tr><tr><td>D · Perdas e avarias</td><td class='num'>76</td><td class='num'>76</td><td class='data'>07 e 08/10/2026</td><td><span class="selo ok">Aprovado</span></td></tr><tr><td>E · Importação das vendas do caixa</td><td class='num'>124</td><td class='num'>124</td><td class='data'>05 e 12/11/2026</td><td><span class="selo ok">Aprovado</span></td></tr><tr><td>F · Consulta de estoque</td><td class='num'>79</td><td class='num'>79</td><td class='data'>07 e 08/10/2026</td><td><span class="selo ok">Aprovado</span></td></tr><tr><td>G · Previsão de consumo e rodada das 03h00</td><td class='num'>82</td><td class='num'>82</td><td class='data'>12/11/2026</td><td><span class="selo ok">Aprovado</span></td></tr><tr><td>H · Avisos pelo Telegram: validade e vai acabar</td><td class='num'>219</td><td class='num'>219</td><td class='data'>08/10 a 12/11/2026</td><td><span class="selo ok">Aprovado</span></td></tr><tr><td>I · Fechamento de caixa e balanço da semana</td><td class='num'>100</td><td class='num'>100</td><td class='data'>09/10 a 12/11/2026</td><td><span class="selo ok">Aprovado</span></td></tr><tr><td>J · Cobertura das regras e carga inicial</td><td class='num'>52</td><td class='num'>52</td><td class='data'>09/10 a 16/11/2026</td><td><span class="selo ok">Aprovado</span></td></tr><tr><td>Telas no celular e no tablet</td><td class='num'>28</td><td class='num'>28</td><td class='data'>09/10 e 12/11/2026</td><td><span class="selo ok">Aprovado</span></td></tr><tr><td>Documentação do sistema em dia com o código</td><td class='num'>13</td><td class='num'>13</td><td class='data'>13 e 16/11/2026</td><td><span class="selo ok">Aprovado</span></td></tr></tbody></table></div>
+</section>
 
+<section>
 <h2>Regras de negócio testadas</h2>
-<table class="regras"><thead><tr><th>Regra</th><th>Descrição</th><th>Exemplo verificado</th><th class="num">Testes</th><th>Data</th><th>Situação</th></tr></thead>
-<tbody><tr><td class='id'>RN01</td><td>O saldo é sempre derivado das movimentações</td><td>Entram 40 kg, vendem 12, perdem 3 → saldo 25 kg; ninguém grava saldo à mão</td><td class='num'>34</td><td class='data'>06/10/2026</td><td><span class="selo ok">Aprovada</span></td></tr><tr><td class='id'>RN02</td><td>A saída respeita a ordem de validade</td><td>Presunto de 28/09 sai antes do de 05/10, mesmo o de 05/10 tendo chegado antes</td><td class='num'>5</td><td class='data'>07/10/2026</td><td><span class="selo ok">Aprovada</span></td></tr><tr><td class='id'>RN03</td><td>Perecível exige prazo de durabilidade</td><td>Perecível sem prazo é recusado; com prazo, ou não perecível, é aceito</td><td class='num'>27</td><td class='data'>06/10/2026</td><td><span class="selo ok">Aprovada</span></td></tr><tr><td class='id'>RN04</td><td>Lote de perecível precisa de validade</td><td>Sem validade, é calculada; validade de ontem é recusada; a de hoje, aceita</td><td class='num'>22</td><td class='data'>07/10/2026</td><td><span class="selo ok">Aprovada</span></td></tr><tr><td class='id'>RN05</td><td>Aviso de validade próxima</td><td>Avisa dentro do prazo; um dia além, não; rodar duas vezes não duplica</td><td class='num'>23</td><td class='data'>08/10/2026</td><td><span class="selo ok">Aprovada</span></td></tr><tr><td class='id'>RN06</td><td>Consumo médio diário</td><td>Vendas dos últimos 30 dias divididas por 30, contando os dias sem venda; perda fica de fora</td><td class='num'>6</td><td class='data'>12/11/2026</td><td><span class="selo ok">Aprovada</span></td></tr><tr><td class='id'>RN07</td><td>Consumo por dia da semana</td><td>Dia da semana que vende 1,5 vez a média ou mais vira dia de venda forte</td><td class='num'>9</td><td class='data'>12/11/2026</td><td><span class="selo ok">Aprovada</span></td></tr><tr><td class='id'>RN08</td><td>Ponto de pedido e aviso de ruptura</td><td>Saldo igual ou abaixo do ponto avisa; acima, não; acaba antes da entrega → urgência alta</td><td class='num'>15</td><td class='data'>12 e 13/11/2026</td><td><span class="selo ok">Aprovada</span></td></tr><tr><td class='id'>RN09</td><td>Histórico mínimo para prever</td><td>13 dias de venda: ainda aprendendo, sem número nem aviso; 14 dias: projeta</td><td class='num'>10</td><td class='data'>12/11/2026</td><td><span class="selo ok">Aprovada</span></td></tr><tr><td class='id'>RN10</td><td>Produtos que não podem faltar no fim de semana</td><td>Na quinta, crítico dentro da folga avisa; na quarta, ou não crítico, não</td><td class='num'>7</td><td class='data'>12/11/2026</td><td><span class="selo ok">Aprovada</span></td></tr><tr><td class='id'>RN11</td><td>Perda não conta como consumo</td><td>Frango jogado fora baixa o saldo, mas não aumenta o consumo</td><td class='num'>23</td><td class='data'>07/10/2026</td><td><span class="selo ok">Aprovada</span></td></tr><tr><td class='id'>RN12</td><td>Janela de silêncio nos horários de pico</td><td>Aviso das 11h15 fica segurado e sai às 13h05</td><td class='num'>15</td><td class='data'>08/10/2026</td><td><span class="selo ok">Aprovada</span></td></tr><tr><td class='id'>RN13</td><td>Avisos agrupados em uma mensagem</td><td>Seis avisos saem numa mensagem só, do mais urgente ao menos</td><td class='num'>12</td><td class='data'>08/10/2026</td><td><span class="selo ok">Aprovada</span></td></tr><tr><td class='id'>RN14</td><td>Três perfis de acesso</td><td>Cada perfil abre só as suas telas; sem login, tudo é recusado</td><td class='num'>67</td><td class='data'>06/10/2026</td><td><span class="selo ok">Aprovada</span></td></tr><tr><td class='id'>RN15</td><td>Diferença de caixa nunca corrigida</td><td>Apura R$ 3.240,00, conta R$ 3.215,00 → registra −R$ 25,00; contar de novo gera registro novo</td><td class='num'>19</td><td class='data'>05/11/2026</td><td><span class="selo ok">Aprovada</span></td></tr><tr><td class='id'>RN16</td><td>Lote vencido é bloqueado</td><td>Vencido não sai na venda, só como perda, e aparece destacado</td><td class='num'>14</td><td class='data'>07/10/2026</td><td><span class="selo ok">Aprovada</span></td></tr></tbody></table>
+<div class="tabela"><table class="regras"><thead><tr><th>Regra</th><th>Descrição</th><th>Exemplo verificado</th><th class="num">Testes</th><th>Data</th><th>Situação</th></tr></thead>
+<tbody><tr><td class='id'>RN01</td><td>O saldo é sempre derivado das movimentações</td><td>Entram 40 kg, vendem 12, perdem 3 → saldo 25 kg; ninguém grava saldo à mão</td><td class='num'>34</td><td class='data'>06/10/2026</td><td><span class="selo ok">Aprovada</span></td></tr><tr><td class='id'>RN02</td><td>A saída respeita a ordem de validade</td><td>Presunto de 28/09 sai antes do de 05/10, mesmo o de 05/10 tendo chegado antes</td><td class='num'>5</td><td class='data'>07/10/2026</td><td><span class="selo ok">Aprovada</span></td></tr><tr><td class='id'>RN03</td><td>Perecível exige prazo de durabilidade</td><td>Perecível sem prazo é recusado; com prazo, ou não perecível, é aceito</td><td class='num'>27</td><td class='data'>06/10/2026</td><td><span class="selo ok">Aprovada</span></td></tr><tr><td class='id'>RN04</td><td>Lote de perecível precisa de validade</td><td>Sem validade, é calculada; validade de ontem é recusada; a de hoje, aceita</td><td class='num'>22</td><td class='data'>07/10/2026</td><td><span class="selo ok">Aprovada</span></td></tr><tr><td class='id'>RN05</td><td>Aviso de validade próxima</td><td>Avisa dentro do prazo; um dia além, não; rodar duas vezes não duplica</td><td class='num'>23</td><td class='data'>08/10/2026</td><td><span class="selo ok">Aprovada</span></td></tr><tr><td class='id'>RN06</td><td>Consumo médio diário</td><td>Vendas dos últimos 30 dias divididas por 30, contando os dias sem venda; perda fica de fora</td><td class='num'>6</td><td class='data'>12/11/2026</td><td><span class="selo ok">Aprovada</span></td></tr><tr><td class='id'>RN07</td><td>Consumo por dia da semana</td><td>Dia da semana que vende 1,5 vez a média ou mais vira dia de venda forte</td><td class='num'>9</td><td class='data'>12/11/2026</td><td><span class="selo ok">Aprovada</span></td></tr><tr><td class='id'>RN08</td><td>Ponto de pedido e aviso de ruptura</td><td>Saldo igual ou abaixo do ponto avisa; acima, não; acaba antes da entrega → urgência alta</td><td class='num'>15</td><td class='data'>12 e 13/11/2026</td><td><span class="selo ok">Aprovada</span></td></tr><tr><td class='id'>RN09</td><td>Histórico mínimo para prever</td><td>13 dias de venda: ainda aprendendo, sem número nem aviso; 14 dias: projeta</td><td class='num'>12</td><td class='data'>12/11/2026</td><td><span class="selo ok">Aprovada</span></td></tr><tr><td class='id'>RN10</td><td>Produtos que não podem faltar no fim de semana</td><td>Na quinta, crítico dentro da folga avisa; na quarta, ou não crítico, não</td><td class='num'>15</td><td class='data'>12/11/2026</td><td><span class="selo ok">Aprovada</span></td></tr><tr><td class='id'>RN11</td><td>Perda não conta como consumo</td><td>Frango jogado fora baixa o saldo, mas não aumenta o consumo</td><td class='num'>23</td><td class='data'>07/10/2026</td><td><span class="selo ok">Aprovada</span></td></tr><tr><td class='id'>RN12</td><td>Janela de silêncio nos horários de pico</td><td>Aviso das 11h15 fica segurado e sai às 13h05</td><td class='num'>15</td><td class='data'>08/10/2026</td><td><span class="selo ok">Aprovada</span></td></tr><tr><td class='id'>RN13</td><td>Avisos agrupados em uma mensagem</td><td>Seis avisos saem numa mensagem só, do mais urgente ao menos</td><td class='num'>12</td><td class='data'>08/10/2026</td><td><span class="selo ok">Aprovada</span></td></tr><tr><td class='id'>RN14</td><td>Três perfis de acesso</td><td>Cada perfil abre só as suas telas; sem login, tudo é recusado</td><td class='num'>67</td><td class='data'>06/10/2026</td><td><span class="selo ok">Aprovada</span></td></tr><tr><td class='id'>RN15</td><td>Diferença de caixa nunca corrigida</td><td>Apura R$ 3.240,00, conta R$ 3.215,00 → registra −R$ 25,00; contar de novo gera registro novo</td><td class='num'>19</td><td class='data'>05/11/2026</td><td><span class="selo ok">Aprovada</span></td></tr><tr><td class='id'>RN16</td><td>Lote vencido é bloqueado</td><td>Vencido não sai na venda, só como perda, e aparece destacado</td><td class='num'>14</td><td class='data'>07/10/2026</td><td><span class="selo ok">Aprovada</span></td></tr></tbody></table></div>
 <p><b>As 16 regras de negócio estão construídas, testadas e aprovadas.</b> Cada uma tem
 o exemplo da Apostila I e os casos de borda; um teste de guarda falha se alguma regra ficar sem
 teste com o código dela no nome.</p>
+</section>
 
+<section>
 <h2>Defeitos</h2>
-<p>Foram encontrados <b>14 defeitos</b>, pelos testes ou na conferência do sistema rodando. Todos foram corrigidos no mesmo dia e ganharam teste
-próprio. <b>Nenhum defeito em aberto em 16/11/2026.</b></p>
-<table><thead><tr><th>Encontrado em</th><th>Defeito</th><th>Corrigido em</th></tr></thead>
-<tbody><tr><td class='data'>06/10/2026</td><td>Horário da movimentação diferente do modelo de dados da Apostila IV</td><td class='data'>06/10/2026</td></tr><tr><td class='data'>07/10/2026</td><td>Botão &quot;Editar&quot; fora da tela no computador da loja</td><td class='data'>07/10/2026</td></tr><tr><td class='data'>08/10/2026</td><td>Busca por &quot;feijao&quot; não achava &quot;Feijão&quot;</td><td class='data'>08/10/2026</td></tr><tr><td class='data'>08/10/2026</td><td>Clique em &quot;Salvar&quot; se perdia ao corrigir um campo</td><td class='data'>08/10/2026</td></tr><tr><td class='data'>08/10/2026</td><td>Aviso de &quot;registrado&quot; cobria os campos no celular</td><td class='data'>08/10/2026</td></tr><tr><td class='data'>08/10/2026</td><td>Lista do dia não rolava só pelo teclado (acessibilidade)</td><td class='data'>08/10/2026</td></tr><tr><td class='data'>08/10/2026</td><td>Leitor de tela anunciava o botão &quot;Ver lotes&quot; errado (acessibilidade)</td><td class='data'>08/10/2026</td></tr><tr><td class='data'>09/10/2026</td><td>Tela às vezes abria sem menu (servidor do painel com fila de 5 conexões)</td><td class='data'>09/10/2026</td></tr><tr><td class='data'>09/10/2026</td><td>Código de vínculo do celular com um dígito a mais era aceito</td><td class='data'>09/10/2026</td></tr><tr><td class='data'>09/10/2026</td><td>Tela de fechamento apagava o que a pessoa estava digitando</td><td class='data'>09/10/2026</td></tr><tr><td class='data'>09/10/2026</td><td>No celular, quantidade, validade e &quot;Editar&quot; ficavam escondidos</td><td class='data'>09/10/2026</td></tr><tr><td class='data'>12/11/2026</td><td>Aviso de validade pronto, mas nenhuma rotina da madrugada o chamava</td><td class='data'>12/11/2026</td></tr><tr><td class='data'>13/11/2026</td><td>Sugestão de compra quebrada em pacote (&quot;pedir 14,531 PCT&quot;)</td><td class='data'>13/11/2026</td></tr><tr><td class='data'>16/11/2026</td><td>Documento da API mudava conforme a ordem em que os testes rodavam</td><td class='data'>16/11/2026</td></tr></tbody></table>
+<p>Foram encontrados <b>37 defeitos</b>: 15 pelos testes ou na conferência
+do sistema rodando, e 22 na revisão geral do código contra a especificação (X1).
+Todos foram corrigidos no mesmo dia e ganharam teste próprio. <b>Nenhum defeito em aberto em 25/11/2026.</b></p>
+<h3>Durante a construção</h3>
+<div class="tabela"><table><thead><tr><th>Encontrado em</th><th>Defeito</th><th>Corrigido em</th></tr></thead>
+<tbody><tr><td class='data'>06/10/2026</td><td>Horário da movimentação diferente do modelo de dados da Apostila IV</td><td class='data'>06/10/2026</td></tr><tr><td class='data'>07/10/2026</td><td>Botão &quot;Editar&quot; fora da tela no computador da loja</td><td class='data'>07/10/2026</td></tr><tr><td class='data'>08/10/2026</td><td>Busca por &quot;feijao&quot; não achava &quot;Feijão&quot;</td><td class='data'>08/10/2026</td></tr><tr><td class='data'>08/10/2026</td><td>Clique em &quot;Salvar&quot; se perdia ao corrigir um campo</td><td class='data'>08/10/2026</td></tr><tr><td class='data'>08/10/2026</td><td>Aviso de &quot;registrado&quot; cobria os campos no celular</td><td class='data'>08/10/2026</td></tr><tr><td class='data'>08/10/2026</td><td>Lista do dia não rolava só pelo teclado (acessibilidade)</td><td class='data'>08/10/2026</td></tr><tr><td class='data'>08/10/2026</td><td>Leitor de tela anunciava o botão &quot;Ver lotes&quot; errado (acessibilidade)</td><td class='data'>08/10/2026</td></tr><tr><td class='data'>09/10/2026</td><td>Tela às vezes abria sem menu (servidor do painel com fila de 5 conexões)</td><td class='data'>09/10/2026</td></tr><tr><td class='data'>09/10/2026</td><td>Código de vínculo do celular com um dígito a mais era aceito</td><td class='data'>09/10/2026</td></tr><tr><td class='data'>09/10/2026</td><td>Tela de fechamento apagava o que a pessoa estava digitando</td><td class='data'>09/10/2026</td></tr><tr><td class='data'>09/10/2026</td><td>No celular, quantidade, validade e &quot;Editar&quot; ficavam escondidos</td><td class='data'>09/10/2026</td></tr><tr><td class='data'>12/11/2026</td><td>Aviso de validade pronto, mas nenhuma rotina da madrugada o chamava</td><td class='data'>12/11/2026</td></tr><tr><td class='data'>13/11/2026</td><td>Sugestão de compra quebrada em pacote (&quot;pedir 14,531 PCT&quot;)</td><td class='data'>13/11/2026</td></tr><tr><td class='data'>16/11/2026</td><td>Documento da API mudava conforme a ordem em que os testes rodavam</td><td class='data'>16/11/2026</td></tr><tr><td class='data'>17/11/2026</td><td>Teste da tela de balanço falhava a partir de 17/11 (relógio do navegador não fixado)</td><td class='data'>17/11/2026</td></tr></tbody></table></div>
+<h3>Revisão geral do código (X1, 16/11/2026)</h3>
+<div class="tabela"><table><thead><tr><th class="num">Item</th><th>Defeito</th><th>Gravidade</th><th>Correção</th></tr></thead>
+<tbody><tr><td class='num'>1</td><td>Planilha repetida ou regravada</td><td><span class="selo alta">Alta</span></td><td><code>fa2866e</code></td></tr><tr><td class='num'>2</td><td>Linha com erro sumia do caixa</td><td><span class="selo alta">Alta</span></td><td><code>b16f38d</code></td></tr><tr><td class='num'>3</td><td>Saldo e lotes deixavam de bater</td><td><span class="selo alta">Alta</span></td><td><code>1b710f5</code></td></tr><tr><td class='num'>4</td><td>Planilha com dois dias travava o fechamento</td><td><span class="selo alta">Alta</span></td><td><code>7b6072b</code></td></tr><tr><td class='num'>5</td><td>Depois do &quot;Sim, pedir&quot;, o produto ficava calado para sempre</td><td><span class="selo media">Média</span></td><td><code>97c6166</code></td></tr><tr><td class='num'>6</td><td>O caixa só podia ser fechado no dia seguinte</td><td><span class="selo media">Média</span></td><td><code>f723e6e</code></td></tr><tr><td class='num'>7</td><td>Só &quot;dinheiro&quot; contava como dinheiro</td><td><span class="selo media">Média</span></td><td><code>fcf22cf</code></td></tr><tr><td class='num'>8</td><td>Produto sem fornecedor nunca avisava</td><td><span class="selo media">Média</span></td><td><code>e7a1aa5</code></td></tr><tr><td class='num'>9</td><td>Produto parado e zerado avisava &quot;acabou&quot; todo dia</td><td><span class="selo media">Média</span></td><td><code>4756400</code></td></tr><tr><td class='num'>10</td><td>Nenhuma tela mostrava a previsão</td><td><span class="selo media">Média</span></td><td><code>a2d3355</code></td></tr><tr><td class='num'>11</td><td>A rodada perdida não era recuperada</td><td><span class="selo media">Média</span></td><td><code>8d0e208</code></td></tr><tr><td class='num'>12</td><td>Dois produtos com o &quot;mesmo&quot; nome</td><td><span class="selo media">Média</span></td><td><code>d75f920</code></td></tr><tr><td class='num'>13</td><td>&quot;1.000&quot; digitado virava 1</td><td><span class="selo media">Média</span></td><td><code>8f7de51</code></td></tr><tr><td class='num'>14</td><td>Erro interno com número fora do esperado</td><td><span class="selo baixa">Baixa</span></td><td><code>405e07e</code></td></tr><tr><td class='num'>15</td><td>Total do cupom arredondado só no fim</td><td><span class="selo baixa">Baixa</span></td><td><code>acb0139</code></td></tr><tr><td class='num'>16</td><td>Duas rodadas ao mesmo tempo duplicavam</td><td><span class="selo baixa">Baixa</span></td><td><code>eae8fcb</code></td></tr><tr><td class='num'>17</td><td>Mensagem dividida podia chegar repetida</td><td><span class="selo baixa">Baixa</span></td><td><code>abc43c9</code></td></tr><tr><td class='num'>18</td><td>Venda ligada ao produto errado não tinha desfazer</td><td><span class="selo baixa">Baixa</span></td><td><code>3d044f9</code></td></tr><tr><td class='num'>19</td><td>Banco diferente do schema.sql em detalhes</td><td><span class="selo baixa">Baixa</span></td><td><code>473cf83</code></td></tr><tr><td class='num'>20</td><td>Modo de depuração ligado na publicação</td><td><span class="selo baixa">Baixa</span></td><td><code>a332343</code></td></tr><tr><td class='num'>21</td><td>Uma leitura do prazo de validade por lote</td><td><span class="selo baixa">Baixa</span></td><td><code>a16fc4b</code></td></tr><tr><td class='num'>22</td><td>Comentários desatualizados</td><td><span class="selo baixa">Baixa</span></td><td><code>f4104c2</code></td></tr></tbody></table></div>
 <p>Entre 08/10/2026 e 16/11/2026, para provar que os testes detectam erro, a equipe inseriu
 <b>130 defeitos de propósito</b> no código; os testes detectaram os 130.</p>
+</section>
 
-<h2>O que ainda não foi testado</h2>
-<p>Todo o código está testado de forma automática. Fica o que depende de gente, do celular
-de verdade ou do computador da loja: será conferido à mão, nas tarefas finais.</p>
-<table><thead><tr><th>Item</th><th>Tarefa</th><th>Data prevista</th></tr></thead><tbody><tr><td>Teste em movimento real: um sábado cheio simulado, do caixa ao aviso</td><td>J4</td><td class='data'>21/11/2026</td></tr><tr><td>Aviso chegando no celular de verdade, pelo bot real do Telegram</td><td>J4 e J6</td><td class='data'>21 a 27/11/2026</td></tr><tr><td>Facilidade de uso com as três pessoas (RNF02, RNF03)</td><td>J5</td><td class='data'>23/11/2026</td></tr><tr><td>Computador da loja ligado de madrugada e cópia de segurança diária (RNF08, RNF09)</td><td>J6</td><td class='data'>23 a 27/11/2026</td></tr></tbody></table>
+<section>
+<h2>Conferido à mão</h2>
+<p>Além dos testes automáticos, o sistema foi conferido rodando no computador do Matheus (decisão
+D05), com o bot real do Telegram.</p>
+<div class="tabela"><table><thead><tr><th>O que foi conferido</th><th>Tarefa e regra</th><th>Data</th><th>Situação</th></tr></thead>
+<tbody><tr><td>Planilha do sábado (vendas-2026-11-21.xlsx) importada pela pasta do caixa; nome errado fica pendente e o resto entra</td><td>E3, E4</td><td class='data'>25/11/2026</td><td><span class="selo ok">Conferido</span></td></tr><tr><td>Aviso chegando no celular de verdade, pelo bot real do Telegram, numa mensagem só</td><td>H5, RN13</td><td class='data'>25/11/2026</td><td><span class="selo ok">Conferido</span></td></tr></tbody></table></div>
+</section>
 
+<section>
+<h2>O que não se aplica</h2>
+<p>Todo o código está testado de forma automática. Os itens abaixo dependem de uma loja funcionando —
+movimento real, as três pessoas e o computador da loja — e o mercado deste trabalho é fictício. Por
+isso estão registrados como "não se aplica", e não como feitos.</p>
+<div class="tabela"><table><thead><tr><th>Item</th><th>Tarefa</th><th>Situação</th></tr></thead><tbody><tr><td>Teste em movimento real, num sábado cheio (o roteiro de 21 casos e as planilhas estão prontos)</td><td>J4</td><td><span class="selo nao">Não se aplica</span></td></tr><tr><td>Facilidade de uso com as três pessoas (RNF02, RNF03)</td><td>J5</td><td><span class="selo nao">Não se aplica</span></td></tr><tr><td>Computador da loja ligado de madrugada e cópia de segurança diária (RNF08, RNF09)</td><td>J6</td><td><span class="selo nao">Não se aplica</span></td></tr><tr><td>Resposta &quot;Sim, pedir&quot; voltando do celular: precisa do sistema publicado na internet com HTTPS; o registro da resposta tem teste automático</td><td>H7</td><td><span class="selo nao">Não se aplica</span></td></tr></tbody></table></div>
+</section>
+
+<section>
 <h2>Conclusão</h2>
-<p class="conclusao">O sistema está completo e passou nos testes: <b>1053 de 1053
-aprovados</b>, as 16 regras de negócio aprovadas e nenhum defeito em aberto em 16/11/2026.
-Com isso fecha a tarefa J1. Os itens da seção 6 serão conferidos à mão no teste do sábado cheio
-(J4), no treinamento (J5) e na implantação (J6), antes da entrega de 01/12/2026.</p>
+<p class="conclusao">O sistema está completo e passou nos testes: <b>1144 de 1144
+aprovados</b>, as 16 regras de negócio aprovadas, 37 defeitos encontrados e corrigidos
+e nenhum em aberto em 25/11/2026. Os itens que dependem de loja real (J4, J5 e J6) não se aplicam,
+porque o mercado é fictício; o roteiro do teste de sábado e as planilhas ficaram prontos.</p>
+</section>
+
+<footer class="pe">MDGS-TST-001 · Relatório de Testes · versão 2.0 · Grupo MDGS · emitido em 25/11/2026</footer>
+</main>
+<script>
+document.getElementById("trocar-tema").addEventListener("click", function () {
+  var raiz = document.documentElement;
+  var escuro = raiz.dataset.tema ? raiz.dataset.tema === "escuro" : matchMedia("(prefers-color-scheme: dark)").matches;
+  raiz.dataset.tema = escuro ? "claro" : "escuro";
+  try { localStorage.setItem("mdgs-tema", raiz.dataset.tema); } catch (e) {}
+});
+</script>
 </body></html>

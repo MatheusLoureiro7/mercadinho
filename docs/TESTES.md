@@ -3,7 +3,7 @@
 Sistema de Gestão de Estoque e Compras — Mercado do Sr. João · Grupo MDGS
 
 > **O documento para o professor é o PDF** `docs/testes/RELATORIO-DE-TESTES.pdf`
-> (MDGS-TST-001, versão 1.3, 3 páginas). Este arquivo é o material de trabalho do grupo.
+> (MDGS-TST-001, versão 2.0, 6 páginas, de 25/11/2026). Este arquivo é o material de trabalho do grupo.
 >
 > Para reemitir o PDF depois de uma nova execução:
 > `pytest --junitxml=docs/testes/execucao.xml` e depois `python docs/testes/gerar.py`.

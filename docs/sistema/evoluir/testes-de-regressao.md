@@ -1,6 +1,6 @@
 # Testes de regressão
 
-*Atualizado em 16/11/2026.* A suíte que prova que uma mudança ou atualização não quebrou nada.
+*Atualizado em 25/11/2026.* A suíte que prova que uma mudança ou atualização não quebrou nada.
 
 ## A suíte
 
@@ -36,8 +36,8 @@ pytest -m "not tela"      # sem os testes no navegador
 Ao fim de cada tarefa, o grupo coloca **defeitos de propósito** no código (perda somada às vendas,
 semana contada errada, aviso repetido…) e confere que algum teste falha. Quando um defeito passou, o
 teste foi reforçado antes da entrega: 130 defeitos de propósito até 16/11/2026, todos pegos. O
-relatório para o professor está em `docs/testes/RELATORIO-DE-TESTES.pdf` (versão 1.3, de
-16/11/2026, emitido com 1.053 testes, antes da revisão X1); o material de trabalho, em
+relatório para o professor está em `docs/testes/RELATORIO-DE-TESTES.pdf` (versão 2.0, de
+25/11/2026, emitido com 1.144 testes, depois da revisão X1); o material de trabalho, em
 `docs/TESTES.md`.
 
 Na revisão X1 a prova foi outra: cada teste novo foi escrito **antes** da correção e visto falhar

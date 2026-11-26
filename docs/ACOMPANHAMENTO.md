@@ -209,6 +209,12 @@ cronograma, a regra de negócio (quando houver) e o commit.
   (`openspec/`), com os comandos e skills dessa ferramenta. Os arquivos que citavam esses documentos
   foram ajustados. Nenhum HTML ou PDF foi apagado, e os quatro documentos da especificação continuam
   como estavam. Tudo segue no histórico do Git. Os 1.144 testes passaram depois da limpeza.
+- **Relatório de Testes reemitido, versão 2.0 (fora do cronograma).** A suíte inteira rodou de
+  novo hoje: 1.144 testes, todos aprovados. O relatório (`docs/testes/RELATORIO-DE-TESTES.pdf`)
+  ganhou o mesmo visual da Documentação do Sistema e passou a listar os 22 defeitos da revisão geral
+  (X1), somando 37 defeitos encontrados e corrigidos, nenhum em aberto. Entrou também o que foi
+  conferido à mão no sistema rodando: a planilha do sábado importada pela pasta do caixa e o aviso
+  chegando no celular pelo bot real do Telegram. J4, J5 e J6 aparecem como "não se aplica".
 
 ### 17/11/2026
 
